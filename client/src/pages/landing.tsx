@@ -23,7 +23,7 @@ import {
 import { 
   SiNotion, SiZapier, SiAirtable, SiGooglesheets, SiHubspot, SiTrello, SiClickup, SiSlack,
   SiWhatsapp, SiAsana, SiGooglemeet, SiZoom, SiSap, SiTwilio, SiSalesforce, SiMailchimp,
-  SiShopify, SiWordpress, SiTelegram
+  SiShopify, SiWordpress, SiTelegram, SiGmail, SiGooglecalendar, SiStripe
 } from "react-icons/si";
 import { FaShoppingCart } from "react-icons/fa";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -287,23 +287,26 @@ function SpaghettiChaosSection() {
   });
 
   const chaosApps = [
-    // Row 1 - Top far (4 icons)
-    { icon: SiNotion, name: "Notion", color: "", x: -300, y: -180, rotate: -8, scale: 1.0, zIndex: 5, iconSize: "w-8 h-8 md:w-10 md:h-10", useThemeColor: true },
-    { icon: SiZapier, name: "Zapier", color: "#FF4A00", x: -100, y: -190, rotate: 5, scale: 1.0, zIndex: 6, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: SiAirtable, name: "Airtable", color: "#18BFFF", x: 100, y: -190, rotate: 12, scale: 1.0, zIndex: 4, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: SiShopify, name: "Shopify", color: "#96BF48", x: 300, y: -180, rotate: -5, scale: 1.0, zIndex: 20, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    // Row 2 - Upper middle (5 icons)
-    { icon: SiGooglesheets, name: "Sheets", color: "#0F9D58", x: -320, y: -100, rotate: -15, scale: 1.0, zIndex: 7, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: SiHubspot, name: "HubSpot", color: "#FF7A59", x: -160, y: -110, rotate: 8, scale: 1.0, zIndex: 8, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: SiWordpress, name: "WordPress", color: "#21759B", x: 0, y: -120, rotate: -3, scale: 1.0, zIndex: 21, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: SiTrello, name: "Trello", color: "#0079BF", x: 160, y: -110, rotate: -10, scale: 1.0, zIndex: 9, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: SiClickup, name: "ClickUp", color: "#7B68EE", x: 320, y: -100, rotate: 18, scale: 1.0, zIndex: 3, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    // Row 3 - Center row (5 icons)
-    { icon: SiSlack, name: "Slack", color: "#4A154B", x: -300, y: -10, rotate: -12, scale: 1.0, zIndex: 10, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: SiWhatsapp, name: "WhatsApp", color: "#25D366", x: -150, y: 10, rotate: 6, scale: 1.0, zIndex: 11, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: SiTelegram, name: "Telegram", color: "#0088CC", x: 0, y: 0, rotate: 0, scale: 1.0, zIndex: 22, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: Home, name: "Tokko", color: "#FF6B35", x: 150, y: 10, rotate: -8, scale: 1.0, zIndex: 12, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: FaShoppingCart, name: "MercadoLibre", color: "#FFE600", x: 300, y: -10, rotate: 15, scale: 1.0, zIndex: 2, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    // Row 1 - Top far (5 icons)
+    { icon: SiNotion, name: "Notion", color: "", x: -320, y: -190, rotate: -8, scale: 1.0, zIndex: 5, iconSize: "w-8 h-8 md:w-10 md:h-10", useThemeColor: true },
+    { icon: SiZapier, name: "Zapier", color: "#FF4A00", x: -160, y: -200, rotate: 5, scale: 1.0, zIndex: 6, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiGmail, name: "Gmail", color: "#EA4335", x: 0, y: -195, rotate: -3, scale: 1.0, zIndex: 25, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiAirtable, name: "Airtable", color: "#18BFFF", x: 160, y: -200, rotate: 12, scale: 1.0, zIndex: 4, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiShopify, name: "Shopify", color: "#96BF48", x: 320, y: -190, rotate: -5, scale: 1.0, zIndex: 20, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    // Row 2 - Upper middle (6 icons)
+    { icon: SiGooglesheets, name: "Sheets", color: "#0F9D58", x: -340, y: -110, rotate: -15, scale: 1.0, zIndex: 7, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiHubspot, name: "HubSpot", color: "#FF7A59", x: -200, y: -120, rotate: 8, scale: 1.0, zIndex: 8, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiGooglecalendar, name: "Calendar", color: "#4285F4", x: -60, y: -125, rotate: -6, scale: 1.0, zIndex: 26, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiWordpress, name: "WordPress", color: "#21759B", x: 60, y: -125, rotate: 4, scale: 1.0, zIndex: 21, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiTrello, name: "Trello", color: "#0079BF", x: 200, y: -120, rotate: -10, scale: 1.0, zIndex: 9, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiClickup, name: "ClickUp", color: "#7B68EE", x: 340, y: -110, rotate: 18, scale: 1.0, zIndex: 3, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    // Row 3 - Center row (6 icons)
+    { icon: SiSlack, name: "Slack", color: "#4A154B", x: -320, y: -10, rotate: -12, scale: 1.0, zIndex: 10, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiWhatsapp, name: "WhatsApp", color: "#25D366", x: -180, y: 10, rotate: 6, scale: 1.0, zIndex: 11, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiStripe, name: "Stripe", color: "#635BFF", x: -40, y: 5, rotate: -4, scale: 1.0, zIndex: 27, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiTelegram, name: "Telegram", color: "#0088CC", x: 40, y: 5, rotate: 3, scale: 1.0, zIndex: 22, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: Home, name: "Tokko", color: "#FF6B35", x: 180, y: 10, rotate: -8, scale: 1.0, zIndex: 12, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: FaShoppingCart, name: "MercadoLibre", color: "#FFE600", x: 320, y: -10, rotate: 15, scale: 1.0, zIndex: 2, iconSize: "w-8 h-8 md:w-10 md:h-10" },
     // Row 4 - Lower middle (5 icons)
     { icon: SiAsana, name: "Asana", x: -320, y: 100, rotate: 10, scale: 1.0, zIndex: 13, iconSize: "w-8 h-8 md:w-10 md:h-10", color: "#F06A6A" },
     { icon: SiGooglemeet, name: "Meet", color: "#00897B", x: -160, y: 110, rotate: -5, scale: 1.0, zIndex: 14, iconSize: "w-8 h-8 md:w-10 md:h-10" },
@@ -315,7 +318,7 @@ function SpaghettiChaosSection() {
     { icon: SiSalesforce, name: "Salesforce", color: "#00A1E0", x: -100, y: 190, rotate: 10, scale: 1.0, zIndex: 17, iconSize: "w-8 h-8 md:w-10 md:h-10" },
     { imageSrc: darwinLogo, name: "Darwin", color: "#6366F1", x: 100, y: 190, rotate: -8, scale: 1.0, zIndex: 24, iconSize: "w-8 h-8 md:w-10 md:h-10" },
     { icon: SiMailchimp, name: "Mailchimp", color: "#FFE01B", x: 300, y: 180, rotate: -15, scale: 1.0, zIndex: 18, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: Mic, name: "Fathom", color: "#8B5CF6", x: 200, y: -50, rotate: 5, scale: 1.0, zIndex: 19, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: Mic, name: "Fathom", color: "#8B5CF6", x: 220, y: -55, rotate: 5, scale: 1.0, zIndex: 19, iconSize: "w-8 h-8 md:w-10 md:h-10" },
   ];
 
   const unifiedOpacity = useTransform(scrollYProgress, [0.75, 0.9, 1], [0, 0.5, 1]);
