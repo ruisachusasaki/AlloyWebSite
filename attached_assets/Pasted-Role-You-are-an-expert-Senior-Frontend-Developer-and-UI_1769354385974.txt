@@ -1,0 +1,54 @@
+Role: You are an expert Senior Frontend Developer and UI/UX Designer specializing in minimalist, high-end "Productized Service" websites.
+
+Project Goal: Create a world-class, single-page landing page for my new business. The business builds custom, unified software platforms that replace a client's "SaaS Chaos" (Airtable, HubSpot, Zapier, etc.) with a single, bespoke internal tool.
+
+Design Aesthetic (The "Beyond Capacity" Look):
+
+Style: Ultra-minimalist, Apple-esque, or "Linear.app" aesthetic.
+
+Color Palette: Deep Slate/Black background with subtle glassmorphism (transparency) and high-contrast white/silver typography. Use a single accent color (like Electric Blue or Emerald Green) for buttons.
+
+Typography: Large, bold, sans-serif headings (Inter or Geist). High whitespace to let the content breathe.
+
+Animations: Implement smooth scroll-reveals and subtle hover transitions.
+
+Website Structure & Copy:
+
+Hero Section: * Headline: "Stop duct-taping your business together with 10 different apps."
+
+Sub-headline: "I build the one platform that does it all—exactly how you work. Replace your messy tech stack with a single, custom-coded digital backbone."
+
+CTA Button: "Book a 15-minute System Audit."
+
+The "Chaos vs. Clarity" Section: * Create a visual comparison. On the left: "The Chaos" (List logos like Airtable, HubSpot, Zapier, Slack, Sheets). On the right: "The Clarity" (A single, glowing branded box representing the custom platform).
+
+Copy: "Don't hire someone to manage your tools. Hire a system that manages itself."
+
+The Service (The "Unlimited" Model):
+
+Explain the $1,000/month value: "One flat fee. Unlimited modifications. Zero technical debt."
+
+Bullet points: Custom CRM & ERP, Automated Workflows, Integrated Payments, 24/7 Developer Support.
+
+Why It’s Better: * Emphasis: "We don't just build it; we evolve it. As your business changes, the software changes with you—included in your subscription."
+
+Footer: * Clean, minimalist contact form and a "Powered by [Your Name/Business Name]" sign-off.
+
+Technical Requirements:
+
+Use React with Tailwind CSS.
+
+Use Lucide-react for clean, thin-stroke icons.
+
+Ensure the design is fully responsive (perfect on mobile).
+
+Add a subtle "Glassmorphism" navbar that blurs the background on scroll.
+
+How to use this in Replit:
+Open a new project in Replit.
+
+Select "Replit Agent" (or the Chat/Builder feature).
+
+Paste the prompt above.
+
+Once the first version is built, tell it: "Now, make the typography 20% larger and add a subtle glowing gradient effect behind the Hero Section to make it look more premium."
