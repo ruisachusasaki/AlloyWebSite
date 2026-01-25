@@ -19,8 +19,11 @@ import {
   Home,
   Mic
 } from "lucide-react";
-import { SiWhatsapp, SiTwilio, SiSap, SiSalesforce, SiZoom, SiGooglemeet } from "react-icons/si";
-import { FaShoppingCart, FaMailchimp } from "react-icons/fa";
+import { 
+  SiNotion, SiZapier, SiAirtable, SiGooglesheets, SiHubspot, SiTrello, SiClickup, SiSlack,
+  SiWhatsapp, SiAsana, SiGooglemeet, SiZoom, SiSap, SiTwilio, SiSalesforce, SiMailchimp
+} from "react-icons/si";
+import { FaShoppingCart } from "react-icons/fa";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 40 },
@@ -247,9 +250,9 @@ function ChaosIcon({
         mass: 0.8
       }}
     >
-      <div className="flex flex-col items-center gap-2 p-3 md:p-4 rounded-xl bg-card/90 backdrop-blur-sm border border-border/50 shadow-xl">
-        <app.icon className={app.iconSize} style={{ color: app.color }} />
-        <span className="text-[10px] md:text-xs text-muted-foreground font-medium">{app.name}</span>
+      <div className="flex flex-col items-center gap-1">
+        <app.icon className={app.iconSize} style={{ color: app.color, filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))" }} />
+        <span className="text-[8px] md:text-[10px] text-muted-foreground font-medium whitespace-nowrap">{app.name}</span>
       </div>
     </motion.div>
   );
@@ -265,16 +268,30 @@ function SpaghettiChaosSection() {
   });
 
   const chaosApps = [
-    { icon: SiWhatsapp, name: "WhatsApp", color: "#25D366", x: -155, y: -95, rotate: -15, scale: 1.2, zIndex: 10, iconSize: "w-8 h-8 md:w-11 md:h-11" },
-    { icon: Home, name: "Tokko", color: "#FF6B35", x: 135, y: -85, rotate: 22, scale: 0.85, zIndex: 3, iconSize: "w-5 h-5 md:w-7 md:h-7" },
-    { icon: FaShoppingCart, name: "MercadoLibre", color: "#FFE600", x: -95, y: 65, rotate: -12, scale: 1.0, zIndex: 6, iconSize: "w-6 h-6 md:w-8 md:h-8" },
-    { icon: SiTwilio, name: "Twilio", color: "#F22F46", x: 165, y: 55, rotate: 28, scale: 0.9, zIndex: 7, iconSize: "w-6 h-6 md:w-8 md:h-8" },
-    { icon: SiSap, name: "SAP", color: "#0FAAFF", x: 5, y: -125, rotate: 8, scale: 0.75, zIndex: 2, iconSize: "w-4 h-4 md:w-6 md:h-6" },
-    { icon: SiSalesforce, name: "Salesforce", color: "#00A1E0", x: -175, y: 5, rotate: -22, scale: 0.95, zIndex: 5, iconSize: "w-6 h-6 md:w-8 md:h-8" },
-    { icon: FaMailchimp, name: "ActiveCamp", color: "#356AE6", x: 175, y: -35, rotate: 15, scale: 0.8, zIndex: 4, iconSize: "w-5 h-5 md:w-7 md:h-7" },
-    { icon: SiZoom, name: "Zoom", color: "#2D8CFF", x: 55, y: 105, rotate: -8, scale: 1.1, zIndex: 9, iconSize: "w-7 h-7 md:w-10 md:h-10" },
-    { icon: SiGooglemeet, name: "Google Meet", color: "#00897B", x: -50, y: 115, rotate: 10, scale: 0.85, zIndex: 8, iconSize: "w-5 h-5 md:w-7 md:h-7" },
-    { icon: Mic, name: "Fathom", color: "#8B5CF6", x: 85, y: -110, rotate: -18, scale: 0.9, zIndex: 6, iconSize: "w-5 h-5 md:w-7 md:h-7" },
+    // Row 1 - Top far
+    { icon: SiNotion, name: "Notion", color: "#FFFFFF", x: -220, y: -160, rotate: -8, scale: 1.0, zIndex: 5, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiZapier, name: "Zapier", color: "#FF4A00", x: 0, y: -180, rotate: 5, scale: 1.0, zIndex: 6, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiAirtable, name: "Airtable", color: "#18BFFF", x: 220, y: -160, rotate: 12, scale: 1.0, zIndex: 4, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    // Row 2 - Upper middle
+    { icon: SiGooglesheets, name: "Sheets", color: "#0F9D58", x: -280, y: -80, rotate: -15, scale: 1.0, zIndex: 7, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiHubspot, name: "HubSpot", color: "#FF7A59", x: -100, y: -100, rotate: 8, scale: 1.0, zIndex: 8, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiTrello, name: "Trello", color: "#0079BF", x: 100, y: -100, rotate: -10, scale: 1.0, zIndex: 9, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiClickup, name: "ClickUp", color: "#7B68EE", x: 280, y: -80, rotate: 18, scale: 1.0, zIndex: 3, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    // Row 3 - Center row
+    { icon: SiSlack, name: "Slack", color: "#4A154B", x: -260, y: 0, rotate: -12, scale: 1.0, zIndex: 10, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiWhatsapp, name: "WhatsApp", color: "#25D366", x: -80, y: 20, rotate: 6, scale: 1.0, zIndex: 11, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: Home, name: "Tokko", color: "#FF6B35", x: 80, y: 20, rotate: -8, scale: 1.0, zIndex: 12, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: FaShoppingCart, name: "MercadoLibre", color: "#FFE600", x: 260, y: 0, rotate: 15, scale: 1.0, zIndex: 2, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    // Row 4 - Lower middle
+    { icon: SiAsana, name: "Asana", x: -280, y: 80, rotate: 10, scale: 1.0, zIndex: 13, iconSize: "w-8 h-8 md:w-10 md:h-10", color: "#F06A6A" },
+    { icon: SiGooglemeet, name: "Meet", color: "#00897B", x: -100, y: 100, rotate: -5, scale: 1.0, zIndex: 14, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiZoom, name: "Zoom", color: "#2D8CFF", x: 100, y: 100, rotate: 8, scale: 1.0, zIndex: 15, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiSap, name: "SAP", color: "#0FAAFF", x: 280, y: 80, rotate: -12, scale: 1.0, zIndex: 1, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    // Row 5 - Bottom far
+    { icon: SiTwilio, name: "Twilio", color: "#F22F46", x: -220, y: 160, rotate: -6, scale: 1.0, zIndex: 16, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiSalesforce, name: "Salesforce", color: "#00A1E0", x: 0, y: 180, rotate: 10, scale: 1.0, zIndex: 17, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiMailchimp, name: "Mailchimp", color: "#FFE01B", x: 220, y: 160, rotate: -15, scale: 1.0, zIndex: 18, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: Mic, name: "Fathom", color: "#8B5CF6", x: 160, y: -40, rotate: 5, scale: 1.0, zIndex: 19, iconSize: "w-8 h-8 md:w-10 md:h-10" },
   ];
 
   const unifiedOpacity = useTransform(scrollYProgress, [0.75, 0.9, 1], [0, 0.5, 1]);
@@ -304,7 +321,7 @@ function SpaghettiChaosSection() {
           </p>
         </motion.div>
 
-        <div className="relative w-full max-w-3xl h-[400px] md:h-[500px] flex items-center justify-center">
+        <div className="relative w-full max-w-5xl h-[500px] md:h-[600px] flex items-center justify-center">
           <div className="relative w-full h-full">
             {chaosApps.map((app, i) => (
               <ChaosIcon key={app.name} app={app} progress={scrollYProgress} index={i} />
