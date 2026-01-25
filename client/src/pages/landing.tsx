@@ -29,6 +29,7 @@ import { FaShoppingCart } from "react-icons/fa";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import darwinLogo from "@assets/darwin-ai-logo_1769368824707.png";
 import meliLogo from "@assets/image_1769369568141.png";
+import tokkoLogo from "@assets/tokko_broker_logo_(1)_1_1769369724733.png";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 40 },
@@ -306,7 +307,7 @@ function SpaghettiChaosSection() {
     { icon: SiWhatsapp, name: "WhatsApp", color: "#25D366", x: -180, y: 10, rotate: 6, scale: 1.0, zIndex: 11, iconSize: "w-8 h-8 md:w-10 md:h-10" },
     { icon: SiStripe, name: "Stripe", color: "#635BFF", x: -40, y: 5, rotate: -4, scale: 1.0, zIndex: 27, iconSize: "w-8 h-8 md:w-10 md:h-10" },
     { icon: SiTelegram, name: "Telegram", color: "#0088CC", x: 40, y: 5, rotate: 3, scale: 1.0, zIndex: 22, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: Home, name: "Tokko", color: "#FF6B35", x: 180, y: 10, rotate: -8, scale: 1.0, zIndex: 12, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { imageSrc: tokkoLogo, name: "Tokko", color: "#FF6B35", x: 180, y: 10, rotate: -8, scale: 1.0, zIndex: 12, iconSize: "w-8 h-8 md:w-10 md:h-10" },
     { imageSrc: meliLogo, name: "MercadoLibre", color: "#FFE600", x: 320, y: -10, rotate: 15, scale: 1.0, zIndex: 2, iconSize: "w-8 h-8 md:w-10 md:h-10" },
     // Row 4 - Lower middle (5 icons)
     { icon: SiAsana, name: "Asana", x: -320, y: 100, rotate: 10, scale: 1.0, zIndex: 13, iconSize: "w-8 h-8 md:w-10 md:h-10", color: "#F06A6A" },
