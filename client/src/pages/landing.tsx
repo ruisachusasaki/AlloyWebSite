@@ -1,35 +1,52 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, useScroll, useInView, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Helmet } from "react-helmet";
 import { 
   ArrowRight, 
   Zap, 
   Shield, 
-  Clock, 
-  Headphones,
-  Check,
-  Sparkles
+  RefreshCw, 
+  DollarSign,
+  ChevronDown,
+  Layers,
+  Building2,
+  TrendingUp,
+  Briefcase,
+  ExternalLink
 } from "lucide-react";
-import { SiAirtable, SiHubspot, SiZapier, SiSlack, SiGooglesheets } from "react-icons/si";
+import { SiAirtable, SiHubspot, SiZapier, SiSlack, SiGooglesheets, SiNotion, SiAsana, SiTrello } from "react-icons/si";
 
 const fadeInUp = {
-  initial: { opacity: 0, y: 30 },
+  initial: { opacity: 0, y: 40 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, ease: "easeOut" }
+  transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] }
 };
 
 const stagger = {
   animate: {
     transition: {
-      staggerChildren: 0.1
+      staggerChildren: 0.12
     }
   }
 };
 
+function ScrollProgress() {
+  const { scrollYProgress } = useScroll();
+  
+  return (
+    <motion.div 
+      className="scroll-progress"
+      style={{ scaleX: scrollYProgress }}
+    />
+  );
+}
+
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
+  const [portfolioOpen, setPortfolioOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,33 +56,94 @@ function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const portfolioItems = [
+    { name: "Wealthfit", desc: "Financial Systems", icon: DollarSign },
+    { name: "EventGrowth", desc: "Growth Infrastructure", icon: TrendingUp },
+    { name: "AgencyBoost", desc: "Internal Automations", icon: Briefcase },
+  ];
+
   return (
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled ? "glass" : "bg-transparent"
       }`}
     >
-      <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-        <a href="#" className="text-xl font-bold tracking-tight">
-          <span className="text-primary">System</span>
-          <span className="text-white">Forge</span>
+      <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
+        <a href="#" className="flex items-center gap-2" data-testid="link-logo">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
+            <Layers className="w-4 h-4 text-primary-foreground" />
+          </div>
+          <span className="text-lg font-bold tracking-tight hidden sm:block">
+            <span className="text-primary">System</span>
+            <span className="text-white">Forge</span>
+          </span>
         </a>
-        <div className="hidden md:flex items-center gap-8">
-          <a href="#problem" className="text-sm text-muted-foreground hover:text-white transition-colors" data-testid="link-problem">
-            The Problem
+        
+        <div className="hidden md:flex items-center gap-6">
+          <a href="#solution" className="text-sm text-muted-foreground transition-colors" data-testid="link-solutions">
+            Solutions
           </a>
-          <a href="#solution" className="text-sm text-muted-foreground hover:text-white transition-colors" data-testid="link-solution">
-            Solution
+          
+          <div 
+            className="relative"
+            onMouseEnter={() => setPortfolioOpen(true)}
+            onMouseLeave={() => setPortfolioOpen(false)}
+          >
+            <button 
+              className="flex items-center gap-1 text-sm text-muted-foreground transition-colors"
+              data-testid="button-portfolio"
+            >
+              Portfolio
+              <ChevronDown className={`w-4 h-4 transition-transform ${portfolioOpen ? 'rotate-180' : ''}`} />
+            </button>
+            
+            <AnimatePresence>
+              {portfolioOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute top-full left-0 mt-2 w-64 bg-card/95 backdrop-blur-xl border border-border rounded-xl shadow-2xl overflow-hidden"
+                >
+                  {portfolioItems.map((item) => (
+                    <a
+                      key={item.name}
+                      href="#proof"
+                      className="flex items-center gap-3 px-4 py-3 transition-colors hover-elevate"
+                      data-testid={`link-portfolio-${item.name.toLowerCase()}`}
+                    >
+                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <item.icon className="w-4 h-4 text-primary" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-medium text-white">{item.name}</p>
+                        <p className="text-xs text-muted-foreground">{item.desc}</p>
+                      </div>
+                    </a>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+          
+          <a href="#clients" className="text-sm text-muted-foreground transition-colors" data-testid="link-clients">
+            Clients
           </a>
-          <a href="#pricing" className="text-sm text-muted-foreground hover:text-white transition-colors" data-testid="link-pricing">
-            Pricing
+          <a href="#contact" className="text-sm text-muted-foreground transition-colors" data-testid="link-contact">
+            Contact
           </a>
         </div>
-        <Button size="sm" className="font-medium" data-testid="button-cta-nav">
-          Book Audit
+        
+        <Button 
+          size="sm" 
+          className="font-semibold shimmer-btn glow-border"
+          data-testid="button-cta-nav"
+        >
+          Join Waitlist
           <ArrowRight className="w-4 h-4 ml-1" />
         </Button>
       </div>
@@ -82,18 +160,18 @@ function HeroSection() {
           initial="initial"
           animate="animate"
           variants={stagger}
-          className="space-y-8"
+          className="space-y-10"
         >
           <motion.div variants={fadeInUp}>
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium">
-              <Sparkles className="w-4 h-4" />
-              Custom Software, Zero Chaos
+              <Zap className="w-4 h-4" />
+              Productized Software Development
             </span>
           </motion.div>
           
           <motion.h1 
             variants={fadeInUp}
-            className="text-5xl md:text-7xl lg:text-8xl font-bold leading-[1.1] tracking-tight"
+            className="text-5xl md:text-7xl lg:text-[5.5rem] font-black leading-[1.05] text-balance"
           >
             Stop duct-taping your business together with{" "}
             <span className="text-primary">10 different apps.</span>
@@ -108,7 +186,11 @@ function HeroSection() {
           </motion.p>
           
           <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <Button size="lg" className="text-lg px-8 py-6 font-semibold" data-testid="button-cta-hero">
+            <Button 
+              size="lg" 
+              className="text-lg font-bold shimmer-btn glow-border"
+              data-testid="button-cta-hero"
+            >
               Book a 15-minute System Audit
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
@@ -117,113 +199,257 @@ function HeroSection() {
         </motion.div>
       </div>
       
-      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background to-transparent" />
     </section>
   );
 }
 
-function ChaosVsClaritySection() {
+function SpaghettiChaosSection() {
+  const sectionRef = useRef(null);
+  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  const [unified, setUnified] = useState(false);
+  
   const chaosApps = [
-    { icon: SiAirtable, name: "Airtable", color: "#18BFFF" },
-    { icon: SiHubspot, name: "HubSpot", color: "#FF7A59" },
-    { icon: SiZapier, name: "Zapier", color: "#FF4A00" },
-    { icon: SiSlack, name: "Slack", color: "#4A154B" },
-    { icon: SiGooglesheets, name: "Sheets", color: "#0F9D58" },
+    { icon: SiAirtable, name: "Airtable", color: "#18BFFF", x: -180, y: -120, rotate: -15 },
+    { icon: SiHubspot, name: "HubSpot", color: "#FF7A59", x: 150, y: -100, rotate: 20 },
+    { icon: SiZapier, name: "Zapier", color: "#FF4A00", x: -120, y: 80, rotate: -10 },
+    { icon: SiSlack, name: "Slack", color: "#4A154B", x: 180, y: 60, rotate: 25 },
+    { icon: SiGooglesheets, name: "Sheets", color: "#0F9D58", x: 0, y: -140, rotate: 5 },
+    { icon: SiNotion, name: "Notion", color: "#FFFFFF", x: -200, y: 0, rotate: -20 },
+    { icon: SiAsana, name: "Asana", color: "#F06A6A", x: 200, y: -40, rotate: 15 },
+    { icon: SiTrello, name: "Trello", color: "#0079BF", x: 60, y: 120, rotate: -5 },
   ];
 
+  useEffect(() => {
+    if (isInView) {
+      const timer = setTimeout(() => setUnified(true), 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [isInView]);
+
   return (
-    <section id="problem" className="py-32 relative">
+    <section id="problem" ref={sectionRef} className="py-32 relative overflow-hidden">
       <div className="max-w-6xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-20"
+          transition={{ duration: 0.7 }}
+          className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-6xl font-bold mb-6">
-            From Chaos to{" "}
-            <span className="text-primary">Clarity</span>
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black mb-6">
+            Your business is{" "}
+            <span className="text-destructive">drowning</span> in tabs.
           </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Don't hire someone to manage your tools. Hire a system that manages itself.
+          <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto">
+            I build the one that matters.
           </p>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="relative"
-          >
-            <div className="bg-card border border-border rounded-2xl p-8">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-3 h-3 rounded-full bg-destructive animate-pulse" />
-                <h3 className="text-2xl font-bold text-destructive/80">The Chaos</h3>
-              </div>
-              <div className="grid grid-cols-3 gap-4">
-                {chaosApps.map((app, i) => (
-                  <motion.div
-                    key={app.name}
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
-                    className="flex flex-col items-center gap-2 p-4 rounded-xl bg-secondary/50 border border-border/50"
+        <div className="relative h-[500px] md:h-[600px] flex items-center justify-center">
+          <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
+            {!unified && chaosApps.map((app, i) => (
+              chaosApps.slice(i + 1).map((target, j) => (
+                <motion.path
+                  key={`line-${i}-${j}`}
+                  d={`M ${300 + app.x} ${250 + app.y} Q ${300 + (app.x + target.x) / 2 + Math.random() * 60 - 30} ${250 + (app.y + target.y) / 2 + Math.random() * 60 - 30} ${300 + target.x} ${250 + target.y}`}
+                  className="chaos-line"
+                  initial={{ pathLength: 0, opacity: 0 }}
+                  animate={isInView ? { pathLength: 1, opacity: 0.4 } : {}}
+                  transition={{ duration: 1, delay: i * 0.1 }}
+                />
+              ))
+            ))}
+          </svg>
+
+          <div className="relative w-full h-full flex items-center justify-center">
+            <AnimatePresence mode="wait">
+              {!unified ? (
+                <motion.div
+                  key="chaos"
+                  className="relative w-full h-full"
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  {chaosApps.map((app, i) => (
+                    <motion.div
+                      key={app.name}
+                      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
+                      initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
+                      animate={isInView ? {
+                        opacity: 1,
+                        scale: 1,
+                        x: app.x,
+                        y: app.y,
+                        rotate: app.rotate,
+                      } : {}}
+                      transition={{ 
+                        duration: 0.8, 
+                        delay: i * 0.1,
+                        type: "spring",
+                        stiffness: 100
+                      }}
+                    >
+                      <div className="flex flex-col items-center gap-2 p-4 rounded-xl bg-card/80 backdrop-blur-sm border border-border/50 shadow-lg">
+                        <app.icon className="w-8 h-8 md:w-10 md:h-10" style={{ color: app.color }} />
+                        <span className="text-xs text-muted-foreground hidden md:block">{app.name}</span>
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="unified"
+                  className="relative"
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
+                >
+                  <div className="glow" />
+                  <div className="relative w-40 h-40 md:w-56 md:h-56 rounded-3xl bg-gradient-to-br from-primary via-primary/80 to-primary/60 flex items-center justify-center shadow-2xl">
+                    <Zap className="w-20 h-20 md:w-28 md:h-28 text-primary-foreground" />
+                  </div>
+                  <motion.div 
+                    className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
                   >
-                    <app.icon className="w-8 h-8" style={{ color: app.color }} />
-                    <span className="text-xs text-muted-foreground">{app.name}</span>
+                    <span className="text-xl md:text-2xl font-bold text-primary">Unified Dashboard</span>
                   </motion.div>
-                ))}
-                <div className="flex flex-col items-center justify-center gap-2 p-4 rounded-xl border-2 border-dashed border-border">
-                  <span className="text-2xl text-muted-foreground">+12</span>
-                  <span className="text-xs text-muted-foreground">more</span>
-                </div>
-              </div>
-              <div className="mt-6 pt-6 border-t border-border">
-                <div className="flex items-center gap-2 text-muted-foreground text-sm">
-                  <span className="text-destructive">$2,400/mo</span>
-                  <span>in scattered subscriptions</span>
-                </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {!unified && (
+            <motion.div
+              className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center"
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : {}}
+              transition={{ delay: 1 }}
+            >
+              <p className="text-destructive font-semibold text-lg">$2,400+/mo in scattered subscriptions</p>
+            </motion.div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function BentoGridSection() {
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const card = e.currentTarget;
+    const rect = card.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    card.style.setProperty('--mouse-x', `${x}%`);
+    card.style.setProperty('--mouse-y', `${y}%`);
+  };
+
+  return (
+    <section id="solution" className="py-32 relative">
+      <div className="max-w-6xl mx-auto px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black mb-6">
+            The <span className="text-primary">Productized</span> Model
+          </h2>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            One flat fee. Unlimited evolution. Zero technical debt.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0 }}
+            className="bento-card md:col-span-2 p-8 md:p-10"
+            onMouseMove={handleMouseMove}
+            ref={cardRef}
+          >
+            <div className="flex items-start gap-4 mb-6">
+              <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
+                <Layers className="w-7 h-7 text-primary" />
               </div>
             </div>
+            <h3 className="text-2xl md:text-3xl font-bold mb-4">Total Integration</h3>
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              We don't connect apps; we <span className="text-white font-semibold">replace them</span>. 
+              Your custom platform handles CRM, ERP, payments, automations—everything in one unified system built exactly for your workflow.
+            </p>
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative"
+            transition={{ delay: 0.1 }}
+            className="bento-card p-8"
+            onMouseMove={handleMouseMove}
           >
-            <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
-            <div className="relative bg-card border-2 border-primary/30 rounded-2xl p-8 glow">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-3 h-3 rounded-full bg-primary" />
-                <h3 className="text-2xl font-bold text-primary">The Clarity</h3>
-              </div>
-              <div className="flex items-center justify-center py-12">
-                <div className="relative">
-                  <div className="w-32 h-32 rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
-                    <Zap className="w-16 h-16 text-primary-foreground" />
-                  </div>
-                  <div className="absolute -top-2 -right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center">
-                    <Check className="w-4 h-4 text-primary-foreground" />
-                  </div>
+            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
+              <RefreshCw className="w-6 h-6 text-primary" />
+            </div>
+            <h3 className="text-xl font-bold mb-3">Unlimited Updates</h3>
+            <p className="text-muted-foreground">
+              New feature? New automation? Just ask. It's included in your subscription.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="bento-card p-8"
+            onMouseMove={handleMouseMove}
+          >
+            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
+              <Shield className="w-6 h-6 text-primary" />
+            </div>
+            <h3 className="text-xl font-bold mb-3">Zero Maintenance</h3>
+            <p className="text-muted-foreground">
+              Stop paying for Zapier experts. I am your dedicated systems partner.
+            </p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            className="bento-card md:col-span-2 p-8 md:p-10 bg-gradient-to-br from-primary/10 via-card to-card"
+            onMouseMove={handleMouseMove}
+          >
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+              <div>
+                <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center mb-6">
+                  <DollarSign className="w-6 h-6 text-primary" />
                 </div>
+                <h3 className="text-2xl md:text-3xl font-bold mb-3">Fixed Pricing</h3>
+                <p className="text-muted-foreground text-lg">
+                  No hourly billing. No surprises. <span className="text-primary font-bold">$1,000/mo</span> for a platform that never stops evolving.
+                </p>
               </div>
-              <div className="text-center">
-                <p className="text-lg font-medium text-white mb-2">Your Custom Platform</p>
-                <p className="text-muted-foreground text-sm">One system. Infinite possibilities.</p>
-              </div>
-              <div className="mt-6 pt-6 border-t border-primary/20">
-                <div className="flex items-center justify-center gap-2 text-sm">
-                  <span className="text-primary font-semibold">$1,000/mo</span>
-                  <span className="text-muted-foreground">everything included</span>
-                </div>
-              </div>
+              <Button 
+                size="lg" 
+                className="font-bold shimmer-btn"
+                data-testid="button-cta-bento"
+              >
+                Get Started
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
             </div>
           </motion.div>
         </div>
@@ -232,115 +458,121 @@ function ChaosVsClaritySection() {
   );
 }
 
-function ServiceSection() {
-  const features = [
+function ProofSection() {
+  const portfolioItems = [
     {
-      icon: Zap,
-      title: "Custom CRM & ERP",
-      description: "Built around your exact workflow, not generic templates."
+      name: "Wealthfit.com",
+      category: "Financial Systems",
+      description: "Unified investment tracking, client portal, and automated reporting for a wealth management firm.",
+      icon: DollarSign,
+      gradient: "from-emerald-500/20 to-emerald-500/5",
     },
     {
-      icon: Clock,
-      title: "Automated Workflows",
-      description: "Eliminate repetitive tasks. Your system works while you sleep."
+      name: "EventGrowth.app",
+      category: "Growth Infrastructure",
+      description: "End-to-end event management with ticketing, CRM, marketing automation, and analytics.",
+      icon: TrendingUp,
+      gradient: "from-blue-500/20 to-blue-500/5",
     },
     {
-      icon: Shield,
-      title: "Integrated Payments",
-      description: "Seamless billing, invoicing, and financial reporting."
-    },
-    {
-      icon: Headphones,
-      title: "24/7 Developer Support",
-      description: "Direct access to your developer. No ticket queues."
+      name: "AgencyBoost.app",
+      category: "Internal Automations",
+      description: "Project management, time tracking, invoicing, and client communication in one platform.",
+      icon: Briefcase,
+      gradient: "from-purple-500/20 to-purple-500/5",
     },
   ];
 
   return (
-    <section id="solution" className="py-32 bg-card/30">
+    <section id="proof" className="py-32 bg-card/30">
       <div className="max-w-6xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-20"
+          transition={{ duration: 0.7 }}
+          className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-6xl font-bold mb-6">
-            One Flat Fee.{" "}
-            <span className="text-primary">Unlimited</span> Evolution.
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
+            The Proof
+          </span>
+          <h2 className="text-4xl md:text-6xl font-black mb-6">
+            Real systems. Real results.
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            We don't just build it; we evolve it. As your business changes, 
-            the software changes with you—included in your subscription.
+            Case studies from businesses that replaced their SaaS chaos with unified platforms.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-6 mb-16">
-          {features.map((feature, i) => (
+        <div className="grid md:grid-cols-3 gap-6">
+          {portfolioItems.map((item, i) => (
             <motion.div
-              key={feature.title}
+              key={item.name}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="group p-6 rounded-2xl bg-card border border-border hover:border-primary/30 transition-all duration-300"
+              className="portfolio-card group cursor-pointer"
+              data-testid={`card-portfolio-${item.name.toLowerCase().replace('.', '-')}`}
             >
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                  <feature.icon className="w-6 h-6 text-primary" />
+              <div className={`h-48 bg-gradient-to-br ${item.gradient} flex items-center justify-center`}>
+                <div className="w-20 h-20 rounded-2xl bg-background/50 backdrop-blur flex items-center justify-center">
+                  <item.icon className="w-10 h-10 text-white" />
                 </div>
-                <div>
-                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
+              </div>
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-xs text-primary font-medium uppercase tracking-wider">{item.category}</span>
+                  <ExternalLink className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
+                <h3 className="text-xl font-bold mb-2">{item.name}</h3>
+                <p className="text-muted-foreground text-sm">{item.description}</p>
               </div>
             </motion.div>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
 
+function ClientsSection() {
+  const industries = [
+    { name: "Real Estate", icon: Building2 },
+    { name: "Supply Chain", icon: Layers },
+    { name: "Finance", icon: DollarSign },
+    { name: "Agencies", icon: Briefcase },
+  ];
+
+  return (
+    <section id="clients" className="py-24 border-y border-border">
+      <div className="max-w-6xl mx-auto px-6">
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          id="pricing"
-          className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/20 via-card to-card border border-primary/20 p-8 md:p-12"
+          className="text-center mb-12"
         >
-          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 blur-3xl rounded-full" />
-          <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 text-primary text-sm font-medium mb-4">
-                Simple Pricing
-              </div>
-              <h3 className="text-3xl md:text-4xl font-bold mb-4">
-                <span className="text-primary">$1,000</span>
-                <span className="text-muted-foreground text-xl">/month</span>
-              </h3>
-              <ul className="space-y-3 text-muted-foreground">
-                <li className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-primary" />
-                  Unlimited modifications & updates
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-primary" />
-                  Zero technical debt
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-5 h-5 text-primary" />
-                  Cancel anytime
-                </li>
-              </ul>
-            </div>
-            <div className="flex flex-col items-center lg:items-end gap-4">
-              <Button size="lg" className="text-lg px-8 py-6 font-semibold" data-testid="button-cta-pricing">
-                Get Started Today
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-              <span className="text-muted-foreground text-sm">30-day money-back guarantee</span>
-            </div>
-          </div>
+          <p className="text-muted-foreground text-lg">Industries we serve</p>
         </motion.div>
+        
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          {industries.map((industry, i) => (
+            <motion.div
+              key={industry.name}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className="flex flex-col items-center gap-3 text-center"
+            >
+              <div className="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center">
+                <industry.icon className="w-8 h-8 text-muted-foreground" />
+              </div>
+              <span className="text-sm font-medium text-muted-foreground">{industry.name}</span>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );
@@ -355,7 +587,7 @@ function Footer() {
   };
 
   return (
-    <footer className="py-24 border-t border-border">
+    <footer id="contact" className="py-24">
       <div className="max-w-6xl mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-16">
           <motion.div
@@ -363,7 +595,7 @@ function Footer() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="text-4xl md:text-5xl font-black mb-4">
               Ready to simplify?
             </h2>
             <p className="text-muted-foreground text-lg mb-8">
@@ -391,12 +623,12 @@ function Footer() {
                 placeholder="Tell me about your current tech stack..."
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                className="bg-card border-border min-h-[120px]"
+                className="bg-card border-border min-h-[140px]"
                 data-testid="input-message"
               />
-              <Button type="submit" className="w-full sm:w-auto" data-testid="button-submit">
+              <Button type="submit" size="lg" className="font-bold shimmer-btn" data-testid="button-submit">
                 Send Message
-                <ArrowRight className="w-4 h-4 ml-2" />
+                <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </form>
           </motion.div>
@@ -409,11 +641,16 @@ function Footer() {
             className="flex flex-col justify-between"
           >
             <div>
-              <a href="#" className="text-2xl font-bold tracking-tight">
-                <span className="text-primary">System</span>
-                <span className="text-white">Forge</span>
-              </a>
-              <p className="text-muted-foreground mt-4 max-w-sm">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
+                  <Layers className="w-5 h-5 text-primary-foreground" />
+                </div>
+                <span className="text-2xl font-bold tracking-tight">
+                  <span className="text-primary">System</span>
+                  <span className="text-white">Forge</span>
+                </span>
+              </div>
+              <p className="text-muted-foreground max-w-sm text-lg">
                 Building custom software platforms that replace chaos with clarity.
               </p>
             </div>
@@ -431,11 +668,21 @@ function Footer() {
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background noise-bg">
+      <Helmet>
+        <title>SystemForge - Custom Software Platforms | Replace SaaS Chaos with Clarity</title>
+        <meta name="description" content="Stop paying for 10+ SaaS apps. SystemForge builds custom, unified software platforms for $1,000/mo. CRM, ERP, automations - all in one system built exactly for your workflow." />
+        <meta property="og:title" content="SystemForge - Custom Software Platforms" />
+        <meta property="og:description" content="Replace your messy tech stack with a single, custom-coded digital backbone. One flat fee, unlimited evolution." />
+        <meta property="og:type" content="website" />
+      </Helmet>
+      <ScrollProgress />
       <Navbar />
       <HeroSection />
-      <ChaosVsClaritySection />
-      <ServiceSection />
+      <SpaghettiChaosSection />
+      <BentoGridSection />
+      <ProofSection />
+      <ClientsSection />
       <Footer />
     </div>
   );
