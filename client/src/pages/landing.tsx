@@ -17,11 +17,14 @@ import {
   Briefcase,
   ExternalLink,
   Home,
-  Mic
+  Mic,
+  Cloud,
+  Bot
 } from "lucide-react";
 import { 
   SiNotion, SiZapier, SiAirtable, SiGooglesheets, SiHubspot, SiTrello, SiClickup, SiSlack,
-  SiWhatsapp, SiAsana, SiGooglemeet, SiZoom, SiSap, SiTwilio, SiSalesforce, SiMailchimp
+  SiWhatsapp, SiAsana, SiGooglemeet, SiZoom, SiSap, SiTwilio, SiSalesforce, SiMailchimp,
+  SiShopify, SiWordpress, SiTelegram
 } from "react-icons/si";
 import { FaShoppingCart } from "react-icons/fa";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
@@ -275,30 +278,35 @@ function SpaghettiChaosSection() {
   });
 
   const chaosApps = [
-    // Row 1 - Top far
-    { icon: SiNotion, name: "Notion", color: "", x: -220, y: -160, rotate: -8, scale: 1.0, zIndex: 5, iconSize: "w-8 h-8 md:w-10 md:h-10", useThemeColor: true },
-    { icon: SiZapier, name: "Zapier", color: "#FF4A00", x: 0, y: -180, rotate: 5, scale: 1.0, zIndex: 6, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: SiAirtable, name: "Airtable", color: "#18BFFF", x: 220, y: -160, rotate: 12, scale: 1.0, zIndex: 4, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    // Row 2 - Upper middle
-    { icon: SiGooglesheets, name: "Sheets", color: "#0F9D58", x: -280, y: -80, rotate: -15, scale: 1.0, zIndex: 7, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: SiHubspot, name: "HubSpot", color: "#FF7A59", x: -100, y: -100, rotate: 8, scale: 1.0, zIndex: 8, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: SiTrello, name: "Trello", color: "#0079BF", x: 100, y: -100, rotate: -10, scale: 1.0, zIndex: 9, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: SiClickup, name: "ClickUp", color: "#7B68EE", x: 280, y: -80, rotate: 18, scale: 1.0, zIndex: 3, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    // Row 3 - Center row
-    { icon: SiSlack, name: "Slack", color: "#4A154B", x: -260, y: 0, rotate: -12, scale: 1.0, zIndex: 10, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: SiWhatsapp, name: "WhatsApp", color: "#25D366", x: -80, y: 20, rotate: 6, scale: 1.0, zIndex: 11, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: Home, name: "Tokko", color: "#FF6B35", x: 80, y: 20, rotate: -8, scale: 1.0, zIndex: 12, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: FaShoppingCart, name: "MercadoLibre", color: "#FFE600", x: 260, y: 0, rotate: 15, scale: 1.0, zIndex: 2, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    // Row 4 - Lower middle
-    { icon: SiAsana, name: "Asana", x: -280, y: 80, rotate: 10, scale: 1.0, zIndex: 13, iconSize: "w-8 h-8 md:w-10 md:h-10", color: "#F06A6A" },
-    { icon: SiGooglemeet, name: "Meet", color: "#00897B", x: -100, y: 100, rotate: -5, scale: 1.0, zIndex: 14, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: SiZoom, name: "Zoom", color: "#2D8CFF", x: 100, y: 100, rotate: 8, scale: 1.0, zIndex: 15, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: SiSap, name: "SAP", color: "#0FAAFF", x: 280, y: 80, rotate: -12, scale: 1.0, zIndex: 1, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    // Row 5 - Bottom far
-    { icon: SiTwilio, name: "Twilio", color: "#F22F46", x: -220, y: 160, rotate: -6, scale: 1.0, zIndex: 16, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: SiSalesforce, name: "Salesforce", color: "#00A1E0", x: 0, y: 180, rotate: 10, scale: 1.0, zIndex: 17, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: SiMailchimp, name: "Mailchimp", color: "#FFE01B", x: 220, y: 160, rotate: -15, scale: 1.0, zIndex: 18, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: Mic, name: "Fathom", color: "#8B5CF6", x: 160, y: -40, rotate: 5, scale: 1.0, zIndex: 19, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    // Row 1 - Top far (4 icons)
+    { icon: SiNotion, name: "Notion", color: "", x: -300, y: -180, rotate: -8, scale: 1.0, zIndex: 5, iconSize: "w-8 h-8 md:w-10 md:h-10", useThemeColor: true },
+    { icon: SiZapier, name: "Zapier", color: "#FF4A00", x: -100, y: -190, rotate: 5, scale: 1.0, zIndex: 6, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiAirtable, name: "Airtable", color: "#18BFFF", x: 100, y: -190, rotate: 12, scale: 1.0, zIndex: 4, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiShopify, name: "Shopify", color: "#96BF48", x: 300, y: -180, rotate: -5, scale: 1.0, zIndex: 20, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    // Row 2 - Upper middle (5 icons)
+    { icon: SiGooglesheets, name: "Sheets", color: "#0F9D58", x: -320, y: -100, rotate: -15, scale: 1.0, zIndex: 7, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiHubspot, name: "HubSpot", color: "#FF7A59", x: -160, y: -110, rotate: 8, scale: 1.0, zIndex: 8, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiWordpress, name: "WordPress", color: "#21759B", x: 0, y: -120, rotate: -3, scale: 1.0, zIndex: 21, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiTrello, name: "Trello", color: "#0079BF", x: 160, y: -110, rotate: -10, scale: 1.0, zIndex: 9, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiClickup, name: "ClickUp", color: "#7B68EE", x: 320, y: -100, rotate: 18, scale: 1.0, zIndex: 3, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    // Row 3 - Center row (5 icons)
+    { icon: SiSlack, name: "Slack", color: "#4A154B", x: -300, y: -10, rotate: -12, scale: 1.0, zIndex: 10, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiWhatsapp, name: "WhatsApp", color: "#25D366", x: -150, y: 10, rotate: 6, scale: 1.0, zIndex: 11, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiTelegram, name: "Telegram", color: "#0088CC", x: 0, y: 0, rotate: 0, scale: 1.0, zIndex: 22, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: Home, name: "Tokko", color: "#FF6B35", x: 150, y: 10, rotate: -8, scale: 1.0, zIndex: 12, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: FaShoppingCart, name: "MercadoLibre", color: "#FFE600", x: 300, y: -10, rotate: 15, scale: 1.0, zIndex: 2, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    // Row 4 - Lower middle (5 icons)
+    { icon: SiAsana, name: "Asana", x: -320, y: 100, rotate: 10, scale: 1.0, zIndex: 13, iconSize: "w-8 h-8 md:w-10 md:h-10", color: "#F06A6A" },
+    { icon: SiGooglemeet, name: "Meet", color: "#00897B", x: -160, y: 110, rotate: -5, scale: 1.0, zIndex: 14, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: Cloud, name: "Tiendanube", color: "#2E86AB", x: 0, y: 120, rotate: 7, scale: 1.0, zIndex: 23, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiZoom, name: "Zoom", color: "#2D8CFF", x: 160, y: 110, rotate: 8, scale: 1.0, zIndex: 15, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiSap, name: "SAP", color: "#0FAAFF", x: 320, y: 100, rotate: -12, scale: 1.0, zIndex: 1, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    // Row 5 - Bottom far (5 icons)
+    { icon: SiTwilio, name: "Twilio", color: "#F22F46", x: -300, y: 180, rotate: -6, scale: 1.0, zIndex: 16, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiSalesforce, name: "Salesforce", color: "#00A1E0", x: -100, y: 190, rotate: 10, scale: 1.0, zIndex: 17, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: Bot, name: "Darwin", color: "#6366F1", x: 100, y: 190, rotate: -8, scale: 1.0, zIndex: 24, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiMailchimp, name: "Mailchimp", color: "#FFE01B", x: 300, y: 180, rotate: -15, scale: 1.0, zIndex: 18, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: Mic, name: "Fathom", color: "#8B5CF6", x: 200, y: -50, rotate: 5, scale: 1.0, zIndex: 19, iconSize: "w-8 h-8 md:w-10 md:h-10" },
   ];
 
   const unifiedOpacity = useTransform(scrollYProgress, [0.75, 0.9, 1], [0, 0.5, 1]);
@@ -328,7 +336,7 @@ function SpaghettiChaosSection() {
           </p>
         </motion.div>
 
-        <div className="relative w-full max-w-5xl h-[500px] md:h-[600px] flex items-center justify-center">
+        <div className="relative w-full max-w-6xl h-[520px] md:h-[620px] flex items-center justify-center">
           <div className="relative w-full h-full">
             {chaosApps.map((app, i) => (
               <ChaosIcon key={app.name} app={app} progress={scrollYProgress} index={i} />
