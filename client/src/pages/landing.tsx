@@ -470,7 +470,7 @@ function BentoGridSection() {
               A tool that grows at the speed of your imagination.
             </h3>
             <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-              Stop waiting for roadmap updates from giant SaaS companies. If your business needs a new feature, a custom report, or a fresh automation today, it's built <span className="text-foreground font-semibold">today</span>. Your subscription includes unlimited, immediate development.
+              Stop waiting for roadmap updates from giant SaaS companies. If your business needs a new feature, a custom report, or a fresh automation—we receive your request and <span className="text-foreground font-semibold">start building it the same day</span>. Your subscription includes unlimited, immediate development.
             </p>
             
             {/* Feature Request → Live Feature Animation */}
