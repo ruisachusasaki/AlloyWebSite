@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { motion, useScroll, useInView, AnimatePresence } from "framer-motion";
+import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -204,152 +204,200 @@ function HeroSection() {
   );
 }
 
-function SpaghettiChaosSection() {
-  const sectionRef = useRef<HTMLElement>(null);
-  const isInView = useInView(sectionRef, { once: false, margin: "-100px" });
-  const [unified, setUnified] = useState(false);
-  
-  const chaosApps = [
-    { icon: SiAirtable, name: "Airtable", color: "#18BFFF", x: -180, y: -120, rotate: -15 },
-    { icon: SiHubspot, name: "HubSpot", color: "#FF7A59", x: 150, y: -100, rotate: 20 },
-    { icon: SiZapier, name: "Zapier", color: "#FF4A00", x: -120, y: 80, rotate: -10 },
-    { icon: SiSlack, name: "Slack", color: "#4A154B", x: 180, y: 60, rotate: 25 },
-    { icon: SiGooglesheets, name: "Sheets", color: "#0F9D58", x: 0, y: -140, rotate: 5 },
-    { icon: SiNotion, name: "Notion", color: "#FFFFFF", x: -200, y: 0, rotate: -20 },
-    { icon: SiAsana, name: "Asana", color: "#F06A6A", x: 200, y: -40, rotate: 15 },
-    { icon: SiTrello, name: "Trello", color: "#0079BF", x: 60, y: 120, rotate: -5 },
-  ];
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (!sectionRef.current) return;
-      
-      const rect = sectionRef.current.getBoundingClientRect();
-      const sectionHeight = rect.height;
-      const viewportHeight = window.innerHeight;
-      
-      const sectionMiddle = rect.top + sectionHeight / 2;
-      const triggerPoint = viewportHeight * 0.4;
-      
-      if (sectionMiddle < triggerPoint) {
-        setUnified(true);
-      } else {
-        setUnified(false);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-    
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+function ChaosIcon({ 
+  app, 
+  progress, 
+  index 
+}: { 
+  app: { icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>; name: string; color: string; x: number; y: number; rotate: number; scale: number }; 
+  progress: any; 
+  index: number 
+}) {
+  const x = useTransform(progress, [0, 0.7, 1], [app.x, app.x * 0.3, 0]);
+  const y = useTransform(progress, [0, 0.7, 1], [app.y, app.y * 0.3, 0]);
+  const rotate = useTransform(progress, [0, 0.7, 1], [app.rotate, app.rotate * 0.3, 0]);
+  const scale = useTransform(progress, [0, 0.7, 0.9, 1], [app.scale, app.scale, 0.8, 0]);
+  const opacity = useTransform(progress, [0, 0.8, 0.95, 1], [1, 1, 0.5, 0]);
 
   return (
-    <section id="problem" ref={sectionRef} className="py-32 relative overflow-hidden">
-      <div className="max-w-6xl mx-auto px-6">
+    <motion.div
+      className="absolute left-1/2 top-1/2"
+      style={{
+        x,
+        y,
+        rotate,
+        scale,
+        opacity,
+        translateX: "-50%",
+        translateY: "-50%",
+      }}
+      transition={{ 
+        type: "spring",
+        stiffness: 100,
+        damping: 30
+      }}
+    >
+      <div className="flex flex-col items-center gap-2 p-3 md:p-4 rounded-xl bg-card/90 backdrop-blur-sm border border-border/50 shadow-xl">
+        <app.icon className="w-6 h-6 md:w-8 md:h-8" style={{ color: app.color }} />
+        <span className="text-[10px] md:text-xs text-muted-foreground font-medium">{app.name}</span>
+      </div>
+    </motion.div>
+  );
+}
+
+function SpaghettiChaosSection() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const stickyRef = useRef<HTMLDivElement>(null);
+  
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"]
+  });
+
+  const chaosApps = [
+    { icon: SiAirtable, name: "Airtable", color: "#18BFFF", x: -160, y: -100, rotate: -12, scale: 1.1 },
+    { icon: SiHubspot, name: "HubSpot", color: "#FF7A59", x: 140, y: -80, rotate: 18, scale: 0.95 },
+    { icon: SiZapier, name: "Zapier", color: "#FF4A00", x: -100, y: 70, rotate: -8, scale: 1.0 },
+    { icon: SiSlack, name: "Slack", color: "#4A154B", x: 160, y: 50, rotate: 22, scale: 1.05 },
+    { icon: SiGooglesheets, name: "Sheets", color: "#0F9D58", x: 0, y: -120, rotate: 5, scale: 0.9 },
+    { icon: SiNotion, name: "Notion", color: "#FFFFFF", x: -180, y: 0, rotate: -18, scale: 1.0 },
+    { icon: SiAsana, name: "Asana", color: "#F06A6A", x: 180, y: -30, rotate: 12, scale: 0.95 },
+    { icon: SiTrello, name: "Trello", color: "#0079BF", x: 50, y: 100, rotate: -5, scale: 1.1 },
+  ];
+
+  const lineOpacity = useTransform(scrollYProgress, [0, 0.5, 0.8], [0.5, 0.3, 0]);
+  const lineScale = useTransform(scrollYProgress, [0, 0.5, 0.8], [1, 0.6, 0]);
+  
+  const unifiedOpacity = useTransform(scrollYProgress, [0.75, 0.9, 1], [0, 0.5, 1]);
+  const unifiedScale = useTransform(scrollYProgress, [0.75, 0.9, 1], [0.5, 0.8, 1]);
+  const glowOpacity = useTransform(scrollYProgress, [0.85, 1], [0, 1]);
+  const headlineOpacity = useTransform(scrollYProgress, [0.9, 1], [0, 1]);
+  const headlineY = useTransform(scrollYProgress, [0.9, 1], [30, 0]);
+  
+  const chaosTextOpacity = useTransform(scrollYProgress, [0, 0.3, 0.6], [1, 1, 0]);
+
+  const generateChaosLines = () => {
+    const lines: { x1: number; y1: number; x2: number; y2: number; cx: number; cy: number }[] = [];
+    const centerX = 50;
+    const centerY = 50;
+    
+    for (let i = 0; i < chaosApps.length; i++) {
+      for (let j = i + 1; j < chaosApps.length; j++) {
+        const app1 = chaosApps[i];
+        const app2 = chaosApps[j];
+        
+        const x1 = centerX + (app1.x / 4);
+        const y1 = centerY + (app1.y / 3);
+        const x2 = centerX + (app2.x / 4);
+        const y2 = centerY + (app2.y / 3);
+        
+        const cx = (x1 + x2) / 2 + (Math.sin(i * j) * 8);
+        const cy = (y1 + y2) / 2 + (Math.cos(i + j) * 8);
+        
+        lines.push({ x1, y1, x2, y2, cx, cy });
+      }
+    }
+    return lines;
+  };
+
+  const chaosLines = generateChaosLines();
+
+  return (
+    <section id="problem" ref={containerRef} className="relative" style={{ height: "300vh" }}>
+      <div 
+        ref={stickyRef}
+        className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden"
+      >
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="text-center mb-16"
+          className="text-center mb-8 px-6"
+          style={{ opacity: chaosTextOpacity }}
         >
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black mb-6">
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-black mb-4">
             Your business is{" "}
             <span className="text-destructive">drowning</span> in tabs.
           </h2>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
             I build the one that matters.
           </p>
         </motion.div>
 
-        <div className="relative h-[500px] md:h-[600px] flex items-center justify-center">
-          <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }}>
-            {!unified && chaosApps.map((app, i) => (
-              chaosApps.slice(i + 1).map((target, j) => (
-                <motion.path
-                  key={`line-${i}-${j}`}
-                  d={`M ${300 + app.x} ${250 + app.y} Q ${300 + (app.x + target.x) / 2 + Math.random() * 60 - 30} ${250 + (app.y + target.y) / 2 + Math.random() * 60 - 30} ${300 + target.x} ${250 + target.y}`}
-                  className="chaos-line"
-                  initial={{ pathLength: 0, opacity: 0 }}
-                  animate={isInView ? { pathLength: 1, opacity: 0.4 } : {}}
-                  transition={{ duration: 1, delay: i * 0.1 }}
-                />
-              ))
+        <div className="relative w-full max-w-3xl h-[400px] md:h-[500px] flex items-center justify-center">
+          <motion.svg 
+            className="absolute inset-0 w-full h-full pointer-events-none"
+            style={{ opacity: lineOpacity, scale: lineScale }}
+            viewBox="0 0 100 100"
+            preserveAspectRatio="xMidYMid meet"
+          >
+            {chaosLines.map((line, i) => (
+              <path
+                key={`line-${i}`}
+                d={`M ${line.x1} ${line.y1} Q ${line.cx} ${line.cy} ${line.x2} ${line.y2}`}
+                fill="none"
+                stroke="hsl(var(--destructive))"
+                strokeWidth="0.3"
+                strokeLinecap="round"
+                opacity="0.6"
+              />
             ))}
-          </svg>
+          </motion.svg>
 
-          <div className="relative w-full h-full flex items-center justify-center">
-            <AnimatePresence mode="wait">
-              {!unified ? (
-                <motion.div
-                  key="chaos"
-                  className="relative w-full h-full"
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ duration: 0.5 }}
-                >
-                  {chaosApps.map((app, i) => (
-                    <motion.div
-                      key={app.name}
-                      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
-                      initial={{ opacity: 0, scale: 0, x: 0, y: 0 }}
-                      animate={isInView ? {
-                        opacity: 1,
-                        scale: 1,
-                        x: app.x,
-                        y: app.y,
-                        rotate: app.rotate,
-                      } : {}}
-                      transition={{ 
-                        duration: 0.8, 
-                        delay: i * 0.1,
-                        type: "spring",
-                        stiffness: 100
-                      }}
-                    >
-                      <div className="flex flex-col items-center gap-2 p-4 rounded-xl bg-card/80 backdrop-blur-sm border border-border/50 shadow-lg">
-                        <app.icon className="w-8 h-8 md:w-10 md:h-10" style={{ color: app.color }} />
-                        <span className="text-xs text-muted-foreground hidden md:block">{app.name}</span>
-                      </div>
-                    </motion.div>
-                  ))}
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="unified"
-                  className="relative"
-                  initial={{ opacity: 0, scale: 0 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.8, type: "spring", stiffness: 100 }}
-                >
-                  <div className="glow" />
-                  <div className="relative w-40 h-40 md:w-56 md:h-56 rounded-3xl bg-gradient-to-br from-primary via-primary/80 to-primary/60 flex items-center justify-center shadow-2xl">
-                    <Zap className="w-20 h-20 md:w-28 md:h-28 text-primary-foreground" />
-                  </div>
-                  <motion.div 
-                    className="absolute -bottom-8 left-1/2 -translate-x-1/2 whitespace-nowrap"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 }}
-                  >
-                    <span className="text-xl md:text-2xl font-bold text-primary">Unified Dashboard</span>
-                  </motion.div>
-                </motion.div>
-              )}
-            </AnimatePresence>
+          <div className="relative w-full h-full">
+            {chaosApps.map((app, i) => (
+              <ChaosIcon key={app.name} app={app} progress={scrollYProgress} index={i} />
+            ))}
           </div>
 
-          {!unified && (
-            <motion.div
-              className="absolute bottom-8 left-1/2 -translate-x-1/2 text-center"
-              initial={{ opacity: 0 }}
-              animate={isInView ? { opacity: 1 } : {}}
-              transition={{ delay: 1 }}
-            >
-              <p className="text-destructive font-semibold text-lg">$2,400+/mo in scattered subscriptions</p>
-            </motion.div>
-          )}
+          <motion.div
+            className="absolute inset-0 flex items-center justify-center pointer-events-none"
+            style={{ opacity: unifiedOpacity, scale: unifiedScale }}
+          >
+            <motion.div 
+              className="absolute w-80 h-80 rounded-full"
+              style={{ 
+                opacity: glowOpacity,
+                background: "radial-gradient(circle, hsl(var(--primary) / 0.4) 0%, transparent 70%)",
+                filter: "blur(40px)"
+              }}
+            />
+            
+            <div className="relative" data-testid="icon-unified-platform">
+              <div className="w-32 h-32 md:w-44 md:h-44 rounded-3xl bg-gradient-to-br from-primary via-primary/80 to-primary/60 flex items-center justify-center shadow-2xl border border-primary/30">
+                <Zap className="w-16 h-16 md:w-24 md:h-24 text-primary-foreground" />
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="absolute bottom-4 left-1/2 -translate-x-1/2 text-center whitespace-nowrap"
+            style={{ opacity: headlineOpacity, y: headlineY }}
+            data-testid="text-unified-headline"
+          >
+            <h3 className="text-2xl md:text-4xl font-black text-white mb-2">
+              One System. <span className="text-primary">No Chaos.</span>
+            </h3>
+          </motion.div>
         </div>
+
+        <motion.div
+          className="absolute bottom-16 left-1/2 -translate-x-1/2 text-center"
+          style={{ opacity: chaosTextOpacity }}
+        >
+          <p className="text-destructive font-semibold text-sm md:text-base">$2,400+/mo in scattered subscriptions</p>
+        </motion.div>
+
+        <motion.div 
+          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+          style={{ opacity: chaosTextOpacity }}
+        >
+          <motion.div
+            animate={{ y: [0, 8, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            className="text-muted-foreground text-xs flex flex-col items-center gap-1"
+          >
+            <span>Scroll to unify</span>
+            <ChevronDown className="w-4 h-4" />
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
