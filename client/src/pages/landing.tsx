@@ -18,7 +18,14 @@ import {
   ExternalLink,
   Home,
   Mic,
-  Cloud
+  Cloud,
+  Sparkles,
+  MessageSquare,
+  Bot,
+  Check,
+  Send,
+  Lock,
+  Rocket
 } from "lucide-react";
 import { 
   SiNotion, SiZapier, SiAirtable, SiGooglesheets, SiHubspot, SiTrello, SiClickup, SiSlack,
@@ -444,41 +451,117 @@ function BentoGridSection() {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+          {/* Primary Card 1: Infinite Evolution */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0 }}
-            className="bento-card md:col-span-2 p-8 md:p-10"
+            className="bento-card md:col-span-2 md:row-span-2 p-8 md:p-10"
             onMouseMove={handleMouseMove}
             ref={cardRef}
           >
             <div className="flex items-start gap-4 mb-6">
               <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
-                <Layers className="w-7 h-7 text-primary" />
+                <Rocket className="w-7 h-7 text-primary" />
               </div>
             </div>
-            <h3 className="text-2xl md:text-3xl font-bold mb-4">Total Integration</h3>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              We don't connect apps; we <span className="text-foreground font-semibold">replace them</span>. 
-              Your custom platform handles CRM, ERP, payments, automations—everything in one unified system built exactly for your workflow.
+            <h3 className="text-2xl md:text-3xl font-black mb-4 tracking-tight">
+              A tool that grows at the speed of your imagination.
+            </h3>
+            <p className="text-lg text-muted-foreground leading-relaxed mb-8">
+              Stop waiting for roadmap updates from giant SaaS companies. If your business needs a new feature, a custom report, or a fresh automation today, it's built <span className="text-foreground font-semibold">today</span>. Your subscription includes unlimited, immediate development.
+            </p>
+            
+            {/* Feature Request → Live Feature Animation */}
+            <div className="flex items-center gap-4 md:gap-6">
+              <motion.div 
+                className="flex-1 p-4 rounded-xl bg-muted/50 border border-border"
+                initial={{ x: 0 }}
+                whileInView={{ x: 0 }}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <MessageSquare className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Feature Request</span>
+                </div>
+                <p className="text-sm font-medium">"I need a client portal with live updates"</p>
+              </motion.div>
+              
+              <motion.div
+                animate={{ x: [0, 4, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+              >
+                <ArrowRight className="w-6 h-6 text-primary" />
+              </motion.div>
+              
+              <motion.div 
+                className="flex-1 p-4 rounded-xl bg-primary/10 border border-primary/20"
+                initial={{ opacity: 0.5 }}
+                whileInView={{ opacity: 1 }}
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Check className="w-4 h-4 text-primary" />
+                  <span className="text-xs font-medium text-primary uppercase tracking-wider">Live Feature</span>
+                </div>
+                <p className="text-sm font-medium">Client Portal deployed & active</p>
+              </motion.div>
+            </div>
+            
+            <p className="text-sm text-primary font-semibold mt-6">
+              Request → Reality. No extra fees, no tickets, just progress.
             </p>
           </motion.div>
 
+          {/* Primary Card 2: Context-Aware AI */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
+            className="bento-card md:row-span-2 p-8 bg-gradient-to-br from-card via-card to-primary/5"
+            onMouseMove={handleMouseMove}
+          >
+            <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
+              <Bot className="w-6 h-6 text-primary" />
+            </div>
+            <h3 className="text-xl font-black mb-2 tracking-tight">Custom Context AI</h3>
+            <p className="text-sm text-muted-foreground mb-6">
+              Generic AI is for writing emails. Your built-in AI Partner is for <span className="text-foreground font-medium">running a company</span>.
+            </p>
+            
+            {/* Mini Chat Preview */}
+            <div className="space-y-3 font-mono text-xs">
+              <div className="p-3 rounded-lg bg-muted/50 border border-border">
+                <span className="text-muted-foreground">You:</span>
+                <p className="mt-1">"Top 3 clients this month?"</p>
+              </div>
+              <div className="p-3 rounded-lg bg-primary/10 border border-primary/20">
+                <span className="text-primary">AI:</span>
+                <p className="mt-1">Based on your CRM data: [Client A], [Client B], [Client C]</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-2 mt-6 text-xs text-muted-foreground">
+              <Lock className="w-3 h-3" />
+              <span>Your data never leaves your ecosystem</span>
+            </div>
+          </motion.div>
+
+          {/* Supporting Cards */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
             className="bento-card p-8"
             onMouseMove={handleMouseMove}
           >
             <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
-              <RefreshCw className="w-6 h-6 text-primary" />
+              <Layers className="w-6 h-6 text-primary" />
             </div>
-            <h3 className="text-xl font-bold mb-3">Unlimited Updates</h3>
+            <h3 className="text-xl font-bold mb-3">Total Integration</h3>
             <p className="text-muted-foreground">
-              New feature? New automation? Just ask. It's included in your subscription.
+              We don't connect apps; we <span className="text-foreground font-semibold">replace them</span>. One unified system for everything.
             </p>
           </motion.div>
 
@@ -486,7 +569,7 @@ function BentoGridSection() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
+            transition={{ delay: 0.3 }}
             className="bento-card p-8"
             onMouseMove={handleMouseMove}
           >
@@ -499,12 +582,13 @@ function BentoGridSection() {
             </p>
           </motion.div>
 
+          {/* Pricing Card */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.3 }}
-            className="bento-card md:col-span-2 p-8 md:p-10 bg-gradient-to-br from-primary/10 via-card to-card"
+            transition={{ delay: 0.4 }}
+            className="bento-card md:col-span-3 p-8 md:p-10 bg-gradient-to-br from-primary/10 via-card to-card"
             onMouseMove={handleMouseMove}
           >
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
@@ -533,6 +617,281 @@ function BentoGridSection() {
   );
 }
 
+function AIPartnerSection() {
+  return (
+    <section className="py-32 relative overflow-hidden">
+      <div className="max-w-6xl mx-auto px-6">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Content */}
+          <motion.div
+            initial={{ opacity: 0, x: -40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7 }}
+          >
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
+              <Bot className="w-4 h-4" />
+              Built-in AI Partner
+            </span>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
+              Meet the AI that actually <span className="text-primary">knows</span> your business.
+            </h2>
+            <p className="text-xl text-muted-foreground mb-8">
+              Generic AI is for writing emails. Your built-in AI Partner is for <span className="text-foreground font-semibold">running a company</span>.
+            </p>
+            
+            {/* Key Points */}
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Zap className="w-4 h-4 text-primary" />
+                </div>
+                <div>
+                  <h4 className="font-bold mb-1">Zero Generic Responses</h4>
+                  <p className="text-muted-foreground text-sm">It doesn't guess; it calculates based on your actual data.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Layers className="w-4 h-4 text-primary" />
+                </div>
+                <div>
+                  <h4 className="font-bold mb-1">Feature Integration</h4>
+                  <p className="text-muted-foreground text-sm">The AI can trigger actions, like "Send a WhatsApp to all pending leads."</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Lock className="w-4 h-4 text-primary" />
+                </div>
+                <div>
+                  <h4 className="font-bold mb-1">Privacy First</h4>
+                  <p className="text-muted-foreground text-sm">Your data never leaves your private ecosystem.</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+          
+          {/* Chat Interface Mockup */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, delay: 0.2 }}
+            className="relative"
+          >
+            <div className="bento-card p-6 md:p-8">
+              {/* Chat Header */}
+              <div className="flex items-center gap-3 pb-4 border-b border-border mb-6">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                  <Bot className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-sm">AI Partner</h4>
+                  <p className="text-xs text-muted-foreground">Connected to your platform</p>
+                </div>
+                <div className="ml-auto flex items-center gap-1.5">
+                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                  <span className="text-xs text-muted-foreground">Live</span>
+                </div>
+              </div>
+              
+              {/* Chat Messages */}
+              <div className="space-y-4 font-mono text-sm">
+                <motion.div 
+                  className="flex justify-end"
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <div className="p-3 rounded-xl bg-primary text-primary-foreground max-w-[80%]">
+                    "Who are my top 3 real estate clients this month?"
+                  </div>
+                </motion.div>
+                
+                <motion.div 
+                  className="flex justify-start"
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.6 }}
+                >
+                  <div className="p-3 rounded-xl bg-muted/50 border border-border max-w-[85%]">
+                    <p className="mb-2">Based on your integrated Mercado Libre data and internal CRM:</p>
+                    <ol className="list-decimal list-inside space-y-1 text-muted-foreground">
+                      <li><span className="text-foreground font-medium">Inmobiliaria Luna</span> - $84,500</li>
+                      <li><span className="text-foreground font-medium">Propiedades XYZ</span> - $67,200</li>
+                      <li><span className="text-foreground font-medium">Casa Capital</span> - $52,100</li>
+                    </ol>
+                  </div>
+                </motion.div>
+                
+                <motion.div 
+                  className="flex justify-end"
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.8 }}
+                >
+                  <div className="p-3 rounded-xl bg-primary text-primary-foreground max-w-[80%]">
+                    "Send a WhatsApp to all pending leads"
+                  </div>
+                </motion.div>
+                
+                <motion.div 
+                  className="flex justify-start"
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 1.0 }}
+                >
+                  <div className="p-3 rounded-xl bg-muted/50 border border-border">
+                    <div className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-green-500" />
+                      <span>Sent to 23 leads via WhatsApp Business API</span>
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+              
+              {/* Input Area */}
+              <div className="mt-6 flex items-center gap-2 p-3 rounded-xl bg-muted/30 border border-border">
+                <input 
+                  type="text" 
+                  placeholder="Ask your AI Partner..."
+                  className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+                  disabled
+                  data-testid="input-ai-chat"
+                />
+                <Button size="icon" variant="ghost" data-testid="button-ai-send">
+                  <Send className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ComparisonToggleSection() {
+  const [showYourPlatform, setShowYourPlatform] = useState(true);
+  
+  return (
+    <section className="py-24 bg-card/30">
+      <div className="max-w-4xl mx-auto px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-3xl md:text-4xl font-black mb-4">
+            See the difference
+          </h2>
+          <p className="text-muted-foreground">
+            Toggle between approaches to see what you're missing.
+          </p>
+        </motion.div>
+        
+        {/* Toggle */}
+        <div className="flex justify-center mb-10">
+          <div className="inline-flex p-1 rounded-xl bg-muted/50 border border-border">
+            <Button
+              variant={!showYourPlatform ? "secondary" : "ghost"}
+              size="sm"
+              onClick={() => setShowYourPlatform(false)}
+              className={`toggle-elevate ${!showYourPlatform ? 'toggle-elevated' : ''}`}
+              data-testid="button-toggle-standard"
+            >
+              Standard SaaS
+            </Button>
+            <Button
+              variant={showYourPlatform ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setShowYourPlatform(true)}
+              className={`toggle-elevate ${showYourPlatform ? 'toggle-elevated' : ''}`}
+              data-testid="button-toggle-platform"
+            >
+              Your Platform
+            </Button>
+          </div>
+        </div>
+        
+        {/* Comparison Content */}
+        <AnimatePresence mode="wait">
+          {!showYourPlatform ? (
+            <motion.div
+              key="standard"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="grid md:grid-cols-3 gap-6"
+            >
+              <div className="bento-card p-6 opacity-60">
+                <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center mb-4">
+                  <RefreshCw className="w-5 h-5 text-muted-foreground" />
+                </div>
+                <h4 className="font-bold mb-2 text-muted-foreground">Slow Updates</h4>
+                <p className="text-sm text-muted-foreground">Wait months for features on someone else's roadmap.</p>
+              </div>
+              <div className="bento-card p-6 opacity-60">
+                <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center mb-4">
+                  <Layers className="w-5 h-5 text-muted-foreground" />
+                </div>
+                <h4 className="font-bold mb-2 text-muted-foreground">Static Tools</h4>
+                <p className="text-sm text-muted-foreground">One-size-fits-all solutions that don't adapt to you.</p>
+              </div>
+              <div className="bento-card p-6 opacity-60">
+                <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center mb-4">
+                  <Bot className="w-5 h-5 text-muted-foreground" />
+                </div>
+                <h4 className="font-bold mb-2 text-muted-foreground">Generic AI</h4>
+                <p className="text-sm text-muted-foreground">AI that knows nothing about your specific business.</p>
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="platform"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="grid md:grid-cols-3 gap-6"
+            >
+              <div className="bento-card p-6 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                  <Rocket className="w-5 h-5 text-primary" />
+                </div>
+                <h4 className="font-bold mb-2">Instant Updates</h4>
+                <p className="text-sm text-muted-foreground">Request today, deployed today. No waiting.</p>
+              </div>
+              <div className="bento-card p-6 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                  <Sparkles className="w-5 h-5 text-primary" />
+                </div>
+                <h4 className="font-bold mb-2">Living Platform</h4>
+                <p className="text-sm text-muted-foreground">Evolves continuously based on your exact needs.</p>
+              </div>
+              <div className="bento-card p-6 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                  <Bot className="w-5 h-5 text-primary" />
+                </div>
+                <h4 className="font-bold mb-2">Integrated AI</h4>
+                <p className="text-sm text-muted-foreground">AI trained on your data, processes, and context.</p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </section>
+  );
+}
+
 function ProofSection() {
   const portfolioItems = [
     {
@@ -541,6 +900,7 @@ function ProofSection() {
       description: "Unified investment tracking, client portal, and automated reporting for a wealth management firm.",
       icon: DollarSign,
       gradient: "from-emerald-500/20 to-emerald-500/5",
+      evolutionTag: "Evolved with 100+ custom features since launch",
     },
     {
       name: "EventGrowth.app",
@@ -548,6 +908,7 @@ function ProofSection() {
       description: "End-to-end event management with ticketing, CRM, marketing automation, and analytics.",
       icon: TrendingUp,
       gradient: "from-blue-500/20 to-blue-500/5",
+      evolutionTag: "Evolved with 100+ custom features since launch",
     },
     {
       name: "AgencyBoost.app",
@@ -555,6 +916,7 @@ function ProofSection() {
       description: "Project management, time tracking, invoicing, and client communication in one platform.",
       icon: Briefcase,
       gradient: "from-purple-500/20 to-purple-500/5",
+      evolutionTag: "Evolved with 100+ custom features since launch",
     },
   ];
 
@@ -590,7 +952,7 @@ function ProofSection() {
               className="portfolio-card group cursor-pointer"
               data-testid={`card-portfolio-${item.name.toLowerCase().replace('.', '-')}`}
             >
-              <div className={`h-48 bg-gradient-to-br ${item.gradient} flex items-center justify-center`}>
+              <div className={`h-48 bg-gradient-to-br ${item.gradient} flex items-center justify-center relative`}>
                 <div className="w-20 h-20 rounded-2xl bg-background/50 backdrop-blur flex items-center justify-center">
                   <item.icon className="w-10 h-10 text-foreground" />
                 </div>
@@ -601,7 +963,14 @@ function ProofSection() {
                   <ExternalLink className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
                 <h3 className="text-xl font-bold mb-2">{item.name}</h3>
-                <p className="text-muted-foreground text-sm">{item.description}</p>
+                <p className="text-muted-foreground text-sm mb-3">{item.description}</p>
+                <span 
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-medium"
+                  data-testid={`tag-evolution-${item.name.toLowerCase().replace('.', '-')}`}
+                >
+                  <Sparkles className="w-3 h-3" />
+                  {item.evolutionTag}
+                </span>
               </div>
             </motion.div>
           ))}
@@ -756,6 +1125,8 @@ export default function LandingPage() {
       <HeroSection />
       <SpaghettiChaosSection />
       <BentoGridSection />
+      <AIPartnerSection />
+      <ComparisonToggleSection />
       <ProofSection />
       <ClientsSection />
       <Footer />

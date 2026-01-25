@@ -1,0 +1,44 @@
+The "Living Platform" Refinement Prompt
+Goal: Update the features and value proposition sections to emphasize "Infinite Scalability" and "Context-Aware Intelligence."
+
+1. The "Infinite Evolution" Section (Replacing Unlimited Updates):
+
+Headline: "A tool that grows at the speed of your imagination."
+
+Copy: "Stop waiting for roadmap updates from giant SaaS companies. If your business needs a new feature, a custom report, or a fresh automation today, it’s built today. Your subscription includes unlimited, immediate development."
+
+Visual Element: A "Feature Request" card on the left side of the screen that transforms into a "Live Feature" on the right with a fast-loading animation.
+
+The Hook: "Request -> Reality. No extra fees, no tickets, just progress."
+
+2. The "Context-Aware AI Partner" Section (New Section):
+
+Headline: "Meet the AI that actually knows your business."
+
+Sub-headline: "Generic AI is for writing emails. Your built-in AI Partner is for running a company."
+
+Visual Element: A minimalist chat interface mockup. Inside the chat bubbles, show the AI doing platform-specific tasks:
+
+User: "Who are my top 3 real estate clients this month?"
+
+AI: "Based on your integrated Mercado Libre data and internal CRM, it's [Client A], [Client B], and [Client C]."
+
+Key Emphasis Points:
+
+Zero Generic Responses: It doesn't guess; it calculates based on your data.
+
+Feature Integration: The AI can trigger actions, like "Send a WhatsApp to all pending leads."
+
+Privacy First: Your data never leaves your private ecosystem.
+
+3. UI/UX "Premium" Improvements:
+
+Bento Grid Update: Create two "Primary Cards" that are larger than the others. One for "Unlimited Dev-on-Demand" and one for "Custom Context AI."
+
+Typography: Use a "Monospace" font for the AI section to give it a high-tech, precise feel. Use a "Display" serif or a very clean bold Sans-Serif for the "Infinite Evolution" section.
+
+Interactive Demo: Add a small interactive "Toggle" that shows a "Standard SaaS" (Slow, Static, Generic AI) vs. "Your Platform" (Instant Updates, Integrated AI).
+
+4. Portfolio Integration:
+
+Ensure that for Wealthfit, EventGrowth, and AgencyBoost, you add a small tag: "Evolved with 100+ custom features since launch" to prove the "Unlimited Updates" claim.
