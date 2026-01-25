@@ -24,6 +24,7 @@ import {
   SiWhatsapp, SiAsana, SiGooglemeet, SiZoom, SiSap, SiTwilio, SiSalesforce, SiMailchimp
 } from "react-icons/si";
 import { FaShoppingCart } from "react-icons/fa";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 40 },
@@ -84,7 +85,7 @@ function Navbar() {
           </div>
           <span className="text-lg font-bold tracking-tight hidden sm:block">
             <span className="text-primary">System</span>
-            <span className="text-white">Forge</span>
+            <span className="text-foreground">Forge</span>
           </span>
         </a>
         
@@ -126,7 +127,7 @@ function Navbar() {
                         <item.icon className="w-4 h-4 text-primary" />
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-white">{item.name}</p>
+                        <p className="text-sm font-medium text-foreground">{item.name}</p>
                         <p className="text-xs text-muted-foreground">{item.desc}</p>
                       </div>
                     </a>
@@ -144,14 +145,17 @@ function Navbar() {
           </a>
         </div>
         
-        <Button 
-          size="sm" 
-          className="font-semibold shimmer-btn glow-border"
-          data-testid="button-cta-nav"
-        >
-          Join Waitlist
-          <ArrowRight className="w-4 h-4 ml-1" />
-        </Button>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <Button 
+            size="sm" 
+            className="font-semibold shimmer-btn glow-border"
+            data-testid="button-cta-nav"
+          >
+            Join Waitlist
+            <ArrowRight className="w-4 h-4 ml-1" />
+          </Button>
+        </div>
       </div>
     </motion.nav>
   );
@@ -215,7 +219,7 @@ function ChaosIcon({
   progress, 
   index 
 }: { 
-  app: { icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>; name: string; color: string; x: number; y: number; rotate: number; scale: number; zIndex: number; iconSize: string }; 
+  app: { icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>; name: string; color: string; x: number; y: number; rotate: number; scale: number; zIndex: number; iconSize: string; useThemeColor?: boolean }; 
   progress: any; 
   index: number 
 }) {
@@ -251,7 +255,10 @@ function ChaosIcon({
       }}
     >
       <div className="flex flex-col items-center gap-1">
-        <app.icon className={app.iconSize} style={{ color: app.color, filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))" }} />
+        <app.icon 
+          className={`${app.iconSize} ${app.useThemeColor ? 'text-foreground' : ''}`} 
+          style={{ color: app.useThemeColor ? undefined : app.color, filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))" }} 
+        />
         <span className="text-[8px] md:text-[10px] text-muted-foreground font-medium whitespace-nowrap">{app.name}</span>
       </div>
     </motion.div>
@@ -269,7 +276,7 @@ function SpaghettiChaosSection() {
 
   const chaosApps = [
     // Row 1 - Top far
-    { icon: SiNotion, name: "Notion", color: "#FFFFFF", x: -220, y: -160, rotate: -8, scale: 1.0, zIndex: 5, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { icon: SiNotion, name: "Notion", color: "", x: -220, y: -160, rotate: -8, scale: 1.0, zIndex: 5, iconSize: "w-8 h-8 md:w-10 md:h-10", useThemeColor: true },
     { icon: SiZapier, name: "Zapier", color: "#FF4A00", x: 0, y: -180, rotate: 5, scale: 1.0, zIndex: 6, iconSize: "w-8 h-8 md:w-10 md:h-10" },
     { icon: SiAirtable, name: "Airtable", color: "#18BFFF", x: 220, y: -160, rotate: 12, scale: 1.0, zIndex: 4, iconSize: "w-8 h-8 md:w-10 md:h-10" },
     // Row 2 - Upper middle
@@ -353,7 +360,7 @@ function SpaghettiChaosSection() {
             style={{ opacity: headlineOpacity, y: headlineY }}
             data-testid="text-unified-headline"
           >
-            <h3 className="text-2xl md:text-4xl font-black text-white mb-2">
+            <h3 className="text-2xl md:text-4xl font-black text-foreground mb-2">
               One System. <span className="text-primary">No Chaos.</span>
             </h3>
           </motion.div>
@@ -431,7 +438,7 @@ function BentoGridSection() {
             </div>
             <h3 className="text-2xl md:text-3xl font-bold mb-4">Total Integration</h3>
             <p className="text-lg text-muted-foreground leading-relaxed">
-              We don't connect apps; we <span className="text-white font-semibold">replace them</span>. 
+              We don't connect apps; we <span className="text-foreground font-semibold">replace them</span>. 
               Your custom platform handles CRM, ERP, payments, automations—everything in one unified system built exactly for your workflow.
             </p>
           </motion.div>
@@ -563,7 +570,7 @@ function ProofSection() {
             >
               <div className={`h-48 bg-gradient-to-br ${item.gradient} flex items-center justify-center`}>
                 <div className="w-20 h-20 rounded-2xl bg-background/50 backdrop-blur flex items-center justify-center">
-                  <item.icon className="w-10 h-10 text-white" />
+                  <item.icon className="w-10 h-10 text-foreground" />
                 </div>
               </div>
               <div className="p-6">
@@ -693,7 +700,7 @@ function Footer() {
                 </div>
                 <span className="text-2xl font-bold tracking-tight">
                   <span className="text-primary">System</span>
-                  <span className="text-white">Forge</span>
+                  <span className="text-foreground">Forge</span>
                 </span>
               </div>
               <p className="text-muted-foreground max-w-sm text-lg">
