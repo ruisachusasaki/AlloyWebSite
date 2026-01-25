@@ -561,7 +561,7 @@ function BentoGridSection() {
             </div>
             <h3 className="text-xl font-bold mb-3">Total Integration</h3>
             <p className="text-muted-foreground">
-              We don't connect apps; we <span className="text-foreground font-semibold">replace them</span>. One unified system for everything.
+              Connect your existing tools or <span className="text-foreground font-semibold">replace them entirely</span>. Your platform, your rules.
             </p>
           </motion.div>
 
