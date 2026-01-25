@@ -28,7 +28,7 @@ import {
 import { FaShoppingCart } from "react-icons/fa";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import darwinLogo from "@assets/darwin-ai-logo_1769368824707.png";
-import meliLogo from "@assets/image_1769369568141.png";
+import meliLogo from "@assets/image_1769370076739.png";
 import tokkoLogo from "@assets/tokko_broker_logo_(1)_1_1769369724733.png";
 
 const fadeInUp = {
