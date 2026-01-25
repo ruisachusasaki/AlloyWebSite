@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -209,19 +209,19 @@ function ChaosIcon({
   progress, 
   index 
 }: { 
-  app: { icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>; name: string; color: string; x: number; y: number; rotate: number; scale: number }; 
+  app: { icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>; name: string; color: string; x: number; y: number; rotate: number; scale: number; zIndex: number; iconSize: string }; 
   progress: any; 
   index: number 
 }) {
-  const x = useTransform(progress, [0, 0.7, 1], [app.x, app.x * 0.3, 0]);
-  const y = useTransform(progress, [0, 0.7, 1], [app.y, app.y * 0.3, 0]);
+  const x = useTransform(progress, [0, 0.5, 0.85, 1], [app.x, app.x * 0.6, app.x * 0.1, 0]);
+  const y = useTransform(progress, [0, 0.5, 0.85, 1], [app.y, app.y * 0.6, app.y * 0.1, 0]);
   const rotate = useTransform(progress, [0, 0.7, 1], [app.rotate, app.rotate * 0.3, 0]);
-  const scale = useTransform(progress, [0, 0.7, 0.9, 1], [app.scale, app.scale, 0.8, 0]);
+  const scale = useTransform(progress, [0, 0.7, 0.9, 1], [app.scale, app.scale, 0.7, 0]);
   const opacity = useTransform(progress, [0, 0.8, 0.95, 1], [1, 1, 0.5, 0]);
 
   return (
     <motion.div
-      className="absolute left-1/2 top-1/2"
+      className="absolute left-1/2 top-1/2 cursor-grab active:cursor-grabbing"
       style={{
         x,
         y,
@@ -230,15 +230,22 @@ function ChaosIcon({
         opacity,
         translateX: "-50%",
         translateY: "-50%",
+        zIndex: app.zIndex,
       }}
+      drag
+      dragConstraints={{ left: -50, right: 50, top: -50, bottom: 50 }}
+      dragElastic={0.3}
+      whileHover={{ scale: app.scale * 1.15, zIndex: 100 }}
+      whileTap={{ scale: app.scale * 0.95 }}
       transition={{ 
         type: "spring",
-        stiffness: 100,
-        damping: 30
+        stiffness: 400,
+        damping: 25,
+        mass: 0.8
       }}
     >
       <div className="flex flex-col items-center gap-2 p-3 md:p-4 rounded-xl bg-card/90 backdrop-blur-sm border border-border/50 shadow-xl">
-        <app.icon className="w-6 h-6 md:w-8 md:h-8" style={{ color: app.color }} />
+        <app.icon className={app.iconSize} style={{ color: app.color }} />
         <span className="text-[10px] md:text-xs text-muted-foreground font-medium">{app.name}</span>
       </div>
     </motion.div>
@@ -255,14 +262,14 @@ function SpaghettiChaosSection() {
   });
 
   const chaosApps = [
-    { icon: SiAirtable, name: "Airtable", color: "#18BFFF", x: -160, y: -100, rotate: -12, scale: 1.1 },
-    { icon: SiHubspot, name: "HubSpot", color: "#FF7A59", x: 140, y: -80, rotate: 18, scale: 0.95 },
-    { icon: SiZapier, name: "Zapier", color: "#FF4A00", x: -100, y: 70, rotate: -8, scale: 1.0 },
-    { icon: SiSlack, name: "Slack", color: "#4A154B", x: 160, y: 50, rotate: 22, scale: 1.05 },
-    { icon: SiGooglesheets, name: "Sheets", color: "#0F9D58", x: 0, y: -120, rotate: 5, scale: 0.9 },
-    { icon: SiNotion, name: "Notion", color: "#FFFFFF", x: -180, y: 0, rotate: -18, scale: 1.0 },
-    { icon: SiAsana, name: "Asana", color: "#F06A6A", x: 180, y: -30, rotate: 12, scale: 0.95 },
-    { icon: SiTrello, name: "Trello", color: "#0079BF", x: 50, y: 100, rotate: -5, scale: 1.1 },
+    { icon: SiAirtable, name: "Airtable", color: "#18BFFF", x: -155, y: -95, rotate: -15, scale: 1.0, zIndex: 8, iconSize: "w-6 h-6 md:w-8 md:h-8" },
+    { icon: SiHubspot, name: "HubSpot", color: "#FF7A59", x: 135, y: -85, rotate: 22, scale: 0.85, zIndex: 3, iconSize: "w-5 h-5 md:w-7 md:h-7" },
+    { icon: SiZapier, name: "Zapier", color: "#FF4A00", x: -95, y: 65, rotate: -12, scale: 0.9, zIndex: 6, iconSize: "w-5 h-5 md:w-6 md:h-6" },
+    { icon: SiSlack, name: "Slack", color: "#4A154B", x: 165, y: 55, rotate: 28, scale: 1.25, zIndex: 10, iconSize: "w-8 h-8 md:w-11 md:h-11" },
+    { icon: SiGooglesheets, name: "Sheets", color: "#0F9D58", x: 5, y: -125, rotate: 8, scale: 0.75, zIndex: 2, iconSize: "w-4 h-4 md:w-6 md:h-6" },
+    { icon: SiNotion, name: "Notion", color: "#FFFFFF", x: -175, y: 5, rotate: -22, scale: 0.95, zIndex: 5, iconSize: "w-6 h-6 md:w-8 md:h-8" },
+    { icon: SiAsana, name: "Asana", color: "#F06A6A", x: 175, y: -35, rotate: 15, scale: 0.8, zIndex: 4, iconSize: "w-5 h-5 md:w-7 md:h-7" },
+    { icon: SiTrello, name: "Trello", color: "#0079BF", x: 55, y: 105, rotate: -8, scale: 1.15, zIndex: 9, iconSize: "w-7 h-7 md:w-10 md:h-10" },
   ];
 
   const lineOpacity = useTransform(scrollYProgress, [0, 0.5, 0.8], [0.5, 0.3, 0]);
@@ -277,7 +284,7 @@ function SpaghettiChaosSection() {
   const chaosTextOpacity = useTransform(scrollYProgress, [0, 0.3, 0.6], [1, 1, 0]);
 
   const generateChaosLines = () => {
-    const lines: { x1: number; y1: number; x2: number; y2: number; cx: number; cy: number }[] = [];
+    const lines: { x1: number; y1: number; x2: number; y2: number; cx1: number; cy1: number; cx2: number; cy2: number; strokeWidth: number }[] = [];
     const centerX = 50;
     const centerY = 50;
     
@@ -291,16 +298,25 @@ function SpaghettiChaosSection() {
         const x2 = centerX + (app2.x / 4);
         const y2 = centerY + (app2.y / 3);
         
-        const cx = (x1 + x2) / 2 + (Math.sin(i * j) * 8);
-        const cy = (y1 + y2) / 2 + (Math.cos(i + j) * 8);
+        const seed1 = Math.sin(i * 7 + j * 13) * 20;
+        const seed2 = Math.cos(i * 11 + j * 5) * 18;
+        const seed3 = Math.sin(i + j * 3) * 15;
+        const seed4 = Math.cos(i * 2 + j) * 22;
         
-        lines.push({ x1, y1, x2, y2, cx, cy });
+        const cx1 = x1 + (x2 - x1) * 0.25 + seed1;
+        const cy1 = y1 + (y2 - y1) * 0.25 + seed2;
+        const cx2 = x1 + (x2 - x1) * 0.75 + seed3;
+        const cy2 = y1 + (y2 - y1) * 0.75 + seed4;
+        
+        const strokeWidth = 0.2 + Math.abs(Math.sin(i * j)) * 0.3;
+        
+        lines.push({ x1, y1, x2, y2, cx1, cy1, cx2, cy2, strokeWidth });
       }
     }
     return lines;
   };
 
-  const chaosLines = generateChaosLines();
+  const chaosLines = useMemo(() => generateChaosLines(), []);
 
   return (
     <section id="problem" ref={containerRef} className="relative" style={{ height: "300vh" }}>
@@ -331,12 +347,12 @@ function SpaghettiChaosSection() {
             {chaosLines.map((line, i) => (
               <path
                 key={`line-${i}`}
-                d={`M ${line.x1} ${line.y1} Q ${line.cx} ${line.cy} ${line.x2} ${line.y2}`}
+                d={`M ${line.x1} ${line.y1} C ${line.cx1} ${line.cy1}, ${line.cx2} ${line.cy2}, ${line.x2} ${line.y2}`}
                 fill="none"
                 stroke="hsl(var(--destructive))"
-                strokeWidth="0.3"
+                strokeWidth={line.strokeWidth}
                 strokeLinecap="round"
-                opacity="0.6"
+                opacity="0.5"
               />
             ))}
           </motion.svg>
