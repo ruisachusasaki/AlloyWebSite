@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,9 +15,12 @@ import {
   Building2,
   TrendingUp,
   Briefcase,
-  ExternalLink
+  ExternalLink,
+  Home,
+  Mic
 } from "lucide-react";
-import { SiAirtable, SiHubspot, SiZapier, SiSlack, SiGooglesheets, SiNotion, SiAsana, SiTrello } from "react-icons/si";
+import { SiWhatsapp, SiTwilio, SiSap, SiSalesforce, SiZoom, SiGooglemeet } from "react-icons/si";
+import { FaShoppingCart, FaMailchimp } from "react-icons/fa";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 40 },
@@ -262,19 +265,18 @@ function SpaghettiChaosSection() {
   });
 
   const chaosApps = [
-    { icon: SiAirtable, name: "Airtable", color: "#18BFFF", x: -155, y: -95, rotate: -15, scale: 1.0, zIndex: 8, iconSize: "w-6 h-6 md:w-8 md:h-8" },
-    { icon: SiHubspot, name: "HubSpot", color: "#FF7A59", x: 135, y: -85, rotate: 22, scale: 0.85, zIndex: 3, iconSize: "w-5 h-5 md:w-7 md:h-7" },
-    { icon: SiZapier, name: "Zapier", color: "#FF4A00", x: -95, y: 65, rotate: -12, scale: 0.9, zIndex: 6, iconSize: "w-5 h-5 md:w-6 md:h-6" },
-    { icon: SiSlack, name: "Slack", color: "#4A154B", x: 165, y: 55, rotate: 28, scale: 1.25, zIndex: 10, iconSize: "w-8 h-8 md:w-11 md:h-11" },
-    { icon: SiGooglesheets, name: "Sheets", color: "#0F9D58", x: 5, y: -125, rotate: 8, scale: 0.75, zIndex: 2, iconSize: "w-4 h-4 md:w-6 md:h-6" },
-    { icon: SiNotion, name: "Notion", color: "#FFFFFF", x: -175, y: 5, rotate: -22, scale: 0.95, zIndex: 5, iconSize: "w-6 h-6 md:w-8 md:h-8" },
-    { icon: SiAsana, name: "Asana", color: "#F06A6A", x: 175, y: -35, rotate: 15, scale: 0.8, zIndex: 4, iconSize: "w-5 h-5 md:w-7 md:h-7" },
-    { icon: SiTrello, name: "Trello", color: "#0079BF", x: 55, y: 105, rotate: -8, scale: 1.15, zIndex: 9, iconSize: "w-7 h-7 md:w-10 md:h-10" },
+    { icon: SiWhatsapp, name: "WhatsApp", color: "#25D366", x: -155, y: -95, rotate: -15, scale: 1.2, zIndex: 10, iconSize: "w-8 h-8 md:w-11 md:h-11" },
+    { icon: Home, name: "Tokko", color: "#FF6B35", x: 135, y: -85, rotate: 22, scale: 0.85, zIndex: 3, iconSize: "w-5 h-5 md:w-7 md:h-7" },
+    { icon: FaShoppingCart, name: "MercadoLibre", color: "#FFE600", x: -95, y: 65, rotate: -12, scale: 1.0, zIndex: 6, iconSize: "w-6 h-6 md:w-8 md:h-8" },
+    { icon: SiTwilio, name: "Twilio", color: "#F22F46", x: 165, y: 55, rotate: 28, scale: 0.9, zIndex: 7, iconSize: "w-6 h-6 md:w-8 md:h-8" },
+    { icon: SiSap, name: "SAP", color: "#0FAAFF", x: 5, y: -125, rotate: 8, scale: 0.75, zIndex: 2, iconSize: "w-4 h-4 md:w-6 md:h-6" },
+    { icon: SiSalesforce, name: "Salesforce", color: "#00A1E0", x: -175, y: 5, rotate: -22, scale: 0.95, zIndex: 5, iconSize: "w-6 h-6 md:w-8 md:h-8" },
+    { icon: FaMailchimp, name: "ActiveCamp", color: "#356AE6", x: 175, y: -35, rotate: 15, scale: 0.8, zIndex: 4, iconSize: "w-5 h-5 md:w-7 md:h-7" },
+    { icon: SiZoom, name: "Zoom", color: "#2D8CFF", x: 55, y: 105, rotate: -8, scale: 1.1, zIndex: 9, iconSize: "w-7 h-7 md:w-10 md:h-10" },
+    { icon: SiGooglemeet, name: "Google Meet", color: "#00897B", x: -50, y: 115, rotate: 10, scale: 0.85, zIndex: 8, iconSize: "w-5 h-5 md:w-7 md:h-7" },
+    { icon: Mic, name: "Fathom", color: "#8B5CF6", x: 85, y: -110, rotate: -18, scale: 0.9, zIndex: 6, iconSize: "w-5 h-5 md:w-7 md:h-7" },
   ];
 
-  const lineOpacity = useTransform(scrollYProgress, [0, 0.5, 0.8], [0.5, 0.3, 0]);
-  const lineScale = useTransform(scrollYProgress, [0, 0.5, 0.8], [1, 0.6, 0]);
-  
   const unifiedOpacity = useTransform(scrollYProgress, [0.75, 0.9, 1], [0, 0.5, 1]);
   const unifiedScale = useTransform(scrollYProgress, [0.75, 0.9, 1], [0.5, 0.8, 1]);
   const glowOpacity = useTransform(scrollYProgress, [0.85, 1], [0, 1]);
@@ -282,41 +284,6 @@ function SpaghettiChaosSection() {
   const headlineY = useTransform(scrollYProgress, [0.9, 1], [30, 0]);
   
   const chaosTextOpacity = useTransform(scrollYProgress, [0, 0.3, 0.6], [1, 1, 0]);
-
-  const generateChaosLines = () => {
-    const lines: { x1: number; y1: number; x2: number; y2: number; cx1: number; cy1: number; cx2: number; cy2: number; strokeWidth: number }[] = [];
-    const centerX = 50;
-    const centerY = 50;
-    
-    for (let i = 0; i < chaosApps.length; i++) {
-      for (let j = i + 1; j < chaosApps.length; j++) {
-        const app1 = chaosApps[i];
-        const app2 = chaosApps[j];
-        
-        const x1 = centerX + (app1.x / 4);
-        const y1 = centerY + (app1.y / 3);
-        const x2 = centerX + (app2.x / 4);
-        const y2 = centerY + (app2.y / 3);
-        
-        const seed1 = Math.sin(i * 7 + j * 13) * 20;
-        const seed2 = Math.cos(i * 11 + j * 5) * 18;
-        const seed3 = Math.sin(i + j * 3) * 15;
-        const seed4 = Math.cos(i * 2 + j) * 22;
-        
-        const cx1 = x1 + (x2 - x1) * 0.25 + seed1;
-        const cy1 = y1 + (y2 - y1) * 0.25 + seed2;
-        const cx2 = x1 + (x2 - x1) * 0.75 + seed3;
-        const cy2 = y1 + (y2 - y1) * 0.75 + seed4;
-        
-        const strokeWidth = 0.2 + Math.abs(Math.sin(i * j)) * 0.3;
-        
-        lines.push({ x1, y1, x2, y2, cx1, cy1, cx2, cy2, strokeWidth });
-      }
-    }
-    return lines;
-  };
-
-  const chaosLines = useMemo(() => generateChaosLines(), []);
 
   return (
     <section id="problem" ref={containerRef} className="relative" style={{ height: "300vh" }}>
@@ -338,25 +305,6 @@ function SpaghettiChaosSection() {
         </motion.div>
 
         <div className="relative w-full max-w-3xl h-[400px] md:h-[500px] flex items-center justify-center">
-          <motion.svg 
-            className="absolute inset-0 w-full h-full pointer-events-none"
-            style={{ opacity: lineOpacity, scale: lineScale }}
-            viewBox="0 0 100 100"
-            preserveAspectRatio="xMidYMid meet"
-          >
-            {chaosLines.map((line, i) => (
-              <path
-                key={`line-${i}`}
-                d={`M ${line.x1} ${line.y1} C ${line.cx1} ${line.cy1}, ${line.cx2} ${line.cy2}, ${line.x2} ${line.y2}`}
-                fill="none"
-                stroke="hsl(var(--destructive))"
-                strokeWidth={line.strokeWidth}
-                strokeLinecap="round"
-                opacity="0.5"
-              />
-            ))}
-          </motion.svg>
-
           <div className="relative w-full h-full">
             {chaosApps.map((app, i) => (
               <ChaosIcon key={app.name} app={app} progress={scrollYProgress} index={i} />
