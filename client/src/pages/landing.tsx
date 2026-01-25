@@ -18,8 +18,7 @@ import {
   ExternalLink,
   Home,
   Mic,
-  Cloud,
-  Bot
+  Cloud
 } from "lucide-react";
 import { 
   SiNotion, SiZapier, SiAirtable, SiGooglesheets, SiHubspot, SiTrello, SiClickup, SiSlack,
@@ -28,6 +27,7 @@ import {
 } from "react-icons/si";
 import { FaShoppingCart } from "react-icons/fa";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import darwinLogo from "@assets/darwin-ai-logo_1769368824707.png";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 40 },
@@ -222,7 +222,7 @@ function ChaosIcon({
   progress, 
   index 
 }: { 
-  app: { icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>; name: string; color: string; x: number; y: number; rotate: number; scale: number; zIndex: number; iconSize: string; useThemeColor?: boolean }; 
+  app: { icon?: React.ComponentType<{ className?: string; style?: React.CSSProperties }>; imageSrc?: string; name: string; color: string; x: number; y: number; rotate: number; scale: number; zIndex: number; iconSize: string; useThemeColor?: boolean }; 
   progress: any; 
   index: number 
 }) {
@@ -258,10 +258,19 @@ function ChaosIcon({
       }}
     >
       <div className="flex flex-col items-center gap-1">
-        <app.icon 
-          className={`${app.iconSize} ${app.useThemeColor ? 'text-foreground' : ''}`} 
-          style={{ color: app.useThemeColor ? undefined : app.color, filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))" }} 
-        />
+        {app.imageSrc ? (
+          <img 
+            src={app.imageSrc} 
+            alt={app.name}
+            className={app.iconSize}
+            style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))" }} 
+          />
+        ) : app.icon ? (
+          <app.icon 
+            className={`${app.iconSize} ${app.useThemeColor ? 'text-foreground' : ''}`} 
+            style={{ color: app.useThemeColor ? undefined : app.color, filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))" }} 
+          />
+        ) : null}
         <span className="text-[8px] md:text-[10px] text-muted-foreground font-medium whitespace-nowrap">{app.name}</span>
       </div>
     </motion.div>
@@ -304,7 +313,7 @@ function SpaghettiChaosSection() {
     // Row 5 - Bottom far (5 icons)
     { icon: SiTwilio, name: "Twilio", color: "#F22F46", x: -300, y: 180, rotate: -6, scale: 1.0, zIndex: 16, iconSize: "w-8 h-8 md:w-10 md:h-10" },
     { icon: SiSalesforce, name: "Salesforce", color: "#00A1E0", x: -100, y: 190, rotate: 10, scale: 1.0, zIndex: 17, iconSize: "w-8 h-8 md:w-10 md:h-10" },
-    { icon: Bot, name: "Darwin", color: "#6366F1", x: 100, y: 190, rotate: -8, scale: 1.0, zIndex: 24, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { imageSrc: darwinLogo, name: "Darwin", color: "#6366F1", x: 100, y: 190, rotate: -8, scale: 1.0, zIndex: 24, iconSize: "w-8 h-8 md:w-10 md:h-10" },
     { icon: SiMailchimp, name: "Mailchimp", color: "#FFE01B", x: 300, y: 180, rotate: -15, scale: 1.0, zIndex: 18, iconSize: "w-8 h-8 md:w-10 md:h-10" },
     { icon: Mic, name: "Fathom", color: "#8B5CF6", x: 200, y: -50, rotate: 5, scale: 1.0, zIndex: 19, iconSize: "w-8 h-8 md:w-10 md:h-10" },
   ];
