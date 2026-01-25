@@ -1,0 +1,40 @@
+The "Chaos-to-Unity" Scroll Animation Prompt
+Objective: Build a high-performance, scroll-linked animation component using React and Framer Motion that visualizes the transition from "SaaS Chaos" to a "Unified System."
+
+1. The Asset Array: Create a constant array of objects containing the logos/icons for: Notion, Zapier, Airtable, Google Sheets, HubSpot, Trello, Clickup, Slack, WhatsApp, Tokko Broker, Mercado Libre, and Asana. * Technical Note: Use high-quality SVGs or icons from simple-icons via a CDN.
+
+2. State 1: The "Chaos" (Initial View):
+
+Positioning: Use absolute positioning to scatter these icons randomly across a container (height: 100vh). Apply random rotation (e.g., -20deg to 20deg) and random scale (0.8 to 1.2) to each.
+
+The Web: Use an SVG layer in the background to draw "messy," tangled lines (strokes) connecting these icons. The lines should look like a disorganized spiderweb, overlapping and jagged.
+
+3. The Scroll Logic (Framer Motion):
+
+Use the useScroll hook to track the vertical scroll progress of this specific section.
+
+Use useTransform to map the scroll progress (0 to 1) to the following properties for every icon:
+
+X and Y Coordinates: Transition from their random "Chaos" positions to (0, 0) (the center of the screen).
+
+Rotation: Transition from random angles to 0deg.
+
+Opacity: As they reach the center, the individual icons should slightly fade out or "merge."
+
+The Web Transition: The messy SVG lines should shrink in length and opacity as the scroll progresses, eventually disappearing when the icons unify.
+
+4. State 2: The "Unified" (End View):
+
+Once the scroll reaches 100%, all icons should be stacked/merged at the center.
+
+At the moment of impact (center), trigger a "Pulse" effect or a "Glow" behind a new, larger icon that represents "My Unified Platform" (use a clean, geometric abstract icon).
+
+Text Overlay: As they unify, reveal a large, bold headline: "One System. No Chaos."
+
+5. Performance & Interaction:
+
+Ensure the animation is bi-directional. Scrolling back up must perfectly reverse the icons back into their original "Chaos" positions and regenerate the messy web.
+
+Use stiffness: 100 and damping: 30 in the transition settings to ensure the movement feels "heavy" and premium, not "floaty."
+
+Ensure the container is sticky (position: sticky) so the user stays in the animation frame while scrolling through the transition.
