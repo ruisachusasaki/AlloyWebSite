@@ -205,8 +205,8 @@ function HeroSection() {
 }
 
 function SpaghettiChaosSection() {
-  const sectionRef = useRef(null);
-  const isInView = useInView(sectionRef, { once: true, margin: "-100px" });
+  const sectionRef = useRef<HTMLElement>(null);
+  const isInView = useInView(sectionRef, { once: false, margin: "-100px" });
   const [unified, setUnified] = useState(false);
   
   const chaosApps = [
@@ -221,11 +221,28 @@ function SpaghettiChaosSection() {
   ];
 
   useEffect(() => {
-    if (isInView) {
-      const timer = setTimeout(() => setUnified(true), 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [isInView]);
+    const handleScroll = () => {
+      if (!sectionRef.current) return;
+      
+      const rect = sectionRef.current.getBoundingClientRect();
+      const sectionHeight = rect.height;
+      const viewportHeight = window.innerHeight;
+      
+      const sectionMiddle = rect.top + sectionHeight / 2;
+      const triggerPoint = viewportHeight * 0.4;
+      
+      if (sectionMiddle < triggerPoint) {
+        setUnified(true);
+      } else {
+        setUnified(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
     <section id="problem" ref={sectionRef} className="py-32 relative overflow-hidden">
