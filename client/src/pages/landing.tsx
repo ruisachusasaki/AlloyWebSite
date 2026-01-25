@@ -259,7 +259,7 @@ function ChaosIcon({
         mass: 0.8
       }}
     >
-      <div className="flex flex-col items-center gap-1">
+      <div className={`flex flex-col items-center ${app.imageSrc ? 'gap-0' : 'gap-1'}`}>
         {app.imageSrc ? (
           <img 
             src={app.imageSrc} 
@@ -308,7 +308,7 @@ function SpaghettiChaosSection() {
     { icon: SiStripe, name: "Stripe", color: "#635BFF", x: -40, y: 5, rotate: -4, scale: 1.0, zIndex: 27, iconSize: "w-8 h-8 md:w-10 md:h-10" },
     { icon: SiTelegram, name: "Telegram", color: "#0088CC", x: 40, y: 5, rotate: 3, scale: 1.0, zIndex: 22, iconSize: "w-8 h-8 md:w-10 md:h-10" },
     { imageSrc: tokkoLogo, name: "Tokko", color: "#FF6B35", x: 180, y: 10, rotate: -8, scale: 1.0, zIndex: 12, iconSize: "w-16 h-auto md:w-20" },
-    { imageSrc: meliLogo, name: "MercadoLibre", color: "#FFE600", x: 320, y: -10, rotate: 15, scale: 1.0, zIndex: 2, iconSize: "w-8 h-8 md:w-10 md:h-10" },
+    { imageSrc: meliLogo, name: "MercadoLibre", color: "#FFE600", x: 320, y: -10, rotate: 15, scale: 1.0, zIndex: 2, iconSize: "w-10 h-auto md:w-12" },
     // Row 4 - Lower middle (5 icons)
     { icon: SiAsana, name: "Asana", x: -320, y: 100, rotate: 10, scale: 1.0, zIndex: 13, iconSize: "w-8 h-8 md:w-10 md:h-10", color: "#F06A6A" },
     { icon: SiGooglemeet, name: "Meet", color: "#00897B", x: -160, y: 110, rotate: -5, scale: 1.0, zIndex: 14, iconSize: "w-8 h-8 md:w-10 md:h-10" },
