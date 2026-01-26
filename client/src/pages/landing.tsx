@@ -342,22 +342,22 @@ function SpaghettiChaosSection() {
     <section id="problem" ref={containerRef} className="relative" style={{ height: "300vh" }}>
       <div 
         ref={stickyRef}
-        className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden"
+        className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-visible pt-16 md:pt-0"
       >
         <motion.div
-          className="text-center mb-8 px-6"
+          className="text-center mb-4 md:mb-8 px-6"
           style={{ opacity: chaosTextOpacity }}
         >
-          <h2 className="text-3xl md:text-5xl lg:text-6xl font-black mb-4">
+          <h2 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black mb-2 md:mb-4">
             Your business is{" "}
             <span className="text-destructive">drowning</span> in tabs.
           </h2>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto">
             I build the one that matters.
           </p>
         </motion.div>
 
-        <div className="relative w-full max-w-6xl h-[520px] md:h-[620px] flex items-center justify-center">
+        <div className="relative w-full max-w-6xl h-[420px] sm:h-[520px] md:h-[620px] flex items-center justify-center">
           <div className="relative w-full h-full">
             {chaosApps.map((app, i) => (
               <ChaosIcon key={app.name} app={app} progress={scrollYProgress} index={i} />
