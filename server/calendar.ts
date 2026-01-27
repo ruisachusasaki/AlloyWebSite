@@ -42,6 +42,11 @@ interface BusyPeriod {
 }
 
 export async function getAvailableSlots(date: Date): Promise<Array<{ time: string; displayTime: string; available: boolean }>> {
+  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET || !process.env.GOOGLE_REFRESH_TOKEN) {
+    console.log("Google Calendar credentials not configured, using default slots");
+    return generateDefaultSlots(date);
+  }
+
   const calendar = getCalendar();
   const dayStart = startOfDay(date);
   const dayEnd = endOfDay(date);
@@ -141,6 +146,11 @@ export async function createMeetingEvent(
   businessDescription: string,
   meetingTime: Date
 ): Promise<{ eventId: string; meetLink: string }> {
+  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET || !process.env.GOOGLE_REFRESH_TOKEN) {
+    console.log("Google Calendar credentials not configured, skipping event creation");
+    return { eventId: "", meetLink: "" };
+  }
+
   const calendar = getCalendar();
   const meetingEnd = addMinutes(meetingTime, MEETING_DURATION);
 
@@ -195,7 +205,7 @@ Contact: ${email}
     return { eventId, meetLink };
   } catch (error) {
     console.error("Error creating calendar event:", error);
-    throw new Error("Failed to create calendar event");
+    return { eventId: "", meetLink: "" };
   }
 }
 
@@ -206,6 +216,11 @@ export async function sendNotificationEmail(
   meetingTime: Date,
   meetLink: string
 ): Promise<void> {
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    console.log("SMTP credentials not configured, skipping email notification");
+    return;
+  }
+
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || "smtp.gmail.com",
     port: parseInt(process.env.SMTP_PORT || "587"),

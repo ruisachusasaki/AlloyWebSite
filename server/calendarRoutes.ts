@@ -1,5 +1,6 @@
 import { Express, Request, Response } from "express";
 import { z } from "zod";
+import { format } from "date-fns";
 import { getAvailableSlots, createMeetingEvent, sendNotificationEmail } from "./calendar";
 import { storage } from "./storage";
 
@@ -38,6 +39,16 @@ export function registerCalendarRoutes(app: Express) {
       const validatedData = bookingSchema.parse(req.body);
       const meetingTime = new Date(validatedData.meetingTime);
       const meetingEndTime = new Date(meetingTime.getTime() + 30 * 60 * 1000);
+
+      const availableSlots = await getAvailableSlots(meetingTime);
+      const requestedSlot = format(meetingTime, "HH:mm");
+      const slotInfo = availableSlots.find(slot => slot.time === requestedSlot);
+      
+      if (!slotInfo || !slotInfo.available) {
+        return res.status(400).json({ 
+          error: "Selected time slot is no longer available. Please choose another time." 
+        });
+      }
 
       let eventId = "";
       let meetLink = "";

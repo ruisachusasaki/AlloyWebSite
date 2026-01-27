@@ -69,6 +69,8 @@ export function SchedulingModal({ open, onOpenChange }: SchedulingModalProps) {
     enabled: !!selectedDate && step === "calendar",
   });
 
+  const [bookingError, setBookingError] = useState<string | null>(null);
+
   const bookingMutation = useMutation({
     mutationFn: async (data: {
       name: string;
@@ -77,10 +79,19 @@ export function SchedulingModal({ open, onOpenChange }: SchedulingModalProps) {
       meetingTime: string;
     }) => {
       const res = await apiRequest("POST", "/api/calendar/book", data);
-      return res.json();
+      const result = await res.json();
+      if (!res.ok) {
+        throw new Error(result.error || "Failed to book meeting");
+      }
+      return result;
     },
     onSuccess: () => {
+      setBookingError(null);
       setStep("success");
+    },
+    onError: (error: Error) => {
+      setBookingError(error.message);
+      setSelectedSlot(null);
     },
   });
 
@@ -328,6 +339,12 @@ export function SchedulingModal({ open, onOpenChange }: SchedulingModalProps) {
                   </div>
                 </div>
                 
+                {bookingError && (
+                  <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+                    {bookingError}
+                  </div>
+                )}
+                
                 <div className="flex gap-3 pt-2">
                   <Button 
                     variant="outline"
@@ -401,7 +418,7 @@ export function SchedulingModal({ open, onOpenChange }: SchedulingModalProps) {
                   transition={{ delay: 0.4 }}
                   className="text-muted-foreground mb-6 max-w-sm"
                 >
-                  A calendar invite with Google Meet link has been sent to{" "}
+                  Your meeting request has been received. We'll confirm the details at{" "}
                   <span className="text-foreground font-medium">{formData.email}</span>
                 </motion.p>
                 
