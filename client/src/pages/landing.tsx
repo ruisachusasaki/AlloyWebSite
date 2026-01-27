@@ -1,9 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, createContext, useContext } from "react";
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Helmet } from "react-helmet";
+import { SchedulingModal } from "@/components/scheduling-modal";
+
+const SchedulingContext = createContext<{ openScheduling: () => void }>({ openScheduling: () => {} });
 import { 
   ArrowRight, 
   Zap, 
@@ -66,6 +69,7 @@ function ScrollProgress() {
 function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [portfolioOpen, setPortfolioOpen] = useState(false);
+  const { openScheduling } = useContext(SchedulingContext);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -162,9 +166,10 @@ function Navbar() {
           <Button 
             size="sm" 
             className="font-semibold shimmer-btn glow-border"
+            onClick={openScheduling}
             data-testid="button-cta-nav"
           >
-            Join Waitlist
+            Schedule a Call
             <ArrowRight className="w-4 h-4 ml-1" />
           </Button>
         </div>
@@ -422,6 +427,7 @@ function SpaghettiChaosSection() {
 
 function BentoGridSection() {
   const cardRef = useRef<HTMLDivElement>(null);
+  const { openScheduling } = useContext(SchedulingContext);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const card = e.currentTarget;
@@ -604,6 +610,7 @@ function BentoGridSection() {
               <Button 
                 size="lg" 
                 className="font-bold shimmer-btn"
+                onClick={openScheduling}
                 data-testid="button-cta-bento"
               >
                 Get Started
@@ -1111,25 +1118,32 @@ function Footer() {
 }
 
 export default function LandingPage() {
+  const [schedulingOpen, setSchedulingOpen] = useState(false);
+  
+  const openScheduling = () => setSchedulingOpen(true);
+
   return (
-    <div className="min-h-screen bg-background noise-bg">
-      <Helmet>
-        <title>SystemForge - Custom Software Platforms | Replace SaaS Chaos with Clarity</title>
-        <meta name="description" content="Stop paying for 10+ SaaS apps. SystemForge builds custom, unified software platforms for $1,000/mo. CRM, ERP, automations - all in one system built exactly for your workflow." />
-        <meta property="og:title" content="SystemForge - Custom Software Platforms" />
-        <meta property="og:description" content="Replace your messy tech stack with a single, custom-coded digital backbone. One flat fee, unlimited evolution." />
-        <meta property="og:type" content="website" />
-      </Helmet>
-      <ScrollProgress />
-      <Navbar />
-      <HeroSection />
-      <SpaghettiChaosSection />
-      <BentoGridSection />
-      <AIPartnerSection />
-      <ComparisonToggleSection />
-      <ProofSection />
-      <ClientsSection />
-      <Footer />
-    </div>
+    <SchedulingContext.Provider value={{ openScheduling }}>
+      <div className="min-h-screen bg-background noise-bg">
+        <Helmet>
+          <title>SystemForge - Custom Software Platforms | Replace SaaS Chaos with Clarity</title>
+          <meta name="description" content="Stop paying for 10+ SaaS apps. SystemForge builds custom, unified software platforms for $1,000/mo. CRM, ERP, automations - all in one system built exactly for your workflow." />
+          <meta property="og:title" content="SystemForge - Custom Software Platforms" />
+          <meta property="og:description" content="Replace your messy tech stack with a single, custom-coded digital backbone. One flat fee, unlimited evolution." />
+          <meta property="og:type" content="website" />
+        </Helmet>
+        <ScrollProgress />
+        <Navbar />
+        <HeroSection />
+        <SpaghettiChaosSection />
+        <BentoGridSection />
+        <AIPartnerSection />
+        <ComparisonToggleSection />
+        <ProofSection />
+        <ClientsSection />
+        <Footer />
+        <SchedulingModal open={schedulingOpen} onOpenChange={setSchedulingOpen} />
+      </div>
+    </SchedulingContext.Provider>
   );
 }

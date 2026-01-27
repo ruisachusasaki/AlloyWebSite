@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { setupAuth, registerAuthRoutes } from "./replit_integrations/auth";
 import { registerChatRoutes } from "./replit_integrations/chat";
+import { registerCalendarRoutes } from "./calendarRoutes";
 import { storage } from "./storage";
 
 export async function registerRoutes(
@@ -14,6 +15,9 @@ export async function registerRoutes(
 
   // Setup Chat
   registerChatRoutes(app);
+
+  // Setup Calendar/Booking
+  registerCalendarRoutes(app);
 
   return httpServer;
 }
