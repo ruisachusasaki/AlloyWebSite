@@ -1,5 +1,4 @@
 import { google, calendar_v3 } from "googleapis";
-import nodemailer from "nodemailer";
 import { addMinutes, startOfDay, endOfDay, format, setHours, setMinutes } from "date-fns";
 
 const MEETING_DURATION = 30;
@@ -12,16 +11,19 @@ const CALENDAR_IDS = [
   "rui@boostmode.com",
 ];
 
+const OWNER_EMAIL = process.env.GOOGLE_OWNER_EMAIL || "ruisasaki0@gmail.com";
+
 const WORKING_HOURS = {
   start: 9,
   end: 18,
 };
 
 function getOAuth2Client() {
+  const redirectUri = process.env.OAUTH_REDIRECT_URI || "http://localhost:3333/oauth2callback";
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID,
     process.env.GOOGLE_CLIENT_SECRET,
-    "https://developers.google.com/oauthplayground"
+    redirectUri
   );
 
   oauth2Client.setCredentials({
@@ -173,7 +175,7 @@ Contact: ${email}
       timeZone: "America/New_York",
     },
     attendees: [
-      { email: "ruisasaki0@gmail.com" },
+      { email: OWNER_EMAIL },
       { email },
     ],
     conferenceData: {
@@ -193,7 +195,7 @@ Contact: ${email}
 
   try {
     const response = await calendar.events.insert({
-      calendarId: "ruisasaki0@gmail.com",
+      calendarId: OWNER_EMAIL,
       requestBody: event,
       conferenceDataVersion: 1,
       sendUpdates: "all",
@@ -216,59 +218,72 @@ export async function sendNotificationEmail(
   meetingTime: Date,
   meetLink: string
 ): Promise<void> {
-  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-    console.log("SMTP credentials not configured, skipping email notification");
+  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET || !process.env.GOOGLE_REFRESH_TOKEN) {
+    console.log("Google credentials not configured, skipping email notification");
     return;
   }
 
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || "smtp.gmail.com",
-    port: parseInt(process.env.SMTP_PORT || "587"),
-    secure: false,
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
-    },
-  });
+  const auth = getOAuth2Client();
+  const gmail = google.gmail({ version: "v1", auth });
 
   const formattedTime = format(meetingTime, "EEEE, MMMM d, yyyy 'at' h:mm a");
-
-  const mailOptions = {
-    from: `"SystemForge" <${process.env.SMTP_USER}>`,
-    to: "ruisasaki0@gmail.com",
-    subject: `New Discovery Call Scheduled: ${name}`,
-    html: `
-      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <h1 style="color: #1a1a1a; margin-bottom: 24px;">New Meeting Scheduled</h1>
-        
-        <div style="background: #f8f9fa; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
-          <h2 style="margin: 0 0 16px 0; color: #1a1a1a; font-size: 18px;">Contact Details</h2>
-          <p style="margin: 8px 0; color: #4a4a4a;"><strong>Name:</strong> ${name}</p>
-          <p style="margin: 8px 0; color: #4a4a4a;"><strong>Email:</strong> ${email}</p>
-          <p style="margin: 8px 0; color: #4a4a4a;"><strong>Time:</strong> ${formattedTime}</p>
-        </div>
-        
-        <div style="background: #f0f7ff; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
-          <h2 style="margin: 0 0 16px 0; color: #1a1a1a; font-size: 18px;">Business Description</h2>
-          <p style="margin: 0; color: #4a4a4a; white-space: pre-wrap;">${businessDescription}</p>
-        </div>
-        
-        ${meetLink ? `
-        <a href="${meetLink}" style="display: inline-block; background: #0066ff; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">
-          Join Google Meet
-        </a>
-        ` : ''}
-        
-        <p style="margin-top: 24px; color: #888; font-size: 14px;">
-          This meeting was scheduled via SystemForge website.
-        </p>
+  
+  const htmlContent = `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <h1 style="color: #1a1a1a; margin-bottom: 24px;">New Meeting Scheduled</h1>
+      
+      <div style="background: #f8f9fa; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+        <h2 style="margin: 0 0 16px 0; color: #1a1a1a; font-size: 18px;">Contact Details</h2>
+        <p style="margin: 8px 0; color: #4a4a4a;"><strong>Name:</strong> ${name}</p>
+        <p style="margin: 8px 0; color: #4a4a4a;"><strong>Email:</strong> ${email}</p>
+        <p style="margin: 8px 0; color: #4a4a4a;"><strong>Time:</strong> ${formattedTime}</p>
       </div>
-    `,
-  };
+      
+      <div style="background: #f0f7ff; border-radius: 12px; padding: 24px; margin-bottom: 24px;">
+        <h2 style="margin: 0 0 16px 0; color: #1a1a1a; font-size: 18px;">Business Description</h2>
+        <p style="margin: 0; color: #4a4a4a; white-space: pre-wrap;">${businessDescription}</p>
+      </div>
+      
+      ${meetLink ? `
+      <a href="${meetLink}" style="display: inline-block; background: #0066ff; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+        Join Google Meet
+      </a>
+      ` : ''}
+      
+      <p style="margin-top: 24px; color: #888; font-size: 14px;">
+        This meeting was scheduled via SystemForge website.
+      </p>
+    </div>
+  `;
+
+  const subject = `New Discovery Call Scheduled: ${name}`;
+  
+  const messageParts = [
+    `From: "SystemForge" <${OWNER_EMAIL}>`,
+    `To: ${OWNER_EMAIL}`,
+    `Subject: ${subject}`,
+    `MIME-Version: 1.0`,
+    `Content-Type: text/html; charset=utf-8`,
+    ``,
+    htmlContent,
+  ];
+  
+  const message = messageParts.join("\r\n");
+  const encodedMessage = Buffer.from(message)
+    .toString("base64")
+    .replace(/\+/g, "-")
+    .replace(/\//g, "_")
+    .replace(/=+$/, "");
 
   try {
-    await transporter.sendMail(mailOptions);
+    await gmail.users.messages.send({
+      userId: "me",
+      requestBody: {
+        raw: encodedMessage,
+      },
+    });
+    console.log("Email notification sent successfully via Gmail API");
   } catch (error) {
-    console.error("Error sending notification email:", error);
+    console.error("Error sending notification email via Gmail API:", error);
   }
 }
