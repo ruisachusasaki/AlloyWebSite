@@ -76,3 +76,28 @@ Environment variables required:
 
 ### Audio Processing
 - **FFmpeg**: Required on system for audio format conversion (WebM to WAV)
+
+### Google Calendar & Gmail Integration (Scheduling System)
+The scheduling system uses Google APIs for calendar availability checking, event creation, and email notifications. All features use the same OAuth credentials (no separate SMTP needed).
+
+**Required Environment Variables:**
+- `GOOGLE_CLIENT_ID` - OAuth 2.0 Client ID from Google Cloud Console
+- `GOOGLE_CLIENT_SECRET` - OAuth 2.0 Client Secret from Google Cloud Console
+- `GOOGLE_REFRESH_TOKEN` - Obtained by running the OAuth setup script (see below)
+
+**Optional Environment Variables:**
+- `GOOGLE_OWNER_EMAIL` - Email address of the calendar owner (defaults to ruisasaki0@gmail.com)
+- `OAUTH_REDIRECT_URI` - OAuth redirect URI (defaults to http://localhost:3333/oauth2callback)
+- `OAUTH_PORT` - Port for OAuth callback server (defaults to 3333)
+
+**Getting Your Refresh Token:**
+1. Add your GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET to Replit Secrets
+2. In Google Cloud Console, add `http://localhost:3333/oauth2callback` to your OAuth 2.0 authorized redirect URIs
+3. Run the setup script: `npx tsx server/oauth-setup.ts`
+4. Visit the URL displayed in the console and authorize the app
+5. Copy the refresh token from the browser and add it to Replit Secrets as GOOGLE_REFRESH_TOKEN
+
+**Features (all free, no SMTP required):**
+- Check availability across multiple calendars with buffer time logic
+- Create Google Calendar events with Google Meet links
+- Send email notifications via Gmail API
