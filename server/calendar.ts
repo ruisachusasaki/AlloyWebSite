@@ -1,5 +1,6 @@
 import { google, calendar_v3 } from "googleapis";
-import { addMinutes, startOfDay, endOfDay, format, setHours, setMinutes } from "date-fns";
+import { addMinutes, startOfDay, endOfDay, format, setHours, setMinutes, subMinutes } from "date-fns";
+import { bookingStorage } from "./bookingStorage";
 
 const MEETING_DURATION = 30;
 const BUFFER_BEFORE = 45;
@@ -19,15 +20,17 @@ const WORKING_HOURS = {
 };
 
 function getOAuth2Client() {
-  const redirectUri = process.env.OAUTH_REDIRECT_URI || "http://localhost:3333/oauth2callback";
+  // Use environment variable for redirect URI, with fallback for the registered OAuth redirect
+  const redirectUri = process.env.OAUTH_REDIRECT_URI || "https://systemforge-landing-page-ruisasaki.replit.app/api/oauth/callback";
+  
   const oauth2Client = new google.auth.OAuth2(
-    process.env.GOOGLE_CLIENT_ID,
-    process.env.GOOGLE_CLIENT_SECRET,
+    process.env.GOOGLE_CLIENT_ID?.trim(),
+    process.env.GOOGLE_CLIENT_SECRET?.trim(),
     redirectUri
   );
 
   oauth2Client.setCredentials({
-    refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
+    refresh_token: process.env.GOOGLE_REFRESH_TOKEN?.trim(),
   });
 
   return oauth2Client;
@@ -44,77 +47,91 @@ interface BusyPeriod {
 }
 
 export async function getAvailableSlots(date: Date): Promise<Array<{ time: string; displayTime: string; available: boolean }>> {
-  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET || !process.env.GOOGLE_REFRESH_TOKEN) {
-    console.log("Google Calendar credentials not configured, using default slots");
-    return generateDefaultSlots(date);
-  }
-
-  const calendar = getCalendar();
   const dayStart = startOfDay(date);
   const dayEnd = endOfDay(date);
+  const busyPeriods: BusyPeriod[] = [];
 
+  // Get local bookings from database (raw meeting times - buffer applied during slot check)
   try {
-    const freeBusyResponse = await calendar.freebusy.query({
-      requestBody: {
-        timeMin: dayStart.toISOString(),
-        timeMax: dayEnd.toISOString(),
-        items: CALENDAR_IDS.map((id) => ({ id })),
-      },
-    });
+    const localBookings = await bookingStorage.getBookingsByDateRange(dayStart, dayEnd);
+    for (const booking of localBookings) {
+      busyPeriods.push({
+        start: new Date(booking.meetingTime),
+        end: new Date(booking.meetingEndTime),
+      });
+    }
+  } catch (dbError) {
+    console.error("Error fetching local bookings:", dbError);
+  }
 
-    const busyPeriods: BusyPeriod[] = [];
-    const calendars = freeBusyResponse.data.calendars || {};
+  // Also get Google Calendar busy times if configured
+  if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET && process.env.GOOGLE_REFRESH_TOKEN) {
+    try {
+      const calendar = getCalendar();
+      const freeBusyResponse = await calendar.freebusy.query({
+        requestBody: {
+          timeMin: dayStart.toISOString(),
+          timeMax: dayEnd.toISOString(),
+          items: CALENDAR_IDS.map((id) => ({ id })),
+        },
+      });
 
-    for (const calendarId of CALENDAR_IDS) {
-      const calendarBusy = calendars[calendarId]?.busy || [];
-      for (const period of calendarBusy) {
-        if (period.start && period.end) {
-          busyPeriods.push({
-            start: new Date(period.start),
-            end: new Date(period.end),
-          });
+      const calendars = freeBusyResponse.data.calendars || {};
+
+      for (const calendarId of CALENDAR_IDS) {
+        const calendarBusy = calendars[calendarId]?.busy || [];
+        for (const period of calendarBusy) {
+          if (period.start && period.end) {
+            // Store raw event times - buffer applied during slot check
+            busyPeriods.push({
+              start: new Date(period.start),
+              end: new Date(period.end),
+            });
+          }
         }
       }
+    } catch (googleError) {
+      console.error("Error fetching Google Calendar availability:", googleError);
     }
-
-    busyPeriods.sort((a, b) => a.start.getTime() - b.start.getTime());
-
-    const slots: Array<{ time: string; displayTime: string; available: boolean }> = [];
-    let currentTime = setMinutes(setHours(dayStart, WORKING_HOURS.start), 0);
-    const workingEnd = setMinutes(setHours(dayStart, WORKING_HOURS.end), 0);
-
-    while (currentTime < workingEnd) {
-      const slotStart = currentTime;
-      const slotEnd = addMinutes(slotStart, MEETING_DURATION);
-      
-      if (slotEnd > workingEnd) break;
-
-      const bufferStart = addMinutes(slotStart, -BUFFER_BEFORE);
-      const bufferEnd = addMinutes(slotEnd, BUFFER_AFTER);
-
-      const isAvailable = !busyPeriods.some((busy) => {
-        return (
-          (bufferStart < busy.end && bufferEnd > busy.start)
-        );
-      });
-
-      const now = new Date();
-      const isPast = slotStart <= now;
-
-      slots.push({
-        time: format(slotStart, "HH:mm"),
-        displayTime: format(slotStart, "h:mm a"),
-        available: isAvailable && !isPast,
-      });
-
-      currentTime = addMinutes(currentTime, 30);
-    }
-
-    return slots;
-  } catch (error) {
-    console.error("Error fetching availability:", error);
-    return generateDefaultSlots(date);
   }
+
+  // Sort all busy periods
+  busyPeriods.sort((a, b) => a.start.getTime() - b.start.getTime());
+
+  // Generate slots and check availability
+  const slots: Array<{ time: string; displayTime: string; available: boolean }> = [];
+  let currentTime = setMinutes(setHours(dayStart, WORKING_HOURS.start), 0);
+  const workingEnd = setMinutes(setHours(dayStart, WORKING_HOURS.end), 0);
+
+  while (currentTime < workingEnd) {
+    const slotStart = currentTime;
+    const slotEnd = addMinutes(slotStart, MEETING_DURATION);
+    
+    if (slotEnd > workingEnd) break;
+
+    // For Google Calendar events, apply buffer when checking
+    // For local bookings, buffer is already included in busyPeriods
+    const bufferStart = subMinutes(slotStart, BUFFER_BEFORE);
+    const bufferEnd = addMinutes(slotEnd, BUFFER_AFTER);
+
+    const isAvailable = !busyPeriods.some((busy) => {
+      // Check if the proposed slot (with buffer) overlaps with any busy period
+      return bufferStart < busy.end && bufferEnd > busy.start;
+    });
+
+    const now = new Date();
+    const isPast = slotStart <= now;
+
+    slots.push({
+      time: format(slotStart, "HH:mm"),
+      displayTime: format(slotStart, "h:mm a"),
+      available: isAvailable && !isPast,
+    });
+
+    currentTime = addMinutes(currentTime, 30);
+  }
+
+  return slots;
 }
 
 function generateDefaultSlots(date: Date): Array<{ time: string; displayTime: string; available: boolean }> {

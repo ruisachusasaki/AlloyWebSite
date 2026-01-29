@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { format, addDays, startOfDay, isSameDay } from "date-fns";
 import {
   Dialog,
@@ -48,6 +48,7 @@ interface FormData {
 type Step = "form" | "calendar" | "success";
 
 export function SchedulingModal({ open, onOpenChange }: SchedulingModalProps) {
+  const queryClient = useQueryClient();
   const [step, setStep] = useState<Step>("form");
   const [formData, setFormData] = useState<FormData>({
     name: "",
@@ -67,6 +68,8 @@ export function SchedulingModal({ open, onOpenChange }: SchedulingModalProps) {
       return res.json();
     },
     enabled: !!selectedDate && step === "calendar",
+    staleTime: 0, // Always fetch fresh data
+    refetchOnMount: true,
   });
 
   const [bookingError, setBookingError] = useState<string | null>(null);
@@ -88,6 +91,8 @@ export function SchedulingModal({ open, onOpenChange }: SchedulingModalProps) {
     onSuccess: () => {
       setBookingError(null);
       setStep("success");
+      // Invalidate all availability caches so reopening shows updated slots
+      queryClient.invalidateQueries({ queryKey: ["/api/calendar/availability"] });
     },
     onError: (error: Error) => {
       setBookingError(error.message);

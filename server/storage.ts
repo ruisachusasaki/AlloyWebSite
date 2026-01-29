@@ -22,6 +22,7 @@ export class Storage implements IStorage {
   updateBookingWithEvent = bookingStorage.updateBookingWithEvent;
   getBookingById = bookingStorage.getBookingById;
   getAllBookings = bookingStorage.getAllBookings;
+  getBookingsByDateRange = bookingStorage.getBookingsByDateRange;
 }
 
 export const storage = new Storage();
