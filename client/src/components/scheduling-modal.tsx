@@ -162,10 +162,10 @@ export function SchedulingModal({ open, onOpenChange }: SchedulingModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-[540px] p-0 gap-0 overflow-hidden bg-background/80 backdrop-blur-xl border-border/50 shadow-2xl">
+      <DialogContent className="sm:max-w-[540px] max-h-[85vh] p-0 gap-0 flex flex-col bg-background/80 backdrop-blur-xl border-border/50 shadow-2xl">
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 pointer-events-none" />
         
-        <DialogHeader className="relative p-6 pb-4 border-b border-border/50">
+        <DialogHeader className="relative p-4 sm:p-6 pb-3 sm:pb-4 border-b border-border/50 flex-shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
               {step === "success" ? (
@@ -202,7 +202,7 @@ export function SchedulingModal({ open, onOpenChange }: SchedulingModalProps) {
           )}
         </DialogHeader>
         
-        <div className="relative p-6 min-h-[400px]">
+        <div className="relative p-4 sm:p-6 flex-1 overflow-y-auto flex flex-col min-h-0">
           <AnimatePresence mode="wait">
             {step === "form" && (
               <motion.div
@@ -287,97 +287,101 @@ export function SchedulingModal({ open, onOpenChange }: SchedulingModalProps) {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
-                className="space-y-4"
+                className="flex flex-col flex-1 min-h-0"
               >
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="bg-card/50 rounded-xl p-3 border border-border/50">
-                    <Calendar
-                      mode="single"
-                      selected={selectedDate}
-                      onSelect={(date) => {
-                        setSelectedDate(date);
-                        setSelectedSlot(null);
-                      }}
-                      disabled={disabledDays}
-                      className="mx-auto"
-                    />
-                  </div>
-                  
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                      <Clock className="w-4 h-4" />
-                      {selectedDate 
-                        ? `Available on ${format(selectedDate, "MMM d, yyyy")}`
-                        : "Select a date first"}
+                <div className="flex-1 overflow-y-auto min-h-0">
+                  <div className="grid md:grid-cols-2 gap-3 sm:gap-4">
+                    <div className="bg-card/50 rounded-xl p-2 sm:p-3 border border-border/50 overflow-x-auto">
+                      <Calendar
+                        mode="single"
+                        selected={selectedDate}
+                        onSelect={(date) => {
+                          setSelectedDate(date);
+                          setSelectedSlot(null);
+                        }}
+                        disabled={disabledDays}
+                        className="mx-auto min-w-[260px] text-sm"
+                      />
                     </div>
                     
-                    <div className="h-[250px] overflow-y-auto space-y-2 pr-2 custom-scrollbar">
-                      {!selectedDate ? (
-                        <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
-                          Pick a date to see available times
-                        </div>
-                      ) : slotsLoading ? (
-                        Array.from({ length: 6 }).map((_, i) => (
-                          <Skeleton key={i} className="h-10 w-full rounded-lg" />
-                        ))
-                      ) : availableSlots && availableSlots.length > 0 ? (
-                        availableSlots.map((slot) => (
-                          <button
-                            key={slot.time}
-                            onClick={() => slot.available && setSelectedSlot(slot.time)}
-                            disabled={!slot.available}
-                            className={`w-full p-3 rounded-lg text-sm font-medium transition-all
-                              ${selectedSlot === slot.time 
-                                ? "bg-primary text-primary-foreground" 
-                                : slot.available 
-                                  ? "bg-card/50 border border-border/50 hover:border-primary/50 hover:bg-primary/5" 
-                                  : "bg-muted/30 text-muted-foreground cursor-not-allowed opacity-50"
-                              }`}
-                            data-testid={`button-slot-${slot.time}`}
-                          >
-                            {slot.displayTime}
-                          </button>
-                        ))
-                      ) : (
-                        <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
-                          No available slots for this date
-                        </div>
-                      )}
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                        <Clock className="w-4 h-4" />
+                        {selectedDate 
+                          ? `Available on ${format(selectedDate, "MMM d, yyyy")}`
+                          : "Select a date first"}
+                      </div>
+                      
+                      <div className="max-h-[120px] sm:max-h-[200px] md:max-h-[250px] overflow-y-auto space-y-1.5 pr-1 custom-scrollbar">
+                        {!selectedDate ? (
+                          <div className="flex items-center justify-center h-20 text-muted-foreground text-sm">
+                            Pick a date to see available times
+                          </div>
+                        ) : slotsLoading ? (
+                          Array.from({ length: 3 }).map((_, i) => (
+                            <Skeleton key={i} className="h-9 w-full rounded-lg" />
+                          ))
+                        ) : availableSlots && availableSlots.length > 0 ? (
+                          availableSlots.map((slot) => (
+                            <button
+                              key={slot.time}
+                              onClick={() => slot.available && setSelectedSlot(slot.time)}
+                              disabled={!slot.available}
+                              className={`w-full p-2.5 rounded-lg text-sm font-medium transition-all
+                                ${selectedSlot === slot.time 
+                                  ? "bg-primary text-primary-foreground" 
+                                  : slot.available 
+                                    ? "bg-card/50 border border-border/50 hover:border-primary/50 hover:bg-primary/5" 
+                                    : "bg-muted/30 text-muted-foreground cursor-not-allowed opacity-50"
+                                }`}
+                              data-testid={`button-slot-${slot.time}`}
+                            >
+                              {slot.displayTime}
+                            </button>
+                          ))
+                        ) : (
+                          <div className="flex items-center justify-center h-20 text-muted-foreground text-sm">
+                            No available slots for this date
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
+                  
+                  {bookingError && (
+                    <div className="p-2 mt-2 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
+                      {bookingError}
+                    </div>
+                  )}
                 </div>
                 
-                {bookingError && (
-                  <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
-                    {bookingError}
-                  </div>
-                )}
-                
-                <div className="flex gap-3 pt-2">
+                <div className="flex gap-3 pt-3 mt-3 border-t border-border/50 flex-shrink-0">
                   <Button 
                     variant="outline"
                     onClick={() => setStep("form")}
                     className="flex-1"
+                    size="sm"
                     data-testid="button-schedule-back"
                   >
-                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    <ArrowLeft className="w-4 h-4 mr-1" />
                     Back
                   </Button>
                   <Button 
                     onClick={handleBooking}
                     disabled={!selectedSlot || bookingMutation.isPending}
                     className="flex-1 font-semibold"
+                    size="sm"
                     data-testid="button-schedule-confirm"
                   >
                     {bookingMutation.isPending ? (
                       <>
-                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        <Loader2 className="w-4 h-4 mr-1 animate-spin" />
                         Booking...
                       </>
                     ) : (
                       <>
-                        Confirm Meeting
-                        <Check className="w-4 h-4 ml-2" />
+                        Confirm
+                        <Check className="w-4 h-4 ml-1" />
                       </>
                     )}
                   </Button>

@@ -178,7 +178,7 @@ function Navbar() {
   );
 }
 
-function HeroSection() {
+function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden grid-pattern">
       <div className="hero-glow" />
@@ -216,9 +216,10 @@ function HeroSection() {
             <Button 
               size="lg" 
               className="text-lg font-bold shimmer-btn glow-border"
+              onClick={onScheduleClick}
               data-testid="button-cta-hero"
             >
-              Book a 15-minute System Audit
+              Book a 30-minute System Audit
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
             <span className="text-muted-foreground text-sm">No commitment required</span>
@@ -1029,14 +1030,7 @@ function ClientsSection() {
   );
 }
 
-function Footer() {
-  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form submitted:", formData);
-  };
-
+function Footer({ onScheduleClick }: { onScheduleClick: () => void }) {
   return (
     <footer id="contact" className="py-24">
       <div className="max-w-6xl mx-auto px-6">
@@ -1052,36 +1046,15 @@ function Footer() {
             <p className="text-muted-foreground text-lg mb-8">
               Let's discuss how a custom platform can transform your operations.
             </p>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid sm:grid-cols-2 gap-4">
-                <Input
-                  placeholder="Your name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="bg-card border-border"
-                  data-testid="input-name"
-                />
-                <Input
-                  type="email"
-                  placeholder="Your email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="bg-card border-border"
-                  data-testid="input-email"
-                />
-              </div>
-              <Textarea
-                placeholder="Tell me about your current tech stack..."
-                value={formData.message}
-                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                className="bg-card border-border min-h-[140px]"
-                data-testid="input-message"
-              />
-              <Button type="submit" size="lg" className="font-bold shimmer-btn" data-testid="button-submit">
-                Send Message
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-            </form>
+            <Button 
+              size="lg" 
+              className="text-lg font-bold shimmer-btn glow-border"
+              onClick={onScheduleClick}
+              data-testid="button-footer-schedule"
+            >
+              Schedule a 30-minute Call
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
           </motion.div>
 
           <motion.div
@@ -1134,14 +1107,14 @@ export default function LandingPage() {
         </Helmet>
         <ScrollProgress />
         <Navbar />
-        <HeroSection />
+        <HeroSection onScheduleClick={openScheduling} />
         <SpaghettiChaosSection />
         <BentoGridSection />
         <AIPartnerSection />
         <ComparisonToggleSection />
         <ProofSection />
         <ClientsSection />
-        <Footer />
+        <Footer onScheduleClick={openScheduling} />
         <SchedulingModal open={schedulingOpen} onOpenChange={setSchedulingOpen} />
       </div>
     </SchedulingContext.Provider>
