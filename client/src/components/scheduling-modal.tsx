@@ -131,8 +131,11 @@ export function SchedulingModal({ open, onOpenChange }: SchedulingModalProps) {
     if (!selectedDate || !selectedSlot) return;
     
     const [hours, minutes] = selectedSlot.split(":").map(Number);
-    const meetingTime = new Date(selectedDate);
-    meetingTime.setHours(hours, minutes, 0, 0);
+    // Create meeting time in UTC to match server's slot generation
+    const year = selectedDate.getFullYear();
+    const month = selectedDate.getMonth();
+    const day = selectedDate.getDate();
+    const meetingTime = new Date(Date.UTC(year, month, day, hours, minutes, 0, 0));
     
     bookingMutation.mutate({
       ...formData,
