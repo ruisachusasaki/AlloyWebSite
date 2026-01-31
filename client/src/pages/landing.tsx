@@ -153,6 +153,9 @@ function Navbar() {
             </AnimatePresence>
           </div>
           
+          <a href="/build" className="text-sm text-muted-foreground transition-colors" data-testid="link-build">
+            Build Your Solution
+          </a>
           <a href="#clients" className="text-sm text-muted-foreground transition-colors" data-testid="link-clients">
             Clients
           </a>

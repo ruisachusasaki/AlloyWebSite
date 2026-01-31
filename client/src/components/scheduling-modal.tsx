@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { format, addDays, startOfDay, isSameDay } from "date-fns";
@@ -31,6 +31,11 @@ import { apiRequest } from "@/lib/queryClient";
 interface SchedulingModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  prefillData?: {
+    name?: string;
+    email?: string;
+    businessDescription?: string;
+  };
 }
 
 interface TimeSlot {
@@ -47,17 +52,27 @@ interface FormData {
 
 type Step = "form" | "calendar" | "success";
 
-export function SchedulingModal({ open, onOpenChange }: SchedulingModalProps) {
+export function SchedulingModal({ open, onOpenChange, prefillData }: SchedulingModalProps) {
   const queryClient = useQueryClient();
   const [step, setStep] = useState<Step>("form");
   const [formData, setFormData] = useState<FormData>({
-    name: "",
-    email: "",
-    businessDescription: "",
+    name: prefillData?.name || "",
+    email: prefillData?.email || "",
+    businessDescription: prefillData?.businessDescription || "",
   });
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
   const [formErrors, setFormErrors] = useState<Partial<FormData>>({});
+
+  useEffect(() => {
+    if (prefillData) {
+      setFormData(prev => ({
+        name: prefillData.name || prev.name,
+        email: prefillData.email || prev.email,
+        businessDescription: prefillData.businessDescription || prev.businessDescription,
+      }));
+    }
+  }, [prefillData]);
 
   const { data: availableSlots, isLoading: slotsLoading } = useQuery<TimeSlot[]>({
     queryKey: ["/api/calendar/availability", selectedDate?.toISOString()],

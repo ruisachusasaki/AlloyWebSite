@@ -9,6 +9,7 @@ import { Loader2 } from "lucide-react";
 
 import LandingPage from "@/pages/landing";
 import HomePage from "@/pages/home";
+import BuildSolutionPage from "@/pages/build-solution";
 import NotFound from "@/pages/not-found";
 
 function PrivateRoute({ component: Component, ...rest }: any) {
@@ -41,6 +42,7 @@ function Router() {
     <Switch>
       <Route path="/" component={() => <PrivateRoute component={HomePage} />} />
       <Route path="/chat/:id" component={() => <PrivateRoute component={HomePage} />} />
+      <Route path="/build" component={BuildSolutionPage} />
       <Route component={NotFound} />
     </Switch>
   );
