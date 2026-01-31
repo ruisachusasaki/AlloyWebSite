@@ -101,3 +101,21 @@ The scheduling system uses Google APIs for calendar availability checking, event
 - Check availability across multiple calendars with buffer time logic
 - Create Google Calendar events with Google Meet links
 - Send email notifications via Gmail API
+
+### Build Your Solution Page
+Interactive module builder at `/build` where potential clients can select features they need.
+
+**Features:**
+- 27 module cards with toggle selection (icons, titles, descriptions, categories)
+- Responsive grid: 1 column mobile, 2 tablet, 3 desktop
+- Desktop sidebar showing selected modules in real-time with quote request form
+- Mobile sticky bottom bar with selection count and continue button
+- Integration with scheduling modal - selected modules included in calendar event and emails
+- Form fields: Name, Email, Company Name, Description, Custom Request
+
+**Navigation:**
+- Link in landing page navbar
+- Route: `/build`
+
+**Module Categories:**
+Communication, Productivity, Security, Sales, Analytics, AI, Features, Data, Industry, Operations, Automation, Marketing, Integration, Payments, Development
