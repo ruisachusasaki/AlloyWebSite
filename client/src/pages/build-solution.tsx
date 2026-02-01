@@ -116,7 +116,6 @@ function ModuleCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.02 }}
-      whileHover={{ y: -6, scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       className={`module-glass-card relative w-full text-left p-6 rounded-2xl transition-all duration-500 group overflow-hidden
         ${isSelected 
