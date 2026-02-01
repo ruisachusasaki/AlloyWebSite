@@ -1,12 +1,11 @@
-import { useState, useEffect, useRef, createContext, useContext } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Helmet } from "react-helmet";
 import { SchedulingModal } from "@/components/scheduling-modal";
-
-const SchedulingContext = createContext<{ openScheduling: () => void }>({ openScheduling: () => {} });
+import { SharedNavbar, SharedFooter, SchedulingContext } from "@/components/shared-layout";
 import { 
   ArrowRight, 
   Zap, 
@@ -66,120 +65,6 @@ function ScrollProgress() {
   );
 }
 
-function Navbar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [portfolioOpen, setPortfolioOpen] = useState(false);
-  const { openScheduling } = useContext(SchedulingContext);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const portfolioItems = [
-    { name: "Wealthfit", desc: "Financial Systems", icon: DollarSign },
-    { name: "EventGrowth", desc: "Growth Infrastructure", icon: TrendingUp },
-    { name: "AgencyBoost", desc: "Internal Automations", icon: Briefcase },
-  ];
-
-  return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled ? "glass" : "bg-transparent"
-      }`}
-    >
-      <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
-        <a href="#" className="flex items-center gap-2" data-testid="link-logo">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
-            <Layers className="w-4 h-4 text-primary-foreground" />
-          </div>
-          <span className="text-lg font-bold tracking-tight hidden sm:block">
-            <span className="text-primary">System</span>
-            <span className="text-foreground">Forge</span>
-          </span>
-        </a>
-        
-        <div className="hidden md:flex items-center gap-6">
-          <a href="#solution" className="text-sm text-muted-foreground transition-colors" data-testid="link-solutions">
-            Solutions
-          </a>
-          
-          <div 
-            className="relative"
-            onMouseEnter={() => setPortfolioOpen(true)}
-            onMouseLeave={() => setPortfolioOpen(false)}
-          >
-            <button 
-              className="flex items-center gap-1 text-sm text-muted-foreground transition-colors"
-              data-testid="button-portfolio"
-            >
-              Portfolio
-              <ChevronDown className={`w-4 h-4 transition-transform ${portfolioOpen ? 'rotate-180' : ''}`} />
-            </button>
-            
-            <AnimatePresence>
-              {portfolioOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  transition={{ duration: 0.2 }}
-                  className="absolute top-full left-0 mt-2 w-64 bg-card/95 backdrop-blur-xl border border-border rounded-xl shadow-2xl overflow-hidden"
-                >
-                  {portfolioItems.map((item) => (
-                    <a
-                      key={item.name}
-                      href="#proof"
-                      className="flex items-center gap-3 px-4 py-3 transition-colors hover-elevate"
-                      data-testid={`link-portfolio-${item.name.toLowerCase()}`}
-                    >
-                      <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                        <item.icon className="w-4 h-4 text-primary" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-foreground">{item.name}</p>
-                        <p className="text-xs text-muted-foreground">{item.desc}</p>
-                      </div>
-                    </a>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-          
-          <a href="/build" className="text-sm text-muted-foreground transition-colors" data-testid="link-build">
-            Build Your Solution
-          </a>
-          <a href="#clients" className="text-sm text-muted-foreground transition-colors" data-testid="link-clients">
-            Clients
-          </a>
-          <a href="#contact" className="text-sm text-muted-foreground transition-colors" data-testid="link-contact">
-            Contact
-          </a>
-        </div>
-        
-        <div className="flex items-center gap-2">
-          <ThemeToggle />
-          <Button 
-            size="sm" 
-            className="font-semibold shimmer-btn glow-border"
-            onClick={openScheduling}
-            data-testid="button-cta-nav"
-          >
-            Schedule a Call
-            <ArrowRight className="w-4 h-4 ml-1" />
-          </Button>
-        </div>
-      </div>
-    </motion.nav>
-  );
-}
 
 function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
   return (
@@ -1033,65 +918,6 @@ function ClientsSection() {
   );
 }
 
-function Footer({ onScheduleClick }: { onScheduleClick: () => void }) {
-  return (
-    <footer id="contact" className="py-24">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-4xl md:text-5xl font-black mb-4">
-              Ready to simplify?
-            </h2>
-            <p className="text-muted-foreground text-lg mb-8">
-              Let's discuss how a custom platform can transform your operations.
-            </p>
-            <Button 
-              size="lg" 
-              className="text-lg font-bold shimmer-btn glow-border"
-              onClick={onScheduleClick}
-              data-testid="button-footer-schedule"
-            >
-              Schedule a 30-minute Call
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="flex flex-col justify-between"
-          >
-            <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
-                  <Layers className="w-5 h-5 text-primary-foreground" />
-                </div>
-                <span className="text-2xl font-bold tracking-tight">
-                  <span className="text-primary">System</span>
-                  <span className="text-foreground">Forge</span>
-                </span>
-              </div>
-              <p className="text-muted-foreground max-w-sm text-lg">
-                Building custom software platforms that replace chaos with clarity.
-              </p>
-            </div>
-            <div className="mt-8 pt-8 border-t border-border">
-              <p className="text-muted-foreground text-sm">
-                &copy; {new Date().getFullYear()} SystemForge. All rights reserved.
-              </p>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-    </footer>
-  );
-}
 
 export default function LandingPage() {
   const [schedulingOpen, setSchedulingOpen] = useState(false);
@@ -1109,7 +935,7 @@ export default function LandingPage() {
           <meta property="og:type" content="website" />
         </Helmet>
         <ScrollProgress />
-        <Navbar />
+        <SharedNavbar />
         <HeroSection onScheduleClick={openScheduling} />
         <SpaghettiChaosSection />
         <BentoGridSection />
@@ -1117,7 +943,7 @@ export default function LandingPage() {
         <ComparisonToggleSection />
         <ProofSection />
         <ClientsSection />
-        <Footer onScheduleClick={openScheduling} />
+        <SharedFooter />
         <SchedulingModal open={schedulingOpen} onOpenChange={setSchedulingOpen} />
       </div>
     </SchedulingContext.Provider>

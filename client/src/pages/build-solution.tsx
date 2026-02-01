@@ -5,8 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Helmet } from "react-helmet";
 import { SchedulingModal } from "@/components/scheduling-modal";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { Link } from "wouter";
+import { SharedNavbar, SharedFooter, SchedulingContext } from "@/components/shared-layout";
 import {
   MessageSquare,
   Calendar,
@@ -29,9 +28,7 @@ import {
   Webhook,
   CreditCard,
   Check,
-  X,
   ArrowRight,
-  Layers,
   Sparkles,
   Bell,
   Globe,
@@ -131,24 +128,6 @@ function ModuleCard({
   );
 }
 
-function Navbar() {
-  return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
-        <Link href="/" className="flex items-center gap-2" data-testid="link-logo">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
-            <Layers className="w-4 h-4 text-primary-foreground" />
-          </div>
-          <span className="font-bold text-lg text-foreground">SystemForge</span>
-        </Link>
-        
-        <div className="flex items-center gap-3">
-          <ThemeToggle />
-        </div>
-      </div>
-    </nav>
-  );
-}
 
 export default function BuildSolutionPage() {
   const [selectedModules, setSelectedModules] = useState<Set<string>>(new Set());
@@ -206,16 +185,19 @@ export default function BuildSolutionPage() {
     return desc;
   };
 
+  const openScheduling = () => setShowScheduling(true);
+
   return (
-    <>
-      <Helmet>
-        <title>Build Your Solution | SystemForge</title>
-        <meta name="description" content="Select the features you need for your custom internal tool. Interactive module builder with 25+ integrations." />
-      </Helmet>
-      
-      <Navbar />
-      
-      <main className="min-h-screen bg-background pt-24 pb-32">
+    <SchedulingContext.Provider value={{ openScheduling }}>
+      <div className="min-h-screen bg-background noise-bg">
+        <Helmet>
+          <title>Build Your Solution | SystemForge</title>
+          <meta name="description" content="Select the features you need for your custom internal tool. Interactive module builder with 25+ integrations." />
+        </Helmet>
+        
+        <SharedNavbar />
+        
+        <main className="pt-24 pb-32">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -387,17 +369,20 @@ export default function BuildSolutionPage() {
             </Button>
           </div>
         </div>
-      </main>
+        </main>
 
-      <SchedulingModal
-        open={showScheduling}
-        onOpenChange={setShowScheduling}
-        prefillData={{
-          name: formData.name,
-          email: formData.email,
-          businessDescription: buildDescription()
-        }}
-      />
-    </>
+        <SharedFooter />
+
+        <SchedulingModal
+          open={showScheduling}
+          onOpenChange={setShowScheduling}
+          prefillData={{
+            name: formData.name,
+            email: formData.email,
+            businessDescription: buildDescription()
+          }}
+        />
+      </div>
+    </SchedulingContext.Provider>
   );
 }
