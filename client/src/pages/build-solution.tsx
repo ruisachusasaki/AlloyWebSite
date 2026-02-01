@@ -407,7 +407,7 @@ export default function BuildSolutionPage() {
     <SchedulingContext.Provider value={{ openScheduling }}>
       <div className="min-h-screen bg-background noise-bg">
         <Helmet>
-          <title>Build Your Solution | SystemForge</title>
+          <title>Build Your Solution | ALLOY</title>
           <meta name="description" content="Select the features you need for your custom internal tool. Interactive module builder with 30+ integrations." />
         </Helmet>
         

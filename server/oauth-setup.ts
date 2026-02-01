@@ -33,7 +33,7 @@ async function getRefreshToken() {
     prompt: "consent",
   });
 
-  console.log("\n🔐 Google OAuth Setup for SystemForge\n");
+  console.log("\n Google OAuth Setup for ALLOY\n");
   console.log("━".repeat(50));
   console.log("\nThis script will help you get a refresh token for:");
   console.log("  • Google Calendar (check availability, create events)");

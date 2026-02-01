@@ -928,9 +928,9 @@ export default function LandingPage() {
     <SchedulingContext.Provider value={{ openScheduling }}>
       <div className="min-h-screen bg-background noise-bg">
         <Helmet>
-          <title>SystemForge - Custom Software Platforms | Replace SaaS Chaos with Clarity</title>
-          <meta name="description" content="Stop paying for 10+ SaaS apps. SystemForge builds custom, unified software platforms for $1,000/mo. CRM, ERP, automations - all in one system built exactly for your workflow." />
-          <meta property="og:title" content="SystemForge - Custom Software Platforms" />
+          <title>ALLOY - Custom Software Platforms | Replace SaaS Chaos with Clarity</title>
+          <meta name="description" content="Stop paying for 10+ SaaS apps. ALLOY builds custom, unified software platforms for $1,000/mo. CRM, ERP, automations - all in one system built exactly for your workflow." />
+          <meta property="og:title" content="ALLOY - Custom Software Platforms" />
           <meta property="og:description" content="Replace your messy tech stack with a single, custom-coded digital backbone. One flat fee, unlimited evolution." />
           <meta property="og:type" content="website" />
         </Helmet>

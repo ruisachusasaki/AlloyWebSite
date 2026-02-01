@@ -146,7 +146,7 @@ export function registerCalendarRoutes(app: Express) {
     res.send(`
       <html>
       <head>
-        <title>Google OAuth Setup - SystemForge</title>
+        <title>Google OAuth Setup - ALLOY</title>
         <style>
           body { font-family: -apple-system, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; background: #f8f9fa; }
           .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
@@ -160,7 +160,7 @@ export function registerCalendarRoutes(app: Express) {
       <body>
         <div class="card">
           <h1>Google OAuth Setup</h1>
-          <p>Click the button below to authorize SystemForge to access your Google Calendar and Gmail for sending notifications.</p>
+          <p>Click the button below to authorize ALLOY to access your Google Calendar and Gmail for sending notifications.</p>
           <a href="${authUrl}" class="btn">Authorize with Google</a>
           <div class="note">
             <strong>Important:</strong> Make sure you've added this redirect URI to your Google Cloud Console OAuth credentials:<br>

@@ -21,7 +21,7 @@ const WORKING_HOURS = {
 
 function getOAuth2Client() {
   // Use environment variable for redirect URI, with fallback for the registered OAuth redirect
-  const redirectUri = process.env.OAUTH_REDIRECT_URI || "https://systemforge-landing-page-ruisasaki.replit.app/api/oauth/callback";
+  const redirectUri = process.env.OAUTH_REDIRECT_URI || "https://alloy-landing-page.replit.app/api/oauth/callback";
   
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT_ID?.trim(),
@@ -174,7 +174,7 @@ export async function createMeetingEvent(
   const meetingEnd = addMinutes(meetingTime, MEETING_DURATION);
 
   const event: calendar_v3.Schema$Event = {
-    summary: `SystemForge Discovery Call - ${name}`,
+    summary: `ALLOY Discovery Call - ${name}`,
     description: `
 Discovery call with ${name}
 
@@ -197,7 +197,7 @@ Contact: ${email}
     ],
     conferenceData: {
       createRequest: {
-        requestId: `systemforge-${Date.now()}`,
+        requestId: `alloy-${Date.now()}`,
         conferenceSolutionKey: { type: "hangoutsMeet" },
       },
     },
@@ -268,7 +268,7 @@ export async function sendNotificationEmail(
       ` : ''}
       
       <p style="margin-top: 24px; color: #888; font-size: 14px;">
-        This meeting was scheduled via SystemForge website.
+        This meeting was scheduled via ALLOY website.
       </p>
     </div>
   `;
@@ -276,7 +276,7 @@ export async function sendNotificationEmail(
   const subject = `New Discovery Call Scheduled: ${name}`;
   
   const messageParts = [
-    `From: "SystemForge" <${OWNER_EMAIL}>`,
+    `From: "ALLOY" <${OWNER_EMAIL}>`,
     `To: ${OWNER_EMAIL}`,
     `Subject: ${subject}`,
     `MIME-Version: 1.0`,

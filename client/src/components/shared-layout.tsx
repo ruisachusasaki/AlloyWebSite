@@ -57,8 +57,8 @@ export function SharedNavbar() {
             <Layers className="w-4 h-4 text-primary-foreground" />
           </div>
           <span className="text-lg font-bold tracking-tight hidden sm:block">
-            <span className="text-primary">System</span>
-            <span className="text-foreground">Forge</span>
+            <span className="text-primary">ALL</span>
+            <span className="text-foreground">OY</span>
           </span>
         </Link>
         
@@ -202,8 +202,8 @@ export function SharedFooter() {
                   <Layers className="w-5 h-5 text-primary-foreground" />
                 </div>
                 <span className="text-2xl font-bold tracking-tight">
-                  <span className="text-primary">System</span>
-                  <span className="text-foreground">Forge</span>
+                  <span className="text-primary">ALL</span>
+                  <span className="text-foreground">OY</span>
                 </span>
               </div>
               <p className="text-muted-foreground max-w-sm text-lg">
@@ -212,7 +212,7 @@ export function SharedFooter() {
             </div>
             <div className="mt-8 pt-8 border-t border-border">
               <p className="text-muted-foreground text-sm">
-                &copy; {new Date().getFullYear()} SystemForge. All rights reserved.
+                &copy; {new Date().getFullYear()} ALLOY. All rights reserved.
               </p>
             </div>
           </motion.div>
