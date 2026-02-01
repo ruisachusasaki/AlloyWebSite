@@ -9,7 +9,9 @@ import {
   ChevronDown,
   DollarSign,
   TrendingUp,
-  Briefcase
+  Briefcase,
+  Menu,
+  X
 } from "lucide-react";
 
 interface SchedulingContextType {
@@ -23,6 +25,7 @@ export const SchedulingContext = createContext<SchedulingContextType>({
 export function SharedNavbar() {
   const [scrolled, setScrolled] = useState(false);
   const [portfolioOpen, setPortfolioOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { openScheduling } = useContext(SchedulingContext);
   const [location] = useLocation();
 
@@ -147,15 +150,142 @@ export function SharedNavbar() {
           <ThemeToggle />
           <Button 
             size="sm" 
-            className="font-semibold shimmer-btn glow-border"
+            className="font-semibold shimmer-btn glow-border hidden sm:flex"
             onClick={openScheduling}
             data-testid="button-cta-nav"
           >
             Schedule a Call
             <ArrowRight className="w-4 h-4 ml-1" />
           </Button>
+          
+          <Button
+            size="icon"
+            variant="ghost"
+            className="md:hidden"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            data-testid="button-mobile-menu"
+          >
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </Button>
         </div>
       </div>
+      
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.2 }}
+            className="md:hidden glass border-t border-border"
+          >
+            <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-4">
+              {isLandingPage ? (
+                <a 
+                  href="#solution" 
+                  className="text-sm text-muted-foreground py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                  data-testid="mobile-link-solutions"
+                >
+                  Solutions
+                </a>
+              ) : (
+                <Link 
+                  href="/#solution" 
+                  className="text-sm text-muted-foreground py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                  data-testid="mobile-link-solutions"
+                >
+                  Solutions
+                </Link>
+              )}
+              
+              <div className="border-t border-border pt-2">
+                <p className="text-xs text-muted-foreground mb-2">Portfolio</p>
+                {portfolioItems.map((item) => (
+                  <a
+                    key={item.name}
+                    href={isLandingPage ? "#proof" : "/#proof"}
+                    className="flex items-center gap-3 py-2"
+                    onClick={() => setMobileMenuOpen(false)}
+                    data-testid={`mobile-link-portfolio-${item.name.toLowerCase()}`}
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <item.icon className="w-4 h-4 text-primary" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-foreground">{item.name}</p>
+                      <p className="text-xs text-muted-foreground">{item.desc}</p>
+                    </div>
+                  </a>
+                ))}
+              </div>
+              
+              <Link 
+                href="/build" 
+                className={`text-sm py-2 ${location === '/build' ? 'text-primary font-medium' : 'text-muted-foreground'}`}
+                onClick={() => setMobileMenuOpen(false)}
+                data-testid="mobile-link-build"
+              >
+                Build Your Solution
+              </Link>
+              
+              {isLandingPage ? (
+                <a 
+                  href="#clients" 
+                  className="text-sm text-muted-foreground py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                  data-testid="mobile-link-clients"
+                >
+                  Clients
+                </a>
+              ) : (
+                <Link 
+                  href="/#clients" 
+                  className="text-sm text-muted-foreground py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                  data-testid="mobile-link-clients"
+                >
+                  Clients
+                </Link>
+              )}
+              
+              {isLandingPage ? (
+                <a 
+                  href="#contact" 
+                  className="text-sm text-muted-foreground py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                  data-testid="mobile-link-contact"
+                >
+                  Contact
+                </a>
+              ) : (
+                <Link 
+                  href="/#contact" 
+                  className="text-sm text-muted-foreground py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                  data-testid="mobile-link-contact"
+                >
+                  Contact
+                </Link>
+              )}
+              
+              <Button 
+                size="sm" 
+                className="font-semibold shimmer-btn glow-border w-full mt-2"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  openScheduling();
+                }}
+                data-testid="mobile-button-cta"
+              >
+                Schedule a Call
+                <ArrowRight className="w-4 h-4 ml-1" />
+              </Button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.nav>
   );
 }
