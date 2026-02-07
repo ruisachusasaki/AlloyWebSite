@@ -5,7 +5,6 @@ import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Link, useLocation } from "wouter";
 import {
   ArrowRight,
-  Layers,
   ChevronDown,
   DollarSign,
   TrendingUp,
@@ -13,6 +12,8 @@ import {
   Menu,
   X
 } from "lucide-react";
+
+import alloyLogo from "@assets/Alloy_Logo_1770503010900.png";
 
 interface SchedulingContextType {
   openScheduling: () => void;
@@ -56,9 +57,11 @@ export function SharedNavbar() {
     >
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
         <Link href="/" className="flex items-center gap-2" data-testid="link-logo">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
-            <Layers className="w-4 h-4 text-primary-foreground" />
-          </div>
+          <img 
+            src={alloyLogo} 
+            alt="ALLOY" 
+            className="h-8 w-auto dark:brightness-110 brightness-90 dark:drop-shadow-[0_0_4px_rgba(200,160,120,0.3)]"
+          />
           <span className="text-lg font-bold tracking-tight hidden sm:block">
             <span className="text-primary">ALL</span>
             <span className="text-foreground">OY</span>
@@ -328,9 +331,11 @@ export function SharedFooter() {
           >
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
-                  <Layers className="w-5 h-5 text-primary-foreground" />
-                </div>
+                <img 
+                  src={alloyLogo} 
+                  alt="ALLOY" 
+                  className="h-10 w-auto dark:brightness-110 brightness-90 dark:drop-shadow-[0_0_4px_rgba(200,160,120,0.3)]"
+                />
                 <span className="text-2xl font-bold tracking-tight">
                   <span className="text-primary">ALL</span>
                   <span className="text-foreground">OY</span>
