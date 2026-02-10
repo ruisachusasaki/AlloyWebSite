@@ -8,14 +8,16 @@ import { useConversation } from "@/hooks/use-conversations";
 import { useChatStream } from "@/hooks/use-chat-stream";
 import { Send, StopCircle, Bot, MessageSquare } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/context/language-context";
 
 export default function HomePage() {
   const [match, params] = useRoute("/chat/:id");
   const conversationId = params?.id ? parseInt(params.id) : null;
-  
+  const { t } = useLanguage();
+
   const { data: conversation, isLoading } = useConversation(conversationId);
   const { sendMessage, stopStream, isStreaming } = useChatStream(conversationId || 0);
-  
+
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -42,7 +44,7 @@ export default function HomePage() {
 
     const userMessage = { role: "user", content: input };
     const tempAiMessage = { role: "assistant", content: "", isStreaming: true };
-    
+
     setMessages(prev => [...prev, userMessage, tempAiMessage]);
     setInput("");
 
@@ -92,9 +94,9 @@ export default function HomePage() {
           <div className="h-24 w-24 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-4 animate-in zoom-in duration-500">
             <Bot className="h-12 w-12" />
           </div>
-          <h1 className="text-4xl font-display font-bold tracking-tight">Welcome to AI Chat</h1>
+          <h1 className="text-4xl font-display font-bold tracking-tight">{t("home.welcome")}</h1>
           <p className="text-muted-foreground max-w-md text-lg">
-            Select a conversation from the sidebar or start a new one to begin chatting with advanced AI models.
+            {t("home.welcomeSubtitle")}
           </p>
         </main>
       </div>
@@ -104,17 +106,17 @@ export default function HomePage() {
   return (
     <div className="flex h-screen bg-background overflow-hidden">
       <Sidebar />
-      
+
       <main className="flex-1 flex flex-col relative h-full w-full">
         {/* Header - Mobile only mostly */}
         <header className="h-14 border-b flex items-center px-4 md:hidden shrink-0">
           <span className="ml-12 font-semibold truncate">
-            {conversation?.title || "Chat"}
+            {conversation?.title || t("home.chat")}
           </span>
         </header>
 
         {/* Messages Area */}
-        <div 
+        <div
           ref={scrollRef}
           className="flex-1 overflow-y-auto scroll-smooth"
         >
@@ -125,7 +127,7 @@ export default function HomePage() {
           ) : messages.length === 0 ? (
             <div className="h-full flex flex-col items-center justify-center text-muted-foreground p-8">
               <MessageSquare className="h-12 w-12 mb-4 opacity-20" />
-              <p>No messages yet. Start the conversation!</p>
+              <p>{t("home.noMessages")}</p>
             </div>
           ) : (
             <div className="flex flex-col pb-4">
@@ -149,7 +151,7 @@ export default function HomePage() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Message AI..."
+                placeholder={t("home.messagePlaceholder")}
                 className="min-h-[50px] max-h-[200px] w-full resize-none border-0 bg-transparent focus-visible:ring-0 px-4 py-3 text-base scrollbar-none"
                 rows={1}
               />
@@ -177,7 +179,7 @@ export default function HomePage() {
             </form>
             <div className="text-center mt-2">
               <p className="text-xs text-muted-foreground">
-                AI can make mistakes. Check important info.
+                {t("home.disclaimer")}
               </p>
             </div>
           </div>

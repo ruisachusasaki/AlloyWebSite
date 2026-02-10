@@ -5,23 +5,50 @@ import { GoogleGenAI } from "@google/genai";
 import { chatStorage } from "./storage";
 
 // Initialize Clients
-const openai = new OpenAI({
-  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
-  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
-});
+// Initialize Clients
+const openai = process.env.AI_INTEGRATIONS_OPENAI_API_KEY
+  ? new OpenAI({
+    apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
+    baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+  })
+  : ({
+    chat: {
+      completions: {
+        create: async () => {
+          throw new Error("OpenAI API Key not configured");
+        },
+      },
+    },
+  } as any);
 
-const anthropic = new Anthropic({
-  apiKey: process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY,
-  baseURL: process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL,
-});
+const anthropic = process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY
+  ? new Anthropic({
+    apiKey: process.env.AI_INTEGRATIONS_ANTHROPIC_API_KEY,
+    baseURL: process.env.AI_INTEGRATIONS_ANTHROPIC_BASE_URL,
+  })
+  : ({
+    messages: {
+      stream: async () => {
+        throw new Error("Anthropic API Key not configured");
+      },
+    },
+  } as any);
 
-const gemini = new GoogleGenAI({
-  apiKey: process.env.AI_INTEGRATIONS_GEMINI_API_KEY,
-  httpOptions: {
-    apiVersion: "",
-    baseUrl: process.env.AI_INTEGRATIONS_GEMINI_BASE_URL,
-  },
-});
+const gemini = process.env.AI_INTEGRATIONS_GEMINI_API_KEY
+  ? new GoogleGenAI({
+    apiKey: process.env.AI_INTEGRATIONS_GEMINI_API_KEY,
+    httpOptions: {
+      apiVersion: "",
+      baseUrl: process.env.AI_INTEGRATIONS_GEMINI_BASE_URL,
+    },
+  })
+  : ({
+    models: {
+      generateContentStream: async () => {
+        throw new Error("Gemini API Key not configured");
+      },
+    },
+  } as any);
 
 export function registerChatRoutes(app: Express): void {
   // Get all conversations
@@ -86,7 +113,7 @@ export function registerChatRoutes(app: Express): void {
 
       // Get conversation history for context
       const messages = await chatStorage.getMessagesByConversation(conversationId);
-      
+
       // Set up SSE
       res.setHeader("Content-Type", "text/event-stream");
       res.setHeader("Cache-Control", "no-cache");
@@ -99,7 +126,7 @@ export function registerChatRoutes(app: Express): void {
           role: m.role as "user" | "assistant",
           content: m.content,
         }));
-        
+
         const stream = anthropic.messages.stream({
           model: model || "claude-sonnet-4-5",
           max_tokens: 2048,

@@ -1,16 +1,19 @@
 import { useState, useEffect, useRef, useContext } from "react";
+import { useLanguage } from "@/context/language-context";
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Helmet } from "react-helmet";
+import { Link } from "wouter";
 import { SchedulingModal } from "@/components/scheduling-modal";
-import { SharedNavbar, SharedFooter, SchedulingContext } from "@/components/shared-layout";
-import { 
-  ArrowRight, 
-  Zap, 
-  Shield, 
-  RefreshCw, 
+import { SharedNavbar, SharedFooter } from "@/components/shared-layout";
+import { SchedulingContext } from "@/context/scheduling-context";
+import {
+  ArrowRight,
+  Zap,
+  Shield,
+  RefreshCw,
   DollarSign,
   ChevronDown,
   Layers,
@@ -29,7 +32,7 @@ import {
   Lock,
   Rocket
 } from "lucide-react";
-import { 
+import {
   SiNotion, SiZapier, SiAirtable, SiGooglesheets, SiHubspot, SiTrello, SiClickup, SiSlack,
   SiWhatsapp, SiAsana, SiGooglemeet, SiZoom, SiSap, SiTwilio, SiSalesforce, SiMailchimp,
   SiShopify, SiWordpress, SiTelegram, SiGmail, SiGooglecalendar, SiStripe
@@ -56,9 +59,9 @@ const stagger = {
 
 function ScrollProgress() {
   const { scrollYProgress } = useScroll();
-  
+
   return (
-    <motion.div 
+    <motion.div
       className="scroll-progress"
       style={{ scaleX: scrollYProgress }}
     />
@@ -67,6 +70,8 @@ function ScrollProgress() {
 
 
 function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
+  const { t } = useLanguage();
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden grid-pattern">
       <div className="hero-glow" />
@@ -80,54 +85,65 @@ function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
           <motion.div variants={fadeInUp}>
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium">
               <Zap className="w-4 h-4" />
-              Productized Software Development
+              {t("hero.badge")}
             </span>
           </motion.div>
-          
-          <motion.h1 
+
+          <motion.h1
             variants={fadeInUp}
             className="text-5xl md:text-7xl lg:text-[5.5rem] font-black leading-[1.05] text-balance"
           >
-            Stop duct-taping your business together with{" "}
-            <span className="text-primary">10 different apps.</span>
+            {t("hero.title.line1")}{" "}
+            <span className="text-primary">{t("hero.title.highlight")}</span>
           </motion.h1>
-          
-          <motion.p 
+
+          <motion.p
             variants={fadeInUp}
             className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed"
           >
-            I build the one platform that does it all—exactly how you work. 
-            Replace your messy tech stack with a single, custom-coded digital backbone.
+            {t("hero.subtitle")}
           </motion.p>
-          
+
           <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <Button 
-              size="lg" 
-              className="text-lg font-bold shimmer-btn glow-border"
-              onClick={onScheduleClick}
-              data-testid="button-cta-hero"
-            >
-              Book a 30-minute System Audit
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-            <span className="text-muted-foreground text-sm">No commitment required</span>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Button
+                size="lg"
+                className="text-lg font-bold shimmer-btn glow-border w-full sm:w-auto"
+                onClick={() => onScheduleClick()}
+                data-testid="button-cta-hero"
+              >
+                {t("hero.cta")}
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+              <Link href="/build">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="text-lg font-bold w-full sm:w-auto"
+                  data-testid="button-cta-hero-build"
+                >
+                  {t("hero.ctaSecondary")}
+                </Button>
+              </Link>
+            </div>
+            <span className="text-muted-foreground text-sm">{t("hero.noCommitment")}</span>
           </motion.div>
         </motion.div>
       </div>
-      
+
       <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background to-transparent" />
     </section>
   );
 }
 
-function ChaosIcon({ 
-  app, 
-  progress, 
-  index 
-}: { 
-  app: { icon?: React.ComponentType<{ className?: string; style?: React.CSSProperties }>; imageSrc?: string; name: string; color: string; x: number; y: number; rotate: number; scale: number; zIndex: number; iconSize: string; useThemeColor?: boolean }; 
-  progress: any; 
-  index: number 
+function ChaosIcon({
+  app,
+  progress,
+  index
+}: {
+  app: { icon?: React.ComponentType<{ className?: string; style?: React.CSSProperties }>; imageSrc?: string; name: string; color: string; x: number; y: number; rotate: number; scale: number; zIndex: number; iconSize: string; useThemeColor?: boolean };
+  progress: any;
+  index: number
 }) {
   const x = useTransform(progress, [0, 0.5, 0.85, 1], [app.x, app.x * 0.6, app.x * 0.1, 0]);
   const y = useTransform(progress, [0, 0.5, 0.85, 1], [app.y, app.y * 0.6, app.y * 0.1, 0]);
@@ -153,7 +169,7 @@ function ChaosIcon({
       dragElastic={0.3}
       whileHover={{ scale: app.scale * 1.15, zIndex: 100 }}
       whileTap={{ scale: app.scale * 0.95 }}
-      transition={{ 
+      transition={{
         type: "spring",
         stiffness: 400,
         damping: 25,
@@ -162,16 +178,16 @@ function ChaosIcon({
     >
       <div className={`flex flex-col items-center ${app.imageSrc ? 'gap-0' : 'gap-1'}`}>
         {app.imageSrc ? (
-          <img 
-            src={app.imageSrc} 
+          <img
+            src={app.imageSrc}
             alt={app.name}
             className={app.iconSize}
-            style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))" }} 
+            style={{ filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))" }}
           />
         ) : app.icon ? (
-          <app.icon 
-            className={`${app.iconSize} ${app.useThemeColor ? 'text-foreground' : ''}`} 
-            style={{ color: app.useThemeColor ? undefined : app.color, filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))" }} 
+          <app.icon
+            className={`${app.iconSize} ${app.useThemeColor ? 'text-foreground' : ''}`}
+            style={{ color: app.useThemeColor ? undefined : app.color, filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))" }}
           />
         ) : null}
         <span className="text-[8px] md:text-[10px] text-muted-foreground font-medium whitespace-nowrap">{app.name}</span>
@@ -181,9 +197,10 @@ function ChaosIcon({
 }
 
 function SpaghettiChaosSection() {
+  const { t } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
   const stickyRef = useRef<HTMLDivElement>(null);
-  
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
@@ -229,12 +246,12 @@ function SpaghettiChaosSection() {
   const glowOpacity = useTransform(scrollYProgress, [0.85, 1], [0, 1]);
   const headlineOpacity = useTransform(scrollYProgress, [0.9, 1], [0, 1]);
   const headlineY = useTransform(scrollYProgress, [0.9, 1], [30, 0]);
-  
+
   const chaosTextOpacity = useTransform(scrollYProgress, [0, 0.3, 0.6], [1, 1, 0]);
 
   return (
     <section id="problem" ref={containerRef} className="relative" style={{ height: "300vh" }}>
-      <div 
+      <div
         ref={stickyRef}
         className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-visible pt-16 md:pt-0"
       >
@@ -243,11 +260,11 @@ function SpaghettiChaosSection() {
           style={{ opacity: chaosTextOpacity }}
         >
           <h2 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black mb-2 md:mb-4">
-            Your business is{" "}
-            <span className="text-destructive">drowning</span> in tabs.
+            {t("chaos.title.line1")}{" "}
+            <span className="text-destructive">{t("chaos.title.highlight")}</span> {t("chaos.title.line2")}
           </h2>
           <p className="text-base md:text-xl text-muted-foreground max-w-2xl mx-auto">
-            I build the one that matters.
+            {t("chaos.subtitle")}
           </p>
         </motion.div>
 
@@ -262,15 +279,15 @@ function SpaghettiChaosSection() {
             className="absolute inset-0 flex items-center justify-center pointer-events-none"
             style={{ opacity: unifiedOpacity, scale: unifiedScale }}
           >
-            <motion.div 
+            <motion.div
               className="absolute w-80 h-80 rounded-full"
-              style={{ 
+              style={{
                 opacity: glowOpacity,
                 background: "radial-gradient(circle, hsl(var(--primary) / 0.4) 0%, transparent 70%)",
                 filter: "blur(40px)"
               }}
             />
-            
+
             <div className="relative" data-testid="icon-unified-platform">
               <div className="w-32 h-32 md:w-44 md:h-44 rounded-3xl bg-gradient-to-br from-primary via-primary/80 to-primary/60 flex items-center justify-center shadow-2xl border border-primary/30">
                 <Zap className="w-16 h-16 md:w-24 md:h-24 text-primary-foreground" />
@@ -284,7 +301,7 @@ function SpaghettiChaosSection() {
             data-testid="text-unified-headline"
           >
             <h3 className="text-2xl md:text-4xl font-black text-foreground mb-2">
-              One System. <span className="text-primary">No Chaos.</span>
+              {t("chaos.unified.title")} <span className="text-primary">{t("chaos.unified.highlight")}</span>
             </h3>
           </motion.div>
         </div>
@@ -293,10 +310,10 @@ function SpaghettiChaosSection() {
           className="absolute bottom-16 left-1/2 -translate-x-1/2 text-center"
           style={{ opacity: chaosTextOpacity }}
         >
-          <p className="text-destructive font-semibold text-sm md:text-base">$2,400+/mo in scattered subscriptions</p>
+          <p className="text-destructive font-semibold text-sm md:text-base">{t("chaos.subscriptions")}</p>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           className="absolute bottom-8 left-1/2 -translate-x-1/2"
           style={{ opacity: chaosTextOpacity }}
         >
@@ -305,7 +322,7 @@ function SpaghettiChaosSection() {
             transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
             className="text-muted-foreground text-xs flex flex-col items-center gap-1"
           >
-            <span>Scroll to unify</span>
+            <span>{t("chaos.scroll")}</span>
             <ChevronDown className="w-4 h-4" />
           </motion.div>
         </motion.div>
@@ -315,6 +332,7 @@ function SpaghettiChaosSection() {
 }
 
 function BentoGridSection() {
+  const { t } = useLanguage();
   const cardRef = useRef<HTMLDivElement>(null);
   const { openScheduling } = useContext(SchedulingContext);
 
@@ -338,10 +356,10 @@ function BentoGridSection() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-black mb-6">
-            The <span className="text-primary">Productized</span> Model
+            {t("bento.title.line1")} <span className="text-primary">{t("bento.title.highlight")}</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            One flat fee. Unlimited evolution. Zero technical debt.
+            {t("bento.subtitle")}
           </p>
         </motion.div>
 
@@ -362,48 +380,48 @@ function BentoGridSection() {
               </div>
             </div>
             <h3 className="text-2xl md:text-3xl font-black mb-4 tracking-tight">
-              A tool that grows at the speed of your imagination.
+              {t("bento.evolution.title")}
             </h3>
             <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-              Stop waiting for roadmap updates from giant SaaS companies. If your business needs a new feature, a custom report, or a fresh automation—we receive your request and <span className="text-foreground font-semibold">start building it the same day</span>. Your subscription includes unlimited, immediate development.
+              {t("bento.evolution.description")} <span className="text-foreground font-semibold">{t("bento.evolution.descriptionHighlight")}</span>{t("bento.evolution.descriptionEnd")}
             </p>
-            
+
             {/* Feature Request → Live Feature Animation */}
             <div className="flex items-center gap-4 md:gap-6">
-              <motion.div 
+              <motion.div
                 className="flex-1 p-4 rounded-xl bg-muted/50 border border-border"
                 initial={{ x: 0 }}
                 whileInView={{ x: 0 }}
               >
                 <div className="flex items-center gap-2 mb-2">
                   <MessageSquare className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Feature Request</span>
+                  <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{t("bento.evolution.requestLabel")}</span>
                 </div>
-                <p className="text-sm font-medium">"I need a client portal with live updates"</p>
+                <p className="text-sm font-medium">{t("bento.evolution.requestExample")}</p>
               </motion.div>
-              
+
               <motion.div
                 animate={{ x: [0, 4, 0] }}
                 transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
               >
                 <ArrowRight className="w-6 h-6 text-primary" />
               </motion.div>
-              
-              <motion.div 
+
+              <motion.div
                 className="flex-1 p-4 rounded-xl bg-primary/10 border border-primary/20"
                 initial={{ opacity: 0.5 }}
                 whileInView={{ opacity: 1 }}
               >
                 <div className="flex items-center gap-2 mb-2">
                   <Check className="w-4 h-4 text-primary" />
-                  <span className="text-xs font-medium text-primary uppercase tracking-wider">Live Feature</span>
+                  <span className="text-xs font-medium text-primary uppercase tracking-wider">{t("bento.evolution.liveLabel")}</span>
                 </div>
-                <p className="text-sm font-medium">Client Portal deployed & active</p>
+                <p className="text-sm font-medium">{t("bento.evolution.liveExample")}</p>
               </motion.div>
             </div>
-            
+
             <p className="text-sm text-primary font-semibold mt-6">
-              Request → Reality. No extra fees, no tickets, just progress.
+              {t("bento.evolution.tagline")}
             </p>
           </motion.div>
 
@@ -419,26 +437,26 @@ function BentoGridSection() {
             <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
               <Bot className="w-6 h-6 text-primary" />
             </div>
-            <h3 className="text-xl font-black mb-2 tracking-tight">Custom Context AI</h3>
+            <h3 className="text-xl font-black mb-2 tracking-tight">{t("bento.ai.title")}</h3>
             <p className="text-sm text-muted-foreground mb-6">
-              Generic AI is for writing emails. Your built-in AI Partner is for <span className="text-foreground font-medium">running a company</span>.
+              {t("bento.ai.description")} <span className="text-foreground font-medium">{t("bento.ai.descriptionHighlight")}</span>.
             </p>
-            
+
             {/* Mini Chat Preview */}
             <div className="space-y-3 font-mono text-xs">
               <div className="p-3 rounded-lg bg-muted/50 border border-border">
-                <span className="text-muted-foreground">You:</span>
-                <p className="mt-1">"Top 3 clients this month?"</p>
+                <span className="text-muted-foreground">{t("bento.ai.chatYou")}</span>
+                <p className="mt-1">{t("bento.ai.chatQuestion")}</p>
               </div>
               <div className="p-3 rounded-lg bg-primary/10 border border-primary/20">
-                <span className="text-primary">AI:</span>
-                <p className="mt-1">Based on your CRM data: [Client A], [Client B], [Client C]</p>
+                <span className="text-primary">{t("bento.ai.chatAI")}</span>
+                <p className="mt-1">{t("bento.ai.chatAnswer")}</p>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-2 mt-6 text-xs text-muted-foreground">
               <Lock className="w-3 h-3" />
-              <span>Your data never leaves your ecosystem</span>
+              <span>{t("bento.ai.privacy")}</span>
             </div>
           </motion.div>
 
@@ -454,9 +472,9 @@ function BentoGridSection() {
             <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
               <Layers className="w-6 h-6 text-primary" />
             </div>
-            <h3 className="text-xl font-bold mb-3">Total Integration</h3>
+            <h3 className="text-xl font-bold mb-3">{t("bento.integration.title")}</h3>
             <p className="text-muted-foreground">
-              Connect your existing tools or <span className="text-foreground font-semibold">replace them entirely</span>. Your platform, your rules.
+              {t("bento.integration.description")} <span className="text-foreground font-semibold">{t("bento.integration.descriptionHighlight")}</span>{t("bento.integration.descriptionEnd")}
             </p>
           </motion.div>
 
@@ -471,42 +489,155 @@ function BentoGridSection() {
             <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-6">
               <Shield className="w-6 h-6 text-primary" />
             </div>
-            <h3 className="text-xl font-bold mb-3">Zero Maintenance</h3>
+            <h3 className="text-xl font-bold mb-3">{t("bento.maintenance.title")}</h3>
             <p className="text-muted-foreground">
-              Stop paying for Zapier experts. I am your dedicated systems partner.
+              {t("bento.maintenance.description")}
             </p>
           </motion.div>
 
-          {/* Pricing Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.4 }}
-            className="bento-card md:col-span-3 p-8 md:p-10 bg-gradient-to-br from-primary/10 via-card to-card"
-            onMouseMove={handleMouseMove}
-          >
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-              <div>
-                <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center mb-6">
-                  <DollarSign className="w-6 h-6 text-primary" />
+          {/* Pricing Card REMOVED - Replaced by dedicated section */}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function PricingSection() {
+  const { t } = useLanguage();
+  const { openScheduling } = useContext(SchedulingContext);
+
+  const plans = [
+    {
+      id: "accelerator",
+      icon: FaShoppingCart,
+      color: "from-blue-500/20 to-cyan-500/20",
+      borderColor: "border-blue-500/20",
+      title: t("pricing.starter.title"),
+      subtitle: t("pricing.starter.subtitle"),
+      description: t("pricing.starter.description"),
+      priceSetup: t("pricing.starter.price.setup"),
+      priceMonthly: t("pricing.starter.price.monthly"),
+      features: [
+        t("pricing.starter.feature1"),
+        t("pricing.starter.feature2"),
+        t("pricing.starter.feature3"),
+        t("pricing.starter.feature4"),
+      ],
+      goal: t("pricing.starter.goal")
+    },
+    {
+      id: "core-catalyst",
+      icon: Zap,
+      color: "from-orange-500/20 to-red-500/20",
+      borderColor: "border-orange-500/20",
+      title: t("pricing.growth.title"),
+      subtitle: t("pricing.growth.subtitle"),
+      description: t("pricing.growth.description"),
+      priceSetup: t("pricing.growth.price.setup"),
+      priceMonthly: t("pricing.growth.price.monthly"),
+      features: [
+        t("pricing.growth.feature1"),
+        t("pricing.growth.feature2"),
+        t("pricing.growth.feature3"),
+        t("pricing.growth.feature4"),
+      ],
+      goal: t("pricing.growth.goal")
+    },
+    {
+      id: "enterprise",
+      icon: Building2,
+      color: "from-purple-500/20 to-pink-500/20",
+      borderColor: "border-purple-500/20",
+      title: t("pricing.enterprise.title"),
+      subtitle: t("pricing.enterprise.subtitle"),
+      description: t("pricing.enterprise.description"),
+      priceSetup: t("pricing.enterprise.price.setup"),
+      priceMonthly: t("pricing.enterprise.price.monthly"),
+      features: [
+        t("pricing.enterprise.feature1"),
+        t("pricing.enterprise.feature2"),
+        t("pricing.enterprise.feature3"),
+        t("pricing.enterprise.goal")
+      ],
+      goal: t("pricing.enterprise.goal")
+    }
+  ];
+
+  return (
+    <section id="pricing" className="py-32 relative">
+      <div className="max-w-7xl mx-auto px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="text-center mb-16"
+        >
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
+            <DollarSign className="w-4 h-4" />
+            {t("nav.pricing")}
+          </span>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6">
+            {t("pricing.title")}
+          </h2>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+            {t("pricing.subtitle")}
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {plans.map((plan, index) => (
+            <motion.div
+              key={plan.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              className={`relative p-8 rounded-3xl border ${plan.borderColor} bg-card/30 backdrop-blur-sm hover:bg-card/50 transition-all duration-500 group overflow-hidden flex flex-col`}
+            >
+              <div className={`absolute inset-0 bg-gradient-to-br ${plan.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+
+              <div className="relative z-10 flex-1 flex flex-col">
+                <div className="w-14 h-14 rounded-2xl bg-muted/50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                  <plan.icon className="w-7 h-7 text-foreground" />
                 </div>
-                <h3 className="text-2xl md:text-3xl font-bold mb-3">Fixed Pricing</h3>
-                <p className="text-muted-foreground text-lg">
-                  No hourly billing. No surprises. <span className="text-primary font-bold">$1,000/mo</span> for a platform that never stops evolving.
-                </p>
+
+                <div className="mb-6">
+                  <h3 className="text-2xl font-black mb-2">{plan.title}</h3>
+                  <p className="text-primary font-bold text-sm uppercase tracking-wider mb-4">{plan.subtitle}</p>
+                  <p className="text-muted-foreground">{plan.description}</p>
+                </div>
+
+                <div className="mb-8 p-4 rounded-xl bg-background/50 border border-border/50">
+                  <div className="flex items-center gap-2 text-sm font-medium mb-1">
+                    <span className="w-2 h-2 rounded-full bg-primary" />
+                    {plan.priceSetup}
+                  </div>
+                  <div className="text-2xl font-black">{plan.priceMonthly}</div>
+                </div>
+
+                <div className="space-y-4 mb-8 flex-1">
+                  {plan.features.map((feature, i) => (
+                    <div key={i} className="flex items-start gap-3 text-sm">
+                      <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                      <span className="text-muted-foreground">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-auto">
+                  <p className="text-xs font-semibold text-center text-primary mb-4 italic">"{plan.goal}"</p>
+                  <Button
+                    size="lg"
+                    className="w-full font-bold shimmer-btn"
+                    onClick={() => openScheduling(plan.title)}
+                  >
+                    {t("pricing.cta")}
+                  </Button>
+                </div>
               </div>
-              <Button 
-                size="lg" 
-                className="font-bold shimmer-btn"
-                onClick={openScheduling}
-                data-testid="button-cta-bento"
-              >
-                Get Started
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
-            </div>
-          </motion.div>
+            </motion.div>
+          ))}
         </div>
       </div>
     </section>
@@ -514,6 +645,8 @@ function BentoGridSection() {
 }
 
 function AIPartnerSection() {
+  const { t } = useLanguage();
+
   return (
     <section className="py-32 relative overflow-hidden">
       <div className="max-w-6xl mx-auto px-6">
@@ -527,15 +660,15 @@ function AIPartnerSection() {
           >
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
               <Bot className="w-4 h-4" />
-              Built-in AI Partner
+              {t("ai.badge")}
             </span>
             <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
-              Meet the AI that actually <span className="text-primary">knows</span> your business.
+              {t("ai.title.line1")} <span className="text-primary">{t("ai.title.highlight")}</span> {t("ai.title.line2")}
             </h2>
             <p className="text-xl text-muted-foreground mb-8">
-              Generic AI is for writing emails. Your built-in AI Partner is for <span className="text-foreground font-semibold">running a company</span>.
+              {t("ai.subtitle")} <span className="text-foreground font-semibold">{t("ai.subtitleHighlight")}</span>.
             </p>
-            
+
             {/* Key Points */}
             <div className="space-y-4">
               <div className="flex items-start gap-3">
@@ -543,8 +676,8 @@ function AIPartnerSection() {
                   <Zap className="w-4 h-4 text-primary" />
                 </div>
                 <div>
-                  <h4 className="font-bold mb-1">Zero Generic Responses</h4>
-                  <p className="text-muted-foreground text-sm">It doesn't guess; it calculates based on your actual data.</p>
+                  <h4 className="font-bold mb-1">{t("ai.point1.title")}</h4>
+                  <p className="text-muted-foreground text-sm">{t("ai.point1.description")}</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -552,8 +685,8 @@ function AIPartnerSection() {
                   <Layers className="w-4 h-4 text-primary" />
                 </div>
                 <div>
-                  <h4 className="font-bold mb-1">Feature Integration</h4>
-                  <p className="text-muted-foreground text-sm">The AI can trigger actions, like "Send a WhatsApp to all pending leads."</p>
+                  <h4 className="font-bold mb-1">{t("ai.point2.title")}</h4>
+                  <p className="text-muted-foreground text-sm">{t("ai.point2.description")}</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -561,13 +694,26 @@ function AIPartnerSection() {
                   <Lock className="w-4 h-4 text-primary" />
                 </div>
                 <div>
-                  <h4 className="font-bold mb-1">Privacy First</h4>
-                  <p className="text-muted-foreground text-sm">Your data never leaves your private ecosystem.</p>
+                  <h4 className="font-bold mb-1">{t("ai.point3.title")}</h4>
+                  <p className="text-muted-foreground text-sm">{t("ai.point3.description")}</p>
                 </div>
               </div>
             </div>
+            <div className="mt-8">
+              <Link href="/build">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="font-bold text-lg"
+                  data-testid="button-cta-ai"
+                >
+                  {t("ai.cta")}
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </Link>
+            </div>
           </motion.div>
-          
+
           {/* Chat Interface Mockup */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
@@ -583,18 +729,18 @@ function AIPartnerSection() {
                   <Bot className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-sm">AI Partner</h4>
-                  <p className="text-xs text-muted-foreground">Connected to your platform</p>
+                  <h4 className="font-bold text-sm">{t("ai.chatHeader")}</h4>
+                  <p className="text-xs text-muted-foreground">{t("ai.chatStatus")}</p>
                 </div>
                 <div className="ml-auto flex items-center gap-1.5">
                   <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-xs text-muted-foreground">Live</span>
+                  <span className="text-xs text-muted-foreground">{t("ai.chatLive")}</span>
                 </div>
               </div>
-              
+
               {/* Chat Messages */}
               <div className="space-y-4 font-mono text-sm">
-                <motion.div 
+                <motion.div
                   className="flex justify-end"
                   initial={{ opacity: 0, y: 10 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -602,11 +748,11 @@ function AIPartnerSection() {
                   transition={{ delay: 0.4 }}
                 >
                   <div className="p-3 rounded-xl bg-primary text-primary-foreground max-w-[80%]">
-                    "Who are my top 3 real estate clients this month?"
+                    {t("ai.chatQ1")}
                   </div>
                 </motion.div>
-                
-                <motion.div 
+
+                <motion.div
                   className="flex justify-start"
                   initial={{ opacity: 0, y: 10 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -614,7 +760,7 @@ function AIPartnerSection() {
                   transition={{ delay: 0.6 }}
                 >
                   <div className="p-3 rounded-xl bg-muted/50 border border-border max-w-[85%]">
-                    <p className="mb-2">Based on your integrated Mercado Libre data and internal CRM:</p>
+                    <p className="mb-2">{t("ai.chatA1.intro")}</p>
                     <ol className="list-decimal list-inside space-y-1 text-muted-foreground">
                       <li><span className="text-foreground font-medium">Inmobiliaria Luna</span> - $84,500</li>
                       <li><span className="text-foreground font-medium">Propiedades XYZ</span> - $67,200</li>
@@ -622,8 +768,8 @@ function AIPartnerSection() {
                     </ol>
                   </div>
                 </motion.div>
-                
-                <motion.div 
+
+                <motion.div
                   className="flex justify-end"
                   initial={{ opacity: 0, y: 10 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -631,11 +777,11 @@ function AIPartnerSection() {
                   transition={{ delay: 0.8 }}
                 >
                   <div className="p-3 rounded-xl bg-primary text-primary-foreground max-w-[80%]">
-                    "Send a WhatsApp to all pending leads"
+                    {t("ai.chatQ2")}
                   </div>
                 </motion.div>
-                
-                <motion.div 
+
+                <motion.div
                   className="flex justify-start"
                   initial={{ opacity: 0, y: 10 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -645,17 +791,17 @@ function AIPartnerSection() {
                   <div className="p-3 rounded-xl bg-muted/50 border border-border">
                     <div className="flex items-center gap-2">
                       <Check className="w-4 h-4 text-green-500" />
-                      <span>Sent to 23 leads via WhatsApp Business API</span>
+                      <span>{t("ai.chatA2")}</span>
                     </div>
                   </div>
                 </motion.div>
               </div>
-              
+
               {/* Input Area */}
               <div className="mt-6 flex items-center gap-2 p-3 rounded-xl bg-muted/30 border border-border">
-                <input 
-                  type="text" 
-                  placeholder="Ask your AI Partner..."
+                <input
+                  type="text"
+                  placeholder={t("ai.chatPlaceholder")}
                   className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
                   disabled
                   data-testid="input-ai-chat"
@@ -667,14 +813,15 @@ function AIPartnerSection() {
             </div>
           </motion.div>
         </div>
-      </div>
-    </section>
+      </div >
+    </section >
   );
 }
 
 function ComparisonToggleSection() {
+  const { t } = useLanguage();
   const [showYourPlatform, setShowYourPlatform] = useState(true);
-  
+
   return (
     <section className="py-24 bg-card/30">
       <div className="max-w-4xl mx-auto px-6">
@@ -686,13 +833,13 @@ function ComparisonToggleSection() {
           className="text-center mb-12"
         >
           <h2 className="text-3xl md:text-4xl font-black mb-4">
-            See the difference
+            {t("comparison.title")}
           </h2>
           <p className="text-muted-foreground">
-            Toggle between approaches to see what you're missing.
+            {t("comparison.subtitle")}
           </p>
         </motion.div>
-        
+
         {/* Toggle */}
         <div className="flex justify-center mb-10">
           <div className="inline-flex p-1 rounded-xl bg-muted/50 border border-border">
@@ -703,7 +850,7 @@ function ComparisonToggleSection() {
               className={`toggle-elevate ${!showYourPlatform ? 'toggle-elevated' : ''}`}
               data-testid="button-toggle-standard"
             >
-              Standard SaaS
+              {t("comparison.standardSaas")}
             </Button>
             <Button
               variant={showYourPlatform ? "default" : "ghost"}
@@ -712,11 +859,11 @@ function ComparisonToggleSection() {
               className={`toggle-elevate ${showYourPlatform ? 'toggle-elevated' : ''}`}
               data-testid="button-toggle-platform"
             >
-              Your Platform
+              {t("comparison.yourPlatform")}
             </Button>
           </div>
         </div>
-        
+
         {/* Comparison Content */}
         <AnimatePresence mode="wait">
           {!showYourPlatform ? (
@@ -732,22 +879,22 @@ function ComparisonToggleSection() {
                 <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center mb-4">
                   <RefreshCw className="w-5 h-5 text-muted-foreground" />
                 </div>
-                <h4 className="font-bold mb-2 text-muted-foreground">Slow Updates</h4>
-                <p className="text-sm text-muted-foreground">Wait months for features on someone else's roadmap.</p>
+                <h4 className="font-bold mb-2 text-muted-foreground">{t("comparison.standard.slowUpdates")}</h4>
+                <p className="text-sm text-muted-foreground">{t("comparison.standard.slowUpdatesDesc")}</p>
               </div>
               <div className="bento-card p-6 opacity-60">
                 <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center mb-4">
                   <Layers className="w-5 h-5 text-muted-foreground" />
                 </div>
-                <h4 className="font-bold mb-2 text-muted-foreground">Static Tools</h4>
-                <p className="text-sm text-muted-foreground">One-size-fits-all solutions that don't adapt to you.</p>
+                <h4 className="font-bold mb-2 text-muted-foreground">{t("comparison.standard.staticTools")}</h4>
+                <p className="text-sm text-muted-foreground">{t("comparison.standard.staticToolsDesc")}</p>
               </div>
               <div className="bento-card p-6 opacity-60">
                 <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center mb-4">
                   <Bot className="w-5 h-5 text-muted-foreground" />
                 </div>
-                <h4 className="font-bold mb-2 text-muted-foreground">Generic AI</h4>
-                <p className="text-sm text-muted-foreground">AI that knows nothing about your specific business.</p>
+                <h4 className="font-bold mb-2 text-muted-foreground">{t("comparison.standard.genericAI")}</h4>
+                <p className="text-sm text-muted-foreground">{t("comparison.standard.genericAIDesc")}</p>
               </div>
             </motion.div>
           ) : (
@@ -763,56 +910,82 @@ function ComparisonToggleSection() {
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                   <Rocket className="w-5 h-5 text-primary" />
                 </div>
-                <h4 className="font-bold mb-2">Instant Updates</h4>
-                <p className="text-sm text-muted-foreground">Request today, deployed today. No waiting.</p>
+                <h4 className="font-bold mb-2">{t("comparison.platform.instantUpdates")}</h4>
+                <p className="text-sm text-muted-foreground">{t("comparison.platform.instantUpdatesDesc")}</p>
               </div>
               <div className="bento-card p-6 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                   <Sparkles className="w-5 h-5 text-primary" />
                 </div>
-                <h4 className="font-bold mb-2">Living Platform</h4>
-                <p className="text-sm text-muted-foreground">Evolves continuously based on your exact needs.</p>
+                <h4 className="font-bold mb-2">{t("comparison.platform.livingPlatform")}</h4>
+                <p className="text-sm text-muted-foreground">{t("comparison.platform.livingPlatformDesc")}</p>
               </div>
               <div className="bento-card p-6 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent">
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
                   <Bot className="w-5 h-5 text-primary" />
                 </div>
-                <h4 className="font-bold mb-2">Integrated AI</h4>
-                <p className="text-sm text-muted-foreground">AI trained on your data, processes, and context.</p>
+                <h4 className="font-bold mb-2">{t("comparison.platform.integratedAI")}</h4>
+                <p className="text-sm text-muted-foreground">{t("comparison.platform.integratedAIDesc")}</p>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
+
+        <div className="flex justify-center mt-12">
+          <Link href="/build">
+            <Button
+              size="lg"
+              className="font-bold shimmer-btn"
+              data-testid="button-cta-comparison"
+            >
+              {t("comparison.cta")}
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </Link>
+        </div>
       </div>
     </section>
   );
 }
 
 function ProofSection() {
+  const { t } = useLanguage();
   const portfolioItems = [
     {
       name: "Wealthfit.com",
-      category: "Financial Systems",
-      description: "Unified investment tracking, client portal, and automated reporting for a wealth management firm.",
+      category: t("proof.wealthfit.category"),
+      description: t("proof.wealthfit.description"),
       icon: DollarSign,
       gradient: "from-emerald-500/20 to-emerald-500/5",
-      evolutionTag: "Evolved with 100+ custom features since launch",
+      evolutionTag: t("proof.wealthfit.tag"),
+      link: "https://wealthfit.com",
     },
     {
       name: "EventGrowth.app",
-      category: "Growth Infrastructure",
-      description: "End-to-end event management with ticketing, CRM, marketing automation, and analytics.",
+      category: t("proof.eventgrowth.category"),
+      description: t("proof.eventgrowth.description"),
       icon: TrendingUp,
       gradient: "from-blue-500/20 to-blue-500/5",
-      evolutionTag: "Evolved with 100+ custom features since launch",
+      evolutionTag: t("proof.eventgrowth.tag"),
+      link: "https://eventgrowth.app",
     },
     {
       name: "AgencyBoost.app",
-      category: "Internal Automations",
-      description: "Project management, time tracking, invoicing, and client communication in one platform.",
+      category: t("proof.agencyboost.category"),
+      description: t("proof.agencyboost.description"),
       icon: Briefcase,
       gradient: "from-purple-500/20 to-purple-500/5",
-      evolutionTag: "Evolved with 100+ custom features since launch",
+      evolutionTag: t("proof.agencyboost.tag"),
+      link: "https://agencyboost.app",
+    },
+    {
+      name: "DataLight.app",
+      category: t("proof.datalight.category"),
+      description: t("proof.datalight.description"),
+      icon: Layers,
+      gradient: "from-cyan-500/20 to-cyan-500/5",
+      evolutionTag: t("proof.datalight.tag"),
+      link: "https://datalight.app",
     },
   ];
 
@@ -827,25 +1000,28 @@ function ProofSection() {
           className="text-center mb-16"
         >
           <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
-            The Proof
+            {t("proof.badge")}
           </span>
           <h2 className="text-4xl md:text-6xl font-black mb-6">
-            Real systems. Real results.
+            {t("proof.title")}
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Case studies from businesses that replaced their SaaS chaos with unified platforms.
+            {t("proof.subtitle")}
           </p>
         </motion.div>
 
         <div className="grid md:grid-cols-3 gap-6">
           {portfolioItems.map((item, i) => (
-            <motion.div
+            <motion.a
               key={item.name}
+              href={item.link}
+              target="_blank"
+              rel="noopener noreferrer"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="portfolio-card group cursor-pointer"
+              className="portfolio-card group cursor-pointer block"
               data-testid={`card-portfolio-${item.name.toLowerCase().replace('.', '-')}`}
             >
               <div className={`h-48 bg-gradient-to-br ${item.gradient} flex items-center justify-center relative`}>
@@ -860,7 +1036,7 @@ function ProofSection() {
                 </div>
                 <h3 className="text-xl font-bold mb-2">{item.name}</h3>
                 <p className="text-muted-foreground text-sm mb-3">{item.description}</p>
-                <span 
+                <span
                   className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-medium"
                   data-testid={`tag-evolution-${item.name.toLowerCase().replace('.', '-')}`}
                 >
@@ -868,7 +1044,7 @@ function ProofSection() {
                   {item.evolutionTag}
                 </span>
               </div>
-            </motion.div>
+            </motion.a>
           ))}
         </div>
       </div>
@@ -877,11 +1053,12 @@ function ProofSection() {
 }
 
 function ClientsSection() {
+  const { t } = useLanguage();
   const industries = [
-    { name: "Real Estate", icon: Building2 },
-    { name: "Supply Chain", icon: Layers },
-    { name: "Finance", icon: DollarSign },
-    { name: "Agencies", icon: Briefcase },
+    { name: t("clients.realEstate"), icon: Building2 },
+    { name: t("clients.supplyChain"), icon: Layers },
+    { name: t("clients.finance"), icon: DollarSign },
+    { name: t("clients.agencies"), icon: Briefcase },
   ];
 
   return (
@@ -893,9 +1070,9 @@ function ClientsSection() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <p className="text-muted-foreground text-lg">Industries we serve</p>
+          <p className="text-muted-foreground text-lg">{t("clients.title")}</p>
         </motion.div>
-        
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {industries.map((industry, i) => (
             <motion.div
@@ -920,18 +1097,23 @@ function ClientsSection() {
 
 
 export default function LandingPage() {
+  const { t } = useLanguage();
   const [schedulingOpen, setSchedulingOpen] = useState(false);
-  
-  const openScheduling = () => setSchedulingOpen(true);
+  const [selectedPlan, setSelectedPlan] = useState<string | undefined>();
+
+  const openScheduling = (plan?: string) => {
+    if (plan) setSelectedPlan(plan);
+    setSchedulingOpen(true);
+  };
 
   return (
     <SchedulingContext.Provider value={{ openScheduling }}>
       <div className="min-h-screen bg-background noise-bg">
         <Helmet>
-          <title>ALLOY - Custom Software Platforms | Replace SaaS Chaos with Clarity</title>
-          <meta name="description" content="Stop paying for 10+ SaaS apps. ALLOY builds custom, unified software platforms for $1,000/mo. CRM, ERP, automations - all in one system built exactly for your workflow." />
-          <meta property="og:title" content="ALLOY - Custom Software Platforms" />
-          <meta property="og:description" content="Replace your messy tech stack with a single, custom-coded digital backbone. One flat fee, unlimited evolution." />
+          <title>{t("seo.landing.title")}</title>
+          <meta name="description" content={t("seo.landing.description")} />
+          <meta property="og:title" content={t("seo.landing.ogTitle")} />
+          <meta property="og:description" content={t("seo.landing.ogDescription")} />
           <meta property="og:type" content="website" />
         </Helmet>
         <ScrollProgress />
@@ -939,12 +1121,20 @@ export default function LandingPage() {
         <HeroSection onScheduleClick={openScheduling} />
         <SpaghettiChaosSection />
         <BentoGridSection />
+        <PricingSection />
         <AIPartnerSection />
         <ComparisonToggleSection />
         <ProofSection />
         <ClientsSection />
         <SharedFooter />
-        <SchedulingModal open={schedulingOpen} onOpenChange={setSchedulingOpen} />
+        <SchedulingModal
+          open={schedulingOpen}
+          onOpenChange={(open) => {
+            setSchedulingOpen(open);
+            if (!open) setSelectedPlan(undefined);
+          }}
+          prefillData={selectedPlan ? { businessDescription: `Selected Plan: ${selectedPlan}\n\n` } : undefined}
+        />
       </div>
     </SchedulingContext.Provider>
   );
