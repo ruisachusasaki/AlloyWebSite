@@ -40,7 +40,7 @@ export const en: Record<string, string> = {
     "chaos.subtitle": "We build the one that matters.",
     "chaos.unified.title": "One System.",
     "chaos.unified.highlight": "No Chaos.",
-    "chaos.subscriptions": "$2,400+/mo in scattered subscriptions",
+    "chaos.subscriptions": "$3,000+/mo in scattered subscriptions",
     "chaos.scroll": "Scroll to unify",
 
     // ─── Bento Grid Section ───

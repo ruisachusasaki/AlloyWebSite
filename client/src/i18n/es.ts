@@ -40,7 +40,7 @@ export const es: Record<string, string> = {
     "chaos.subtitle": "Nosotros construimos la que importa.",
     "chaos.unified.title": "Un Sistema.",
     "chaos.unified.highlight": "Sin Caos.",
-    "chaos.subscriptions": "+$2.400/mes en suscripciones dispersas",
+    "chaos.subscriptions": "+$3.000/mes en suscripciones dispersas",
     "chaos.scroll": "Scrolleá para unificar",
 
     // ─── Bento Grid Section ───

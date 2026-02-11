@@ -251,10 +251,10 @@ function SpaghettiChaosSection() {
   const chaosTextOpacity = useTransform(scrollYProgress, [0, 0.3, 0.6], [1, 1, 0]);
 
   return (
-    <section id="problem" ref={containerRef} className="relative" style={{ height: "200vh" }}>
+    <section id="problem" ref={containerRef} className="relative md:mt-24" style={{ height: "200vh" }}>
       <div
         ref={stickyRef}
-        className="sticky top-0 h-screen flex flex-col items-center justify-start md:justify-center overflow-x-hidden pt-12 md:pt-0"
+        className="sticky top-0 h-screen flex flex-col items-center justify-start md:justify-center overflow-x-hidden pt-12 md:pt-0 gap-4 md:gap-8"
       >
         <motion.div
           className="text-center mb-4 md:mb-8 px-6"
@@ -269,7 +269,7 @@ function SpaghettiChaosSection() {
           </p>
         </motion.div>
 
-        <div className="relative w-full max-w-6xl h-[420px] sm:h-[520px] md:h-[620px] flex items-center justify-center">
+        <div className="relative w-full max-w-6xl h-[420px] sm:h-[520px] md:h-[700px] flex items-center justify-center">
           <div className="relative w-full h-full">
             {chaosApps.map((app, i) => (
               <ChaosIcon key={app.name} app={app} progress={scrollYProgress} index={i} />
@@ -305,14 +305,14 @@ function SpaghettiChaosSection() {
               {t("chaos.unified.title")} <span className="text-primary">{t("chaos.unified.highlight")}</span>
             </h3>
           </motion.div>
-        </div>
 
-        <motion.div
-          className="absolute bottom-16 left-1/2 -translate-x-1/2 text-center"
-          style={{ opacity: chaosTextOpacity }}
-        >
-          <p className="text-destructive font-semibold text-sm md:text-base">{t("chaos.subscriptions")}</p>
-        </motion.div>
+          <motion.div
+            className="absolute bottom-4 left-0 w-full text-center px-4 pointer-events-none"
+            style={{ opacity: chaosTextOpacity }}
+          >
+            <p className="text-destructive font-semibold text-sm md:text-base">{t("chaos.subscriptions")}</p>
+          </motion.div>
+        </div>
 
         <motion.div
           className="absolute bottom-8 left-1/2 -translate-x-1/2"
