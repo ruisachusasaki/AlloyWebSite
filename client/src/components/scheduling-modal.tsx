@@ -179,7 +179,7 @@ export function SchedulingModal({ open, onOpenChange, prefillData }: SchedulingM
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className={`max-h-[85vh] p-0 gap-0 flex flex-col bg-background/80 backdrop-blur-xl border-border/50 shadow-2xl transition-all duration-300 ${step === 'calendar' ? 'sm:max-w-[750px]' : 'sm:max-w-[540px]'}`}>
+      <DialogContent className={`w-[95vw] sm:w-full max-h-[85vh] p-0 gap-0 flex flex-col bg-background/80 backdrop-blur-xl border-border/50 shadow-2xl transition-all duration-300 ${step === 'calendar' ? 'sm:max-w-[750px] rounded-2xl' : 'sm:max-w-[540px] rounded-2xl'}`}>
         <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-primary/5 pointer-events-none" />
 
         <DialogHeader className="relative p-4 sm:p-6 pb-3 sm:pb-4 border-b border-border/50 flex-shrink-0">

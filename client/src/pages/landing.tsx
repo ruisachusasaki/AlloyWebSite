@@ -30,18 +30,19 @@ import {
   Check,
   Send,
   Lock,
-  Rocket
+  Rocket,
+  ShoppingCart
 } from "lucide-react";
 import {
   SiNotion, SiZapier, SiAirtable, SiGooglesheets, SiHubspot, SiTrello, SiClickup, SiSlack,
   SiWhatsapp, SiAsana, SiGooglemeet, SiZoom, SiSap, SiTwilio, SiSalesforce, SiMailchimp,
   SiShopify, SiWordpress, SiTelegram, SiGmail, SiGooglecalendar, SiStripe
 } from "react-icons/si";
-import { FaShoppingCart } from "react-icons/fa";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import darwinLogo from "@assets/darwin-ai-logo_1769368824707.png";
 import meliLogo from "@assets/image_1769370076739.png";
 import tokkoLogo from "@assets/tokko_broker_logo_(1)_1_1769369724733.png";
+import alloyLogo from "@assets/Alloy_Logo_1770503010900.png";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 40 },
@@ -91,7 +92,7 @@ function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
 
           <motion.h1
             variants={fadeInUp}
-            className="text-5xl md:text-7xl lg:text-[5.5rem] font-black leading-[1.05] text-balance"
+            className="text-4xl sm:text-5xl md:text-7xl lg:text-[5.5rem] font-black leading-[1.05] text-balance"
           >
             {t("hero.title.line1")}{" "}
             <span className="text-primary">{t("hero.title.highlight")}</span>
@@ -250,10 +251,10 @@ function SpaghettiChaosSection() {
   const chaosTextOpacity = useTransform(scrollYProgress, [0, 0.3, 0.6], [1, 1, 0]);
 
   return (
-    <section id="problem" ref={containerRef} className="relative" style={{ height: "300vh" }}>
+    <section id="problem" ref={containerRef} className="relative" style={{ height: "200vh" }}>
       <div
         ref={stickyRef}
-        className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-visible pt-16 md:pt-0"
+        className="sticky top-0 h-screen flex flex-col items-center justify-start md:justify-center overflow-x-hidden pt-12 md:pt-0"
       >
         <motion.div
           className="text-center mb-4 md:mb-8 px-6"
@@ -290,13 +291,13 @@ function SpaghettiChaosSection() {
 
             <div className="relative" data-testid="icon-unified-platform">
               <div className="w-32 h-32 md:w-44 md:h-44 rounded-3xl bg-gradient-to-br from-primary via-primary/80 to-primary/60 flex items-center justify-center shadow-2xl border border-primary/30">
-                <Zap className="w-16 h-16 md:w-24 md:h-24 text-primary-foreground" />
+                <img src={alloyLogo} alt="Alloy" className="w-20 h-20 md:w-28 md:h-28 object-contain brightness-0 invert drop-shadow-md" />
               </div>
             </div>
           </motion.div>
 
           <motion.div
-            className="absolute bottom-4 left-1/2 -translate-x-1/2 text-center whitespace-nowrap"
+            className="absolute bottom-4 left-0 w-full text-center whitespace-normal md:whitespace-nowrap px-4"
             style={{ opacity: headlineOpacity, y: headlineY }}
             data-testid="text-unified-headline"
           >
@@ -346,7 +347,7 @@ function BentoGridSection() {
   };
 
   return (
-    <section id="solution" className="py-32 relative">
+    <section id="solution" className="py-8 md:py-32 relative">
       <div className="max-w-6xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -355,7 +356,7 @@ function BentoGridSection() {
           transition={{ duration: 0.7 }}
           className="text-center mb-16"
         >
-          <h2 className="text-4xl md:text-6xl lg:text-7xl font-black mb-6">
+          <h2 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-6 px-4">
             {t("bento.title.line1")} <span className="text-primary">{t("bento.title.highlight")}</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -387,9 +388,9 @@ function BentoGridSection() {
             </p>
 
             {/* Feature Request → Live Feature Animation */}
-            <div className="flex items-center gap-4 md:gap-6">
+            <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
               <motion.div
-                className="flex-1 p-4 rounded-xl bg-muted/50 border border-border"
+                className="w-full md:flex-1 p-4 rounded-xl bg-muted/50 border border-border"
                 initial={{ x: 0 }}
                 whileInView={{ x: 0 }}
               >
@@ -401,14 +402,14 @@ function BentoGridSection() {
               </motion.div>
 
               <motion.div
-                animate={{ x: [0, 4, 0] }}
+                animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
               >
-                <ArrowRight className="w-6 h-6 text-primary" />
+                <ArrowRight className="w-6 h-6 text-primary rotate-90 md:rotate-0" />
               </motion.div>
 
               <motion.div
-                className="flex-1 p-4 rounded-xl bg-primary/10 border border-primary/20"
+                className="w-full md:flex-1 p-4 rounded-xl bg-primary/10 border border-primary/20"
                 initial={{ opacity: 0.5 }}
                 whileInView={{ opacity: 1 }}
               >
@@ -508,46 +509,47 @@ function PricingSection() {
 
   const plans = [
     {
-      id: "accelerator",
-      icon: FaShoppingCart,
+      id: "ecommerce",
       color: "from-blue-500/20 to-cyan-500/20",
       borderColor: "border-blue-500/20",
-      title: t("pricing.starter.title"),
-      subtitle: t("pricing.starter.subtitle"),
-      description: t("pricing.starter.description"),
-      priceSetup: t("pricing.starter.price.setup"),
-      priceMonthly: t("pricing.starter.price.monthly"),
+      icon: ShoppingCart,
+      title: t("pricing.ecommerce.title"),
+      subtitle: t("pricing.ecommerce.subtitle"),
+      description: t("pricing.ecommerce.description"),
+      priceSetup: t("pricing.ecommerce.price.setup"),
+      priceMonthly: t("pricing.ecommerce.price.monthly"),
       features: [
-        t("pricing.starter.feature1"),
-        t("pricing.starter.feature2"),
-        t("pricing.starter.feature3"),
-        t("pricing.starter.feature4"),
+        t("pricing.ecommerce.feature1"),
+        t("pricing.ecommerce.feature2"),
+        t("pricing.ecommerce.feature3"),
+        t("pricing.ecommerce.feature4"),
+        t("pricing.ecommerce.feature5")
       ],
-      goal: t("pricing.starter.goal")
+      goal: t("pricing.ecommerce.goal")
     },
     {
-      id: "core-catalyst",
-      icon: Zap,
-      color: "from-orange-500/20 to-red-500/20",
-      borderColor: "border-orange-500/20",
-      title: t("pricing.growth.title"),
-      subtitle: t("pricing.growth.subtitle"),
-      description: t("pricing.growth.description"),
-      priceSetup: t("pricing.growth.price.setup"),
-      priceMonthly: t("pricing.growth.price.monthly"),
+      id: "premium",
+      color: "from-purple-500/20 to-pink-500/20",
+      borderColor: "border-purple-500/20",
+      icon: TrendingUp,
+      title: t("pricing.premium.title"),
+      subtitle: t("pricing.premium.subtitle"),
+      description: t("pricing.premium.description"),
+      priceSetup: t("pricing.premium.price.setup"),
+      priceMonthly: t("pricing.premium.price.monthly"),
       features: [
-        t("pricing.growth.feature1"),
-        t("pricing.growth.feature2"),
-        t("pricing.growth.feature3"),
-        t("pricing.growth.feature4"),
+        t("pricing.premium.feature1"),
+        t("pricing.premium.feature2"),
+        t("pricing.premium.feature3"),
+        t("pricing.premium.feature4")
       ],
-      goal: t("pricing.growth.goal")
+      goal: t("pricing.premium.goal")
     },
     {
       id: "enterprise",
+      color: "from-amber-500/20 to-orange-500/20",
+      borderColor: "border-amber-500/20",
       icon: Building2,
-      color: "from-purple-500/20 to-pink-500/20",
-      borderColor: "border-purple-500/20",
       title: t("pricing.enterprise.title"),
       subtitle: t("pricing.enterprise.subtitle"),
       description: t("pricing.enterprise.description"),
@@ -557,7 +559,7 @@ function PricingSection() {
         t("pricing.enterprise.feature1"),
         t("pricing.enterprise.feature2"),
         t("pricing.enterprise.feature3"),
-        t("pricing.enterprise.goal")
+        t("pricing.enterprise.feature4")
       ],
       goal: t("pricing.enterprise.goal")
     }
