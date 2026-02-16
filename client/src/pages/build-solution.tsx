@@ -154,7 +154,7 @@ function ModuleCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.02 }}
       whileTap={{ scale: 0.98 }}
-      className={`module-glass-card relative w-full text-left p-6 rounded-2xl transition-all duration-500 group overflow-hidden
+      className={`module-glass-card relative w-full text-left p-4 md:p-6 rounded-2xl transition-all duration-500 group overflow-hidden
         ${isSelected
           ? "border-transparent shadow-[0_0_40px_-10px]"
           : "border-border/40 hover:shadow-[0_0_50px_-15px]"
@@ -194,7 +194,7 @@ function ModuleCard({
         </motion.div>
       )}
 
-      <div className={`relative w-14 h-14 rounded-2xl flex items-center justify-center mb-5 transition-all duration-500 overflow-hidden`}>
+      <div className={`relative w-10 h-10 md:w-14 md:h-14 rounded-2xl flex items-center justify-center mb-3 md:mb-5 transition-all duration-500 overflow-hidden`}>
         {/* Icon Background */}
         <div
           className="absolute inset-0 transition-colors duration-500"
@@ -207,13 +207,13 @@ function ModuleCard({
         <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
 
         <Icon
-          className={`w-7 h-7 relative z-10 transition-colors duration-500`}
+          className={`w-5 h-5 md:w-7 md:h-7 relative z-10 transition-colors duration-500`}
           style={{ color: isSelected ? '#ffffff' : `hsl(${color})` }}
         />
       </div>
 
-      <h3 className="font-bold text-foreground mb-2 text-lg tracking-tight">{module.title}</h3>
-      <p className="text-sm text-muted-foreground leading-relaxed mb-4">{module.description}</p>
+      <h3 className="font-bold text-foreground mb-2 text-sm md:text-lg tracking-tight">{module.title}</h3>
+      <p className="text-xs md:text-sm text-muted-foreground leading-relaxed mb-4">{module.description}</p>
 
       <span
         className={`inline-flex items-center text-xs font-semibold px-3 py-1.5 rounded-full transition-all duration-300 border`}
@@ -230,6 +230,7 @@ function ModuleCard({
 }
 
 function HeroSection() {
+  const { t } = useLanguage();
   return (
     <section className="relative pt-32 pb-20 overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
@@ -327,15 +328,15 @@ function HeroSection() {
           >
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-green-500" />
-              <span>30+ Modules Available</span>
+              <span>{t("build.hero.stat1")}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-primary" />
-              <span>Unlimited Custom Features</span>
+              <span>{t("build.hero.stat2")}</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-blue-500" />
-              <span>One Unified Platform</span>
+              <span>{t("build.hero.stat3")}</span>
             </div>
           </motion.div>
         </motion.div>
@@ -356,9 +357,9 @@ function MoreFeaturesSection({ onScheduleClick }: { onScheduleClick: () => void 
       transition={{ duration: 0.8 }}
       className="mt-16 text-center"
     >
-      <div className="relative inline-block">
+      <div className="relative block w-full max-w-2xl mx-auto">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 rounded-3xl blur-xl" />
-        <div className="relative bg-gradient-to-br from-card/90 via-card/80 to-card/70 backdrop-blur-xl border border-border/50 rounded-3xl p-10 max-w-2xl mx-auto">
+        <div className="relative bg-gradient-to-br from-card/90 via-card/80 to-card/70 backdrop-blur-xl border border-border/50 rounded-3xl p-6 md:p-10 max-w-2xl mx-auto">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mx-auto mb-6 border border-primary/20">
             <Plus className="w-8 h-8 text-primary" />
           </div>
@@ -476,7 +477,7 @@ export default function BuildSolutionPage() {
           <div className="max-w-7xl mx-auto px-6">
             <div className="flex flex-col lg:flex-row gap-8">
               <div className="flex-1">
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-5">
                   {modules.map((module, index) => (
                     <ModuleCard
                       key={module.id}
@@ -590,7 +591,7 @@ export default function BuildSolutionPage() {
                       <Button
                         onClick={handleRequestQuote}
                         disabled={!formData.name || !formData.email}
-                        className="w-full mt-5 gap-2 font-semibold"
+                        className="w-full mt-5 gap-2 font-semibold h-auto whitespace-normal text-center py-4"
                         size="lg"
                         data-testid="button-request-quote"
                       >

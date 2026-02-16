@@ -347,7 +347,7 @@ function BentoGridSection() {
   };
 
   return (
-    <section id="solution" className="py-8 md:py-32 relative">
+    <section id="solution" className="py-8 md:py-32 relative overflow-hidden">
       <div className="max-w-6xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -566,7 +566,7 @@ function PricingSection() {
   ];
 
   return (
-    <section id="pricing" className="py-32 relative">
+    <section id="pricing" className="py-32 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
