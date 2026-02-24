@@ -44,12 +44,12 @@ export const es: Record<string, string> = {
     "chaos.scroll": "Scrolleá para unificar",
 
     // ─── Bento Grid Section ───
-    "bento.title.line1": "El Modelo",
+    "bento.title.line1": " ",
     "bento.title.highlight": "Plataforma Personalizada",
     "bento.title.line2": "",
     "bento.subtitle": "Una tarifa fija. Evolución ilimitada. Cero deuda técnica.",
-    "bento.evolution.title": "Una herramienta que crece contigo.",
-    "bento.evolution.description": "Sin roadmaps. ¿Necesitas algo? Lo ",
+    "bento.evolution.title": "Una herramienta que crece con vos.",
+    "bento.evolution.description": "¿Necesitás algo? Lo ",
     "bento.evolution.descriptionHighlight": "construimos hoy mismo",
     "bento.evolution.descriptionEnd": ". Actualizaciones ilimitadas e inmediatas.",
     "bento.evolution.requestLabel": "Solicitud de Función",
@@ -80,7 +80,7 @@ export const es: Record<string, string> = {
 
     // ─── AI Partner Section ───
     "ai.badge": "IA Integrada",
-    "ai.title.line1": "Conocé la IA que realmente",
+    "ai.title.line1": "La IA que realmente",
     "ai.title.highlight": "conoce",
     "ai.title.line2": "tu negocio.",
     "ai.subtitle": "La IA genérica sirve para escribir emails. Tu IA integrada sirve para",
@@ -96,7 +96,7 @@ export const es: Record<string, string> = {
     "ai.chatStatus": "Conectada a tu plataforma",
     "ai.chatLive": "En vivo",
     "ai.chatQ1": "\"¿Quiénes son mis 3 mejores clientes inmobiliarios este mes?\"",
-    "ai.chatA1.intro": "Basado en tu datos integrados de Mercado Libre y CRM interno:",
+    "ai.chatA1.intro": "Basado en tus datos integrados de Mercado Libre y CRM interno:",
     "ai.chatQ2": "\"Enviá un WhatsApp a todos los leads pendientes\"",
     "ai.chatA2": "Enviado a 23 leads vía WhatsApp Business API",
     "ai.chatPlaceholder": "Preguntale a tu IA Partner...",
@@ -121,11 +121,11 @@ export const es: Record<string, string> = {
     "comparison.cta": "Construí Tu Plataforma",
 
     // ─── Pricing Section ───
-    "pricing.title": "Elige tu plan",
-    "pricing.subtitle": "Elige tu nivel de alianza. Convertí el caos en alto rendimiento.",
+    "pricing.title": "Elegí tu plan",
+    "pricing.subtitle": "Elegí tu nivel de alianza. Convertí el caos en alto rendimiento.",
 
     "pricing.ecommerce.title": "Alloy eCommerce",
-    "pricing.ecommerce.subtitle": "Sé Dueño de Tu Tienda",
+    "pricing.ecommerce.subtitle": "Diseña Tu Tienda",
     "pricing.ecommerce.description": "Tu propia tienda. Sin plantillas, sin comisiones.",
     "pricing.ecommerce.price.setup": "Configuración Única: $1.199",
     "pricing.ecommerce.price.monthly": "Mantenimiento: $200/mes",
@@ -157,7 +157,7 @@ export const es: Record<string, string> = {
     "pricing.enterprise.feature3": "Iteración Ilimitada: Desarrollo continuo.",
     "pricing.enterprise.feature4": "Integraciones Totales: Conectá todo.",
     "pricing.enterprise.goal": "El Objetivo: Paz mental operativa total.",
-    "pricing.cta": "Comenzá Tu Transformación",
+    "pricing.cta": "Comenzar",
 
     // ─── Proof Section ───
     "proof.badge": "La Prueba",
@@ -327,7 +327,7 @@ export const es: Record<string, string> = {
     "build.more.tag3": "Conectores de Terceros",
     "build.more.tag4": "Herramientas por Industria",
     "build.more.tag5": "Lo Que Necesites",
-    "build.more.cta": "Discutir Funciones Personalizadas",
+    "build.more.cta": "Funciones Personalizadas",
 
     // ─── Build Solution Descriptions (for buildDescription) ───
     "build.desc.default": "Consulta de solución a medida",
