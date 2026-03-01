@@ -23,6 +23,10 @@ export const en: Record<string, string> = {
     "footer.buildSolution": "Build Solution",
     "footer.tagline": "Building custom software platforms that replace chaos with clarity.",
     "footer.rights": "All rights reserved.",
+    "footer.nav.solutions": "Solutions",
+    "footer.nav.pricing": "Pricing",
+    "footer.nav.portfolio": "Portfolio",
+    "footer.nav.build": "Build Solution",
 
     // ─── Hero Section (Landing) ───
     "hero.badge": "Productized Software Development",
@@ -124,10 +128,10 @@ export const en: Record<string, string> = {
     "pricing.title": "Choose your plan",
     "pricing.subtitle": "Select your partnership level. Turn chaos into a high-performance system.",
 
-    "pricing.ecommerce.title": "Alloy eCommerce",
+    "pricing.ecommerce.title": "Alloy eCommerce/Website",
     "pricing.ecommerce.subtitle": "Own Your Store",
     "pricing.ecommerce.description": "Own your store. No templates, no fees.",
-    "pricing.ecommerce.price.setup": "One-time Setup: $1,199",
+    "pricing.ecommerce.price.setup": "One-time Setup: $999",
     "pricing.ecommerce.price.monthly": "Maintenance: $200/mo",
     "pricing.ecommerce.feature1": "Custom Platform: Designed for your brand.",
     "pricing.ecommerce.feature2": "SEO & Conversion Engine.",
@@ -158,6 +162,7 @@ export const en: Record<string, string> = {
     "pricing.enterprise.feature4": "Full Integrations: Connect everything.",
     "pricing.enterprise.goal": "The Goal: Total operational peace of mind.",
     "pricing.cta": "Start Your Transformation",
+    "pricing.popular": "Most Popular",
 
     // ─── Proof Section ───
     "proof.badge": "The Proof",
@@ -182,6 +187,12 @@ export const en: Record<string, string> = {
     "clients.supplyChain": "Supply Chain",
     "clients.finance": "Finance",
     "clients.agencies": "Agencies",
+    "clients.stat1": "15+",
+    "clients.stat1.label": "Platforms Built",
+    "clients.stat2": "4",
+    "clients.stat2.label": "Industries",
+    "clients.stat3": "500+",
+    "clients.stat3.label": "Features Delivered",
 
     // ─── SEO (Landing) ───
     "seo.landing.title": "ALLOY - Custom Software Platforms | Replace SaaS Chaos with Clarity",

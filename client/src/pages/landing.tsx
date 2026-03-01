@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useContext } from "react";
+import { useState, useEffect, useRef, useContext, useCallback } from "react";
 import { useLanguage } from "@/context/language-context";
 import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -31,7 +31,8 @@ import {
   Send,
   Lock,
   Rocket,
-  ShoppingCart
+  ShoppingCart,
+  Star
 } from "lucide-react";
 import {
   SiNotion, SiZapier, SiAirtable, SiGooglesheets, SiHubspot, SiTrello, SiClickup, SiSlack,
@@ -76,14 +77,14 @@ function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden grid-pattern">
       <div className="hero-glow" />
-      <div className="relative z-10 max-w-5xl mx-auto px-6 py-32 text-center">
+      <div className="relative z-10 max-w-5xl mx-auto px-6 py-20 md:py-32 text-center">
         <motion.div
           initial="initial"
           animate="animate"
           variants={stagger}
-          className="space-y-10"
+          className="flex flex-col items-center"
         >
-          <motion.div variants={fadeInUp}>
+          <motion.div variants={fadeInUp} className="mb-5">
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium">
               <Zap className="w-4 h-4" />
               {t("hero.badge")}
@@ -92,7 +93,7 @@ function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
 
           <motion.h1
             variants={fadeInUp}
-            className="text-4xl sm:text-5xl md:text-7xl lg:text-[5.5rem] font-black leading-[1.05] text-balance"
+            className="text-4xl sm:text-5xl md:text-7xl lg:text-[5.5rem] font-black leading-[1.05] text-balance mb-8"
           >
             {t("hero.title.line1")}{" "}
             <span className="text-primary">{t("hero.title.highlight")}</span>
@@ -100,16 +101,16 @@ function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
 
           <motion.p
             variants={fadeInUp}
-            className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed"
+            className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-10"
           >
             {t("hero.subtitle")}
           </motion.p>
 
-          <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+          <motion.div variants={fadeInUp} className="flex flex-col items-center gap-4 mb-8">
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button
                 size="lg"
-                className="text-lg font-bold shimmer-btn glow-border w-full sm:w-auto"
+                className="text-lg font-bold shimmer-btn glow-border shadow-lg shadow-primary/25 w-full sm:w-auto"
                 onClick={() => onScheduleClick()}
                 data-testid="button-cta-hero"
               >
@@ -127,7 +128,10 @@ function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
                 </Button>
               </Link>
             </div>
-            <span className="text-muted-foreground text-sm">{t("hero.noCommitment")}</span>
+          </motion.div>
+
+          <motion.div variants={fadeInUp}>
+            <span className="text-muted-foreground text-sm opacity-70">{t("hero.noCommitment")}</span>
           </motion.div>
         </motion.div>
       </div>
@@ -503,6 +507,292 @@ function BentoGridSection() {
   );
 }
 
+function CountUpPrice({ text, className }: { text: string; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+  const [count, setCount] = useState(0);
+
+  const match = text.match(/\$([\d.,]+)/);
+  const rawMatch = match ? match[1] : null;
+  const targetNumber = rawMatch ? parseInt(rawMatch.replace(/[.,]/g, "")) : 0;
+  const usesPeriodSep = rawMatch ? /\d\.\d{3}/.test(rawMatch) : false;
+
+  useEffect(() => {
+    if (!isInView || !targetNumber) return;
+    const duration = 1400;
+    const steps = 50;
+    const increment = targetNumber / steps;
+    let current = 0;
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= targetNumber) {
+        setCount(targetNumber);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(current));
+      }
+    }, duration / steps);
+    return () => clearInterval(timer);
+  }, [isInView, targetNumber]);
+
+  const fmt = (n: number) =>
+    usesPeriodSep ? n.toLocaleString("de-DE") : n.toLocaleString("en-US");
+
+  const displayText =
+    targetNumber > 0
+      ? text.replace(/\$[\d.,]+/, `$${fmt(isInView ? count : 0)}`)
+      : text;
+
+  return (
+    <div ref={ref} className={className}>
+      {displayText}
+    </div>
+  );
+}
+
+interface PricingPlan {
+  id: string;
+  icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
+  title: string;
+  subtitle: string;
+  description: string;
+  priceSetup: string;
+  priceMonthly: string;
+  popular: boolean;
+  features: string[];
+  goal: string;
+  color: string;
+  auroraGradient: string;
+  borderHover: string;
+  shadowHover: string;
+}
+
+function PricingCard({ plan, index, openScheduling, ctaText, popularText }: {
+  plan: PricingPlan;
+  index: number;
+  openScheduling: (title: string) => void;
+  ctaText: string;
+  popularText: string;
+}) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
+  const [isHovered, setIsHovered] = useState(false);
+  const [tilt, setTilt] = useState({ rotateX: 0, rotateY: 0 });
+
+  const rafRef = useRef<number>(0);
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    const clientX = e.clientX;
+    const clientY = e.clientY;
+    cancelAnimationFrame(rafRef.current);
+    rafRef.current = requestAnimationFrame(() => {
+      const card = cardRef.current;
+      if (!card) return;
+      const rect = card.getBoundingClientRect();
+      const x = ((clientX - rect.left) / rect.width) * 100;
+      const y = ((clientY - rect.top) / rect.height) * 100;
+      setMousePos({ x, y });
+      setTilt({
+        rotateX: ((50 - y) / 50) * 8,
+        rotateY: ((x - 50) / 50) * 8,
+      });
+    });
+  }, []);
+
+  const handleMouseEnter = useCallback(() => setIsHovered(true), []);
+  const handleMouseLeave = useCallback(() => {
+    setIsHovered(false);
+    setTilt({ rotateX: 0, rotateY: 0 });
+    setMousePos({ x: 50, y: 50 });
+  }, []);
+
+  const orbConfigs = [
+    { size: 10, x: "20%", y: "30%", duration: 6, delay: index * 0.5 },
+    { size: 8, x: "75%", y: "60%", duration: 8, delay: index * 0.5 + 1 },
+    { size: 12, x: "50%", y: "80%", duration: 7, delay: index * 0.5 + 2 },
+  ];
+
+  return (
+    <motion.div
+      ref={cardRef}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{
+        duration: 0.7,
+        delay: index * 0.15,
+        ease: [0.16, 1, 0.3, 1],
+      }}
+      className="relative p-8 md:p-10 rounded-xl group flex flex-col backdrop-blur-sm"
+      style={{
+        background: isHovered ? "hsl(var(--card) / 0.8)" : "hsl(var(--card) / 0.5)",
+        border: plan.popular
+          ? `1px solid ${isHovered ? plan.borderHover : "hsl(199, 89%, 48%, 0.35)"}`
+          : `1px solid ${isHovered ? plan.borderHover : `rgba(${plan.color}, 0.2)`}`,
+        boxShadow: isHovered
+          ? plan.shadowHover
+          : plan.popular
+            ? "0 0 40px hsl(199, 89%, 48%, 0.08), 0 0 80px hsl(199, 89%, 48%, 0.04)"
+            : `0 0 30px rgba(${plan.color}, 0.06), 0 0 60px rgba(${plan.color}, 0.03)`,
+        transform: `perspective(1200px) rotateX(${tilt.rotateX}deg) rotateY(${tilt.rotateY}deg) translateY(${isHovered ? -6 : 0}px)`,
+        transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+        transformStyle: "preserve-3d",
+      }}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {/* Effects container — clipped to card bounds */}
+      <div className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none">
+        {/* Aurora gradient background */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: plan.auroraGradient,
+            opacity: isHovered ? 0.8 : 0.3,
+            transition: "opacity 0.6s ease",
+            animation: "aurora 12s ease-in-out infinite",
+          }}
+        />
+
+        {/* Mouse-tracking light spot */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background: `radial-gradient(circle at ${mousePos.x}% ${mousePos.y}%, rgba(${plan.color}, ${isHovered ? 0.15 : 0}), transparent 50%)`,
+            transition: isHovered ? "background 0.1s ease" : "background 0.5s ease",
+          }}
+        />
+
+        {/* Floating glow orbs */}
+        {orbConfigs.map((orb, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              width: orb.size,
+              height: orb.size,
+              left: orb.x,
+              top: orb.y,
+              background: `rgba(${plan.color}, 0.6)`,
+              boxShadow: `0 0 ${orb.size * 2}px rgba(${plan.color}, 0.4), 0 0 ${orb.size * 4}px rgba(${plan.color}, 0.2)`,
+              filter: `blur(${orb.size / 3}px)`,
+              animation: `${i % 2 === 0 ? "float-orb" : "float-orb-reverse"} ${orb.duration}s ease-in-out infinite`,
+              animationDelay: `${orb.delay}s`,
+              opacity: isHovered ? 1 : 0.4,
+              transition: "opacity 0.5s ease",
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Popular badge — outside overflow-hidden via z-20 */}
+      {plan.popular && (
+        <div
+          className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-md text-xs font-bold uppercase tracking-wider z-20 text-primary-foreground flex items-center gap-1.5"
+          style={{
+            background: "hsl(199, 89%, 48%)",
+          }}
+        >
+          <Star className="w-3.5 h-3.5" fill="currentColor" />
+          {popularText}
+        </div>
+      )}
+
+      {/* Content layer */}
+      <div className="relative z-10 flex flex-col flex-1">
+        {/* Icon */}
+        <div
+          className="w-12 h-12 rounded-xl flex items-center justify-center mb-8"
+          style={{
+            border: `1px solid ${isHovered ? `rgba(${plan.color}, 0.25)` : "hsl(var(--border) / 0.3)"}`,
+            transition: "border-color 0.5s ease",
+          }}
+        >
+          <plan.icon
+            className={`w-6 h-6 transition-colors duration-500 ${!isHovered ? "text-muted-foreground" : ""}`}
+            style={{ color: isHovered ? `rgba(${plan.color}, 0.9)` : undefined }}
+          />
+        </div>
+
+        {/* Title block */}
+        <div className="mb-8">
+          <h3
+            className="text-2xl sm:text-3xl xl:text-4xl font-black text-foreground mb-2 break-words"
+            style={{ letterSpacing: "-0.03em" }}
+          >
+            {plan.title}
+          </h3>
+          <p
+            className="font-bold text-sm uppercase mb-4"
+            style={{ color: "hsl(199, 89%, 48%)", letterSpacing: "0.08em" }}
+          >
+            {plan.subtitle}
+          </p>
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            {plan.description}
+          </p>
+        </div>
+
+        {/* Price */}
+        <div className="mb-10">
+          <div className="flex items-center gap-2 text-sm mb-3 text-muted-foreground">
+            <span
+              className="w-1.5 h-1.5 rounded-full shrink-0"
+              style={{ background: "hsl(199, 89%, 48%)" }}
+            />
+            {plan.priceSetup}
+          </div>
+          <CountUpPrice
+            text={plan.priceMonthly}
+            className="text-3xl md:text-4xl font-black text-foreground"
+          />
+        </div>
+
+        {/* Divider */}
+        <div className="h-px mb-8" style={{ background: "hsl(var(--border) / 0.3)" }} />
+
+        {/* Features */}
+        <div className="space-y-4 mb-10 flex-1">
+          {plan.features.map((feature, i) => (
+            <div key={i} className="flex items-start gap-3 text-sm">
+              <Check
+                className="w-4 h-4 shrink-0 mt-0.5"
+                style={{ color: "hsl(199, 89%, 48%)" }}
+              />
+              <span className="text-muted-foreground">{feature}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Footer */}
+        <div className="mt-auto">
+          <p
+            className="text-xs font-medium text-center mb-5 italic text-muted-foreground"
+          >
+            "{plan.goal}"
+          </p>
+          <Button
+            size="lg"
+            className={`w-full font-bold text-white ${plan.popular ? "shimmer-btn" : ""}`}
+            style={{
+              background: `rgba(${plan.color}, 0.9)`,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = `rgba(${plan.color}, 1)`;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = `rgba(${plan.color}, 0.9)`;
+            }}
+            onClick={() => openScheduling(plan.title)}
+          >
+            {ctaText}
+          </Button>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 function PricingSection() {
   const { t } = useLanguage();
   const { openScheduling } = useContext(SchedulingContext);
@@ -510,14 +800,13 @@ function PricingSection() {
   const plans = [
     {
       id: "ecommerce",
-      color: "from-blue-500/20 to-cyan-500/20",
-      borderColor: "border-blue-500/20",
       icon: ShoppingCart,
       title: t("pricing.ecommerce.title"),
       subtitle: t("pricing.ecommerce.subtitle"),
       description: t("pricing.ecommerce.description"),
       priceSetup: t("pricing.ecommerce.price.setup"),
       priceMonthly: t("pricing.ecommerce.price.monthly"),
+      popular: false,
       features: [
         t("pricing.ecommerce.feature1"),
         t("pricing.ecommerce.feature2"),
@@ -525,120 +814,103 @@ function PricingSection() {
         t("pricing.ecommerce.feature4"),
         t("pricing.ecommerce.feature5")
       ],
-      goal: t("pricing.ecommerce.goal")
+      goal: t("pricing.ecommerce.goal"),
+      color: "245, 180, 60",
+      auroraGradient: "radial-gradient(ellipse at 30% 20%, rgba(245, 180, 60, 0.08), transparent 50%), radial-gradient(ellipse at 70% 80%, rgba(255, 120, 50, 0.06), transparent 50%)",
+
+      borderHover: "rgba(245, 180, 60, 0.35)",
+      shadowHover: "0 0 50px rgba(245, 180, 60, 0.12), 0 0 100px rgba(245, 180, 60, 0.06)",
     },
     {
       id: "premium",
-      color: "from-purple-500/20 to-pink-500/20",
-      borderColor: "border-purple-500/20",
       icon: TrendingUp,
       title: t("pricing.premium.title"),
       subtitle: t("pricing.premium.subtitle"),
       description: t("pricing.premium.description"),
       priceSetup: t("pricing.premium.price.setup"),
       priceMonthly: t("pricing.premium.price.monthly"),
+      popular: true,
       features: [
         t("pricing.premium.feature1"),
         t("pricing.premium.feature2"),
         t("pricing.premium.feature3"),
         t("pricing.premium.feature4")
       ],
-      goal: t("pricing.premium.goal")
+      goal: t("pricing.premium.goal"),
+      color: "14, 165, 233",
+      auroraGradient: "radial-gradient(ellipse at 40% 10%, hsl(199, 89%, 48%, 0.12), transparent 50%), radial-gradient(ellipse at 60% 90%, hsl(199, 89%, 60%, 0.08), transparent 50%)",
+
+      borderHover: "hsl(199, 89%, 48%, 0.5)",
+      shadowHover: "0 0 60px hsl(199, 89%, 48%, 0.2), 0 0 120px hsl(199, 89%, 48%, 0.08)",
     },
     {
       id: "enterprise",
-      color: "from-amber-500/20 to-orange-500/20",
-      borderColor: "border-amber-500/20",
       icon: Building2,
       title: t("pricing.enterprise.title"),
       subtitle: t("pricing.enterprise.subtitle"),
       description: t("pricing.enterprise.description"),
       priceSetup: t("pricing.enterprise.price.setup"),
       priceMonthly: t("pricing.enterprise.price.monthly"),
+      popular: false,
       features: [
         t("pricing.enterprise.feature1"),
         t("pricing.enterprise.feature2"),
         t("pricing.enterprise.feature3"),
         t("pricing.enterprise.feature4")
       ],
-      goal: t("pricing.enterprise.goal")
+      goal: t("pricing.enterprise.goal"),
+      color: "160, 120, 255",
+      auroraGradient: "radial-gradient(ellipse at 60% 20%, rgba(160, 120, 255, 0.08), transparent 50%), radial-gradient(ellipse at 30% 80%, rgba(120, 80, 220, 0.06), transparent 50%)",
+
+      borderHover: "rgba(160, 120, 255, 0.35)",
+      shadowHover: "0 0 50px rgba(160, 120, 255, 0.12), 0 0 100px rgba(160, 120, 255, 0.06)",
     }
   ];
 
   return (
-    <section id="pricing" className="py-32 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
+    <section id="pricing" className="py-24 md:py-32 relative overflow-hidden bg-background">
+      {/* Subtle grid overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(hsl(var(--foreground) / 0.03) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground) / 0.03) 1px, transparent 1px)",
+          backgroundSize: "80px 80px",
+        }}
+      />
+
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
+        {/* Section header */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="text-center mb-16"
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center mb-20"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border text-sm font-medium mb-8" style={{ color: "hsl(199, 89%, 48%)" }}>
             <DollarSign className="w-4 h-4" />
             {t("nav.pricing")}
           </span>
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6">
+          <h2 className="text-4xl md:text-5xl lg:text-7xl font-black text-foreground mb-6" style={{ letterSpacing: "-0.04em" }}>
             {t("pricing.title")}
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-lg md:text-xl max-w-3xl mx-auto text-muted-foreground">
             {t("pricing.subtitle")}
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10" style={{ perspective: "1200px" }}>
           {plans.map((plan, index) => (
-            <motion.div
+            <PricingCard
               key={plan.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-              className={`relative p-8 rounded-3xl border ${plan.borderColor} bg-card/30 backdrop-blur-sm hover:bg-card/50 transition-all duration-500 group overflow-hidden flex flex-col`}
-            >
-              <div className={`absolute inset-0 bg-gradient-to-br ${plan.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-
-              <div className="relative z-10 flex-1 flex flex-col">
-                <div className="w-14 h-14 rounded-2xl bg-muted/50 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  <plan.icon className="w-7 h-7 text-foreground" />
-                </div>
-
-                <div className="mb-6">
-                  <h3 className="text-2xl font-black mb-2">{plan.title}</h3>
-                  <p className="text-primary font-bold text-sm uppercase tracking-wider mb-4">{plan.subtitle}</p>
-                  <p className="text-muted-foreground">{plan.description}</p>
-                </div>
-
-                <div className="mb-8 p-4 rounded-xl bg-background/50 border border-border/50">
-                  <div className="flex items-center gap-2 text-sm font-medium mb-1">
-                    <span className="w-2 h-2 rounded-full bg-primary" />
-                    {plan.priceSetup}
-                  </div>
-                  <div className="text-2xl font-black">{plan.priceMonthly}</div>
-                </div>
-
-                <div className="space-y-4 mb-8 flex-1">
-                  {plan.features.map((feature, i) => (
-                    <div key={i} className="flex items-start gap-3 text-sm">
-                      <Check className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                      <span className="text-muted-foreground">{feature}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-auto">
-                  <p className="text-xs font-semibold text-center text-primary mb-4 italic">"{plan.goal}"</p>
-                  <Button
-                    size="lg"
-                    className="w-full font-bold shimmer-btn"
-                    onClick={() => openScheduling(plan.title)}
-                  >
-                    {t("pricing.cta")}
-                  </Button>
-                </div>
-              </div>
-            </motion.div>
+              plan={plan}
+              index={index}
+              openScheduling={openScheduling}
+              ctaText={t("pricing.cta")}
+              popularText={t("pricing.popular")}
+            />
           ))}
         </div>
       </div>
@@ -724,7 +996,7 @@ function AIPartnerSection() {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="relative"
           >
-            <div className="bento-card p-6 md:p-8">
+            <div className="bento-card p-6 md:p-8 shadow-xl shadow-primary/5">
               {/* Chat Header */}
               <div className="flex items-center gap-3 pb-4 border-b border-border mb-6">
                 <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -735,7 +1007,7 @@ function AIPartnerSection() {
                   <p className="text-xs text-muted-foreground">{t("ai.chatStatus")}</p>
                 </div>
                 <div className="ml-auto flex items-center gap-1.5">
-                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                  <div className="w-2 h-2 rounded-full bg-status-online animate-pulse" />
                   <span className="text-xs text-muted-foreground">{t("ai.chatLive")}</span>
                 </div>
               </div>
@@ -749,7 +1021,7 @@ function AIPartnerSection() {
                   viewport={{ once: true }}
                   transition={{ delay: 0.4 }}
                 >
-                  <div className="p-3 rounded-xl bg-primary text-primary-foreground max-w-[80%]">
+                  <div className="p-3 rounded-2xl rounded-br-md bg-primary text-primary-foreground max-w-[80%]">
                     {t("ai.chatQ1")}
                   </div>
                 </motion.div>
@@ -761,7 +1033,7 @@ function AIPartnerSection() {
                   viewport={{ once: true }}
                   transition={{ delay: 0.6 }}
                 >
-                  <div className="p-3 rounded-xl bg-muted/50 border border-border max-w-[85%]">
+                  <div className="p-3 rounded-2xl rounded-bl-md bg-muted/50 border border-border max-w-[85%]">
                     <p className="mb-2">{t("ai.chatA1.intro")}</p>
                     <ol className="list-decimal list-inside space-y-1 text-muted-foreground">
                       <li><span className="text-foreground font-medium">Inmobiliaria Luna</span> - $84,500</li>
@@ -778,7 +1050,7 @@ function AIPartnerSection() {
                   viewport={{ once: true }}
                   transition={{ delay: 0.8 }}
                 >
-                  <div className="p-3 rounded-xl bg-primary text-primary-foreground max-w-[80%]">
+                  <div className="p-3 rounded-2xl rounded-br-md bg-primary text-primary-foreground max-w-[80%]">
                     {t("ai.chatQ2")}
                   </div>
                 </motion.div>
@@ -790,9 +1062,9 @@ function AIPartnerSection() {
                   viewport={{ once: true }}
                   transition={{ delay: 1.0 }}
                 >
-                  <div className="p-3 rounded-xl bg-muted/50 border border-border">
+                  <div className="p-3 rounded-2xl rounded-bl-md bg-muted/50 border border-border">
                     <div className="flex items-center gap-2">
-                      <Check className="w-4 h-4 text-green-500" />
+                      <Check className="w-4 h-4 text-status-online" />
                       <span>{t("ai.chatA2")}</span>
                     </div>
                   </div>
@@ -822,7 +1094,7 @@ function AIPartnerSection() {
 
 function ComparisonToggleSection() {
   const { t } = useLanguage();
-  const [showYourPlatform, setShowYourPlatform] = useState(true);
+  const [showYourPlatform, setShowYourPlatform] = useState(false);
 
   return (
     <section className="py-24 bg-card/30">
@@ -844,21 +1116,28 @@ function ComparisonToggleSection() {
 
         {/* Toggle */}
         <div className="flex justify-center mb-10">
-          <div className="inline-flex p-1 rounded-xl bg-muted/50 border border-border">
+          <div className="relative inline-flex p-1 rounded-xl bg-muted/50 border border-border">
+            <div
+              className="absolute top-1 bottom-1 rounded-lg bg-primary shadow-sm transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+              style={{
+                left: showYourPlatform ? '50%' : '4px',
+                right: showYourPlatform ? '4px' : '50%',
+              }}
+            />
             <Button
-              variant={!showYourPlatform ? "secondary" : "ghost"}
+              variant="ghost"
               size="sm"
               onClick={() => setShowYourPlatform(false)}
-              className={`toggle-elevate ${!showYourPlatform ? 'toggle-elevated' : ''}`}
+              className={`relative z-10 transition-colors duration-200 ${!showYourPlatform ? 'text-primary-foreground hover:text-primary-foreground hover:bg-transparent' : ''}`}
               data-testid="button-toggle-standard"
             >
               {t("comparison.standardSaas")}
             </Button>
             <Button
-              variant={showYourPlatform ? "default" : "ghost"}
+              variant="ghost"
               size="sm"
               onClick={() => setShowYourPlatform(true)}
-              className={`toggle-elevate ${showYourPlatform ? 'toggle-elevated' : ''}`}
+              className={`relative z-10 transition-colors duration-200 ${showYourPlatform ? 'text-primary-foreground hover:text-primary-foreground hover:bg-transparent' : ''}`}
               data-testid="button-toggle-platform"
             >
               {t("comparison.yourPlatform")}
@@ -877,21 +1156,21 @@ function ComparisonToggleSection() {
               transition={{ duration: 0.3 }}
               className="grid md:grid-cols-3 gap-6"
             >
-              <div className="bento-card p-6 opacity-60">
+              <div className="bento-card p-6 opacity-60 border-destructive/10">
                 <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center mb-4">
                   <RefreshCw className="w-5 h-5 text-muted-foreground" />
                 </div>
                 <h4 className="font-bold mb-2 text-muted-foreground">{t("comparison.standard.slowUpdates")}</h4>
                 <p className="text-sm text-muted-foreground">{t("comparison.standard.slowUpdatesDesc")}</p>
               </div>
-              <div className="bento-card p-6 opacity-60">
+              <div className="bento-card p-6 opacity-60 border-destructive/10">
                 <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center mb-4">
                   <Layers className="w-5 h-5 text-muted-foreground" />
                 </div>
                 <h4 className="font-bold mb-2 text-muted-foreground">{t("comparison.standard.staticTools")}</h4>
                 <p className="text-sm text-muted-foreground">{t("comparison.standard.staticToolsDesc")}</p>
               </div>
-              <div className="bento-card p-6 opacity-60">
+              <div className="bento-card p-6 opacity-60 border-destructive/10">
                 <div className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center mb-4">
                   <Bot className="w-5 h-5 text-muted-foreground" />
                 </div>
@@ -902,8 +1181,8 @@ function ComparisonToggleSection() {
           ) : (
             <motion.div
               key="platform"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 20, scale: 0.97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
               className="grid md:grid-cols-3 gap-6"
@@ -958,7 +1237,7 @@ function ProofSection() {
       category: t("proof.wealthfit.category"),
       description: t("proof.wealthfit.description"),
       icon: DollarSign,
-      gradient: "from-emerald-500/20 to-emerald-500/5",
+      gradient: "from-primary/20 to-primary/5",
       evolutionTag: t("proof.wealthfit.tag"),
       link: "https://wealthfit.com",
     },
@@ -967,7 +1246,7 @@ function ProofSection() {
       category: t("proof.eventgrowth.category"),
       description: t("proof.eventgrowth.description"),
       icon: TrendingUp,
-      gradient: "from-blue-500/20 to-blue-500/5",
+      gradient: "from-primary/15 to-primary/5",
       evolutionTag: t("proof.eventgrowth.tag"),
       link: "https://eventgrowth.app",
     },
@@ -976,7 +1255,7 @@ function ProofSection() {
       category: t("proof.agencyboost.category"),
       description: t("proof.agencyboost.description"),
       icon: Briefcase,
-      gradient: "from-purple-500/20 to-purple-500/5",
+      gradient: "from-accent/20 to-accent/5",
       evolutionTag: t("proof.agencyboost.tag"),
       link: "https://agencyboost.app",
     },
@@ -985,14 +1264,14 @@ function ProofSection() {
       category: t("proof.datalight.category"),
       description: t("proof.datalight.description"),
       icon: Layers,
-      gradient: "from-cyan-500/20 to-cyan-500/5",
+      gradient: "from-accent/15 to-accent/5",
       evolutionTag: t("proof.datalight.tag"),
       link: "https://datalight.app",
     },
   ];
 
   return (
-    <section id="proof" className="py-32 bg-card/30">
+    <section id="proof" className="py-24 bg-card/30">
       <div className="max-w-6xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -1012,7 +1291,7 @@ function ProofSection() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {portfolioItems.map((item, i) => (
             <motion.a
               key={item.name}
@@ -1026,18 +1305,18 @@ function ProofSection() {
               className="portfolio-card group cursor-pointer block"
               data-testid={`card-portfolio-${item.name.toLowerCase().replace('.', '-')}`}
             >
-              <div className={`h-48 bg-gradient-to-br ${item.gradient} flex items-center justify-center relative`}>
-                <div className="w-20 h-20 rounded-2xl bg-background/50 backdrop-blur flex items-center justify-center">
-                  <item.icon className="w-10 h-10 text-foreground" />
+              <div className={`h-36 lg:h-40 bg-gradient-to-br ${item.gradient} flex items-center justify-center relative`}>
+                <div className="w-16 h-16 lg:w-18 lg:h-18 rounded-2xl bg-background/50 backdrop-blur flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <item.icon className="w-8 h-8 lg:w-9 lg:h-9 text-foreground" />
                 </div>
               </div>
-              <div className="p-6">
+              <div className="p-4 lg:p-5">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs text-primary font-medium uppercase tracking-wider">{item.category}</span>
                   <ExternalLink className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
-                <h3 className="text-xl font-bold mb-2">{item.name}</h3>
-                <p className="text-muted-foreground text-sm mb-3">{item.description}</p>
+                <h3 className="text-lg font-bold mb-2">{item.name}</h3>
+                <p className="text-muted-foreground text-xs lg:text-sm mb-3">{item.description}</p>
                 <span
                   className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-medium"
                   data-testid={`tag-evolution-${item.name.toLowerCase().replace('.', '-')}`}
@@ -1063,6 +1342,12 @@ function ClientsSection() {
     { name: t("clients.agencies"), icon: Briefcase },
   ];
 
+  const stats = [
+    { value: t("clients.stat1"), label: t("clients.stat1.label") },
+    { value: t("clients.stat2"), label: t("clients.stat2.label") },
+    { value: t("clients.stat3"), label: t("clients.stat3.label") },
+  ];
+
   return (
     <section id="clients" className="py-24 border-y border-border">
       <div className="max-w-6xl mx-auto px-6">
@@ -1075,6 +1360,22 @@ function ClientsSection() {
           <p className="text-muted-foreground text-lg">{t("clients.title")}</p>
         </motion.div>
 
+        <div className="grid grid-cols-3 gap-8 mb-12">
+          {stats.map((stat, i) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1 }}
+              className={`text-center ${i < stats.length - 1 ? 'border-r border-border' : ''}`}
+            >
+              <p className="text-3xl md:text-4xl font-black text-primary">{stat.value}</p>
+              <p className="text-sm text-muted-foreground mt-1">{stat.label}</p>
+            </motion.div>
+          ))}
+        </div>
+
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {industries.map((industry, i) => (
             <motion.div
@@ -1085,7 +1386,7 @@ function ClientsSection() {
               transition={{ delay: i * 0.1 }}
               className="flex flex-col items-center gap-3 text-center"
             >
-              <div className="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center">
+              <div className="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center hover:scale-105 transition-transform duration-200">
                 <industry.icon className="w-8 h-8 text-muted-foreground" />
               </div>
               <span className="text-sm font-medium text-muted-foreground">{industry.name}</span>
@@ -1123,9 +1424,12 @@ export default function LandingPage() {
         <HeroSection onScheduleClick={openScheduling} />
         <SpaghettiChaosSection />
         <BentoGridSection />
+        <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
         <PricingSection />
+        <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
         <AIPartnerSection />
         <ComparisonToggleSection />
+        <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
         <ProofSection />
         <ClientsSection />
         <SharedFooter />

@@ -49,7 +49,7 @@ export function SharedNavbar() {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "glass" : "bg-transparent"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "glass shadow-sm" : "bg-transparent"
         }`}
     >
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
@@ -67,57 +67,57 @@ export function SharedNavbar() {
 
         <div className="hidden md:flex items-center gap-6">
           {isLandingPage ? (
-            <a href="#solution" className="text-sm text-muted-foreground transition-colors" data-testid="link-solutions">
+            <a href="#solution" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-solutions">
               {t("nav.solutions")}
             </a>
           ) : (
-            <Link href="/#solution" className="text-sm text-muted-foreground transition-colors" data-testid="link-solutions">
+            <Link href="/#solution" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-solutions">
               {t("nav.solutions")}
             </Link>
           )}
 
           {isLandingPage ? (
-            <a href="#pricing" className="text-sm text-muted-foreground transition-colors" data-testid="link-pricing">
+            <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-pricing">
               {t("nav.pricing")}
             </a>
           ) : (
-            <Link href="/#pricing" className="text-sm text-muted-foreground transition-colors" data-testid="link-pricing">
+            <Link href="/#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-pricing">
               {t("nav.pricing")}
             </Link>
           )}
 
           {isLandingPage ? (
-            <a href="#proof" className="text-sm text-muted-foreground transition-colors" data-testid="link-portfolio">
+            <a href="#proof" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-portfolio">
               {t("nav.portfolio")}
             </a>
           ) : (
-            <Link href="/#proof" className="text-sm text-muted-foreground transition-colors" data-testid="link-portfolio">
+            <Link href="/#proof" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-portfolio">
               {t("nav.portfolio")}
             </Link>
           )}
 
           <Link
             href="/build"
-            className={`text-sm transition-colors ${location === '/build' ? 'text-primary font-medium' : 'text-muted-foreground'}`}
+            className={`text-sm transition-colors duration-200 ${location === '/build' ? 'text-primary font-medium' : 'text-muted-foreground hover:text-foreground'}`}
             data-testid="link-build"
           >
             {t("nav.buildYourSolution")}
           </Link>
           {isLandingPage ? (
-            <a href="#clients" className="text-sm text-muted-foreground transition-colors" data-testid="link-clients">
+            <a href="#clients" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-clients">
               {t("nav.clients")}
             </a>
           ) : (
-            <Link href="/#clients" className="text-sm text-muted-foreground transition-colors" data-testid="link-clients">
+            <Link href="/#clients" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-clients">
               {t("nav.clients")}
             </Link>
           )}
           {isLandingPage ? (
-            <a href="#contact" className="text-sm text-muted-foreground transition-colors" data-testid="link-contact">
+            <a href="#contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-contact">
               {t("nav.contact")}
             </a>
           ) : (
-            <Link href="/#contact" className="text-sm text-muted-foreground transition-colors" data-testid="link-contact">
+            <Link href="/#contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-contact">
               {t("nav.contact")}
             </Link>
           )}
@@ -161,7 +161,7 @@ export function SharedNavbar() {
               {isLandingPage ? (
                 <a
                   href="#solution"
-                  className="text-sm text-muted-foreground py-2"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
                   onClick={() => setMobileMenuOpen(false)}
                   data-testid="mobile-link-solutions"
                 >
@@ -170,7 +170,7 @@ export function SharedNavbar() {
               ) : (
                 <Link
                   href="/#solution"
-                  className="text-sm text-muted-foreground py-2"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
                   onClick={() => setMobileMenuOpen(false)}
                   data-testid="mobile-link-solutions"
                 >
@@ -182,7 +182,7 @@ export function SharedNavbar() {
                 {isLandingPage ? (
                   <a
                     href="#proof"
-                    className="text-sm text-muted-foreground py-2 block"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2 block"
                     onClick={() => setMobileMenuOpen(false)}
                     data-testid="mobile-link-portfolio"
                   >
@@ -191,7 +191,7 @@ export function SharedNavbar() {
                 ) : (
                   <Link
                     href="/#proof"
-                    className="text-sm text-muted-foreground py-2 block"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2 block"
                     onClick={() => setMobileMenuOpen(false)}
                     data-testid="mobile-link-portfolio"
                   >
@@ -202,7 +202,7 @@ export function SharedNavbar() {
 
               <Link
                 href="/build"
-                className={`text-sm py-2 ${location === '/build' ? 'text-primary font-medium' : 'text-muted-foreground'}`}
+                className={`text-sm py-2 transition-colors duration-200 ${location === '/build' ? 'text-primary font-medium' : 'text-muted-foreground hover:text-foreground'}`}
                 onClick={() => setMobileMenuOpen(false)}
                 data-testid="mobile-link-build"
               >
@@ -212,7 +212,7 @@ export function SharedNavbar() {
               {isLandingPage ? (
                 <a
                   href="#clients"
-                  className="text-sm text-muted-foreground py-2"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
                   onClick={() => setMobileMenuOpen(false)}
                   data-testid="mobile-link-clients"
                 >
@@ -221,7 +221,7 @@ export function SharedNavbar() {
               ) : (
                 <Link
                   href="/#clients"
-                  className="text-sm text-muted-foreground py-2"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
                   onClick={() => setMobileMenuOpen(false)}
                   data-testid="mobile-link-clients"
                 >
@@ -232,7 +232,7 @@ export function SharedNavbar() {
               {isLandingPage ? (
                 <a
                   href="#contact"
-                  className="text-sm text-muted-foreground py-2"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
                   onClick={() => setMobileMenuOpen(false)}
                   data-testid="mobile-link-contact"
                 >
@@ -241,7 +241,7 @@ export function SharedNavbar() {
               ) : (
                 <Link
                   href="/#contact"
-                  className="text-sm text-muted-foreground py-2"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
                   onClick={() => setMobileMenuOpen(false)}
                   data-testid="mobile-link-contact"
                 >
@@ -274,9 +274,10 @@ export function SharedFooter() {
   const { t } = useLanguage();
 
   return (
-    <footer id="contact" className="py-24 bg-background">
+    <footer id="contact" className="relative py-24 bg-background dark:bg-[hsl(225,25%,8%)]">
+      <div className="absolute -top-16 left-0 right-0 h-16 bg-gradient-to-b from-transparent to-background dark:to-[hsl(225,25%,8%)] pointer-events-none" />
       <div className="max-w-6xl mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-16">
+        <div className="grid lg:grid-cols-3 gap-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -304,6 +305,32 @@ export function SharedFooter() {
                 </Button>
               </Link>
             </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
+            className="flex flex-col"
+          >
+            <h3 className="text-sm font-bold uppercase tracking-wider text-foreground mb-6">
+              {t("nav.solutions")}
+            </h3>
+            <nav className="flex flex-col gap-3">
+              <a href="#solution" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
+                {t("footer.nav.solutions")}
+              </a>
+              <a href="#pricing" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
+                {t("footer.nav.pricing")}
+              </a>
+              <a href="#proof" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
+                {t("footer.nav.portfolio")}
+              </a>
+              <Link href="/build" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
+                {t("footer.nav.build")}
+              </Link>
+            </nav>
           </motion.div>
 
           <motion.div

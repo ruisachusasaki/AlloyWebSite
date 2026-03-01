@@ -23,6 +23,10 @@ export const es: Record<string, string> = {
     "footer.buildSolution": "Armá tu Solución",
     "footer.tagline": "Construimos plataformas de software a medida que reemplazan el caos con claridad.",
     "footer.rights": "Todos los derechos reservados.",
+    "footer.nav.solutions": "Soluciones",
+    "footer.nav.pricing": "Precios",
+    "footer.nav.portfolio": "Portafolio",
+    "footer.nav.build": "Armá tu Solución",
 
     // ─── Hero Section (Landing) ───
     "hero.badge": "Desarrollo de Software Productizado",
@@ -124,10 +128,10 @@ export const es: Record<string, string> = {
     "pricing.title": "Elegí tu plan",
     "pricing.subtitle": "Elegí tu nivel de alianza. Convertí el caos en alto rendimiento.",
 
-    "pricing.ecommerce.title": "Alloy eCommerce",
+    "pricing.ecommerce.title": "Alloy eCommerce/Website",
     "pricing.ecommerce.subtitle": "Diseña Tu Tienda",
     "pricing.ecommerce.description": "Tu propia tienda. Sin plantillas, sin comisiones.",
-    "pricing.ecommerce.price.setup": "Configuración Única: $1.199",
+    "pricing.ecommerce.price.setup": "Configuración Única: $999",
     "pricing.ecommerce.price.monthly": "Mantenimiento: $200/mes",
     "pricing.ecommerce.feature1": "Plataforma Personalizada: Diseñada para tu marca.",
     "pricing.ecommerce.feature2": "Motor de SEO y Conversión.",
@@ -158,6 +162,7 @@ export const es: Record<string, string> = {
     "pricing.enterprise.feature4": "Integraciones Totales: Conectá todo.",
     "pricing.enterprise.goal": "El Objetivo: Paz mental operativa total.",
     "pricing.cta": "Comenzar",
+    "pricing.popular": "Más Popular",
 
     // ─── Proof Section ───
     "proof.badge": "La Prueba",
@@ -182,6 +187,12 @@ export const es: Record<string, string> = {
     "clients.supplyChain": "Cadena de Suministro",
     "clients.finance": "Finanzas",
     "clients.agencies": "Agencias",
+    "clients.stat1": "15+",
+    "clients.stat1.label": "Plataformas Construidas",
+    "clients.stat2": "4",
+    "clients.stat2.label": "Industrias",
+    "clients.stat3": "500+",
+    "clients.stat3.label": "Funciones Entregadas",
 
     // ─── SEO (Landing) ───
     "seo.landing.title": "ALLOY - Plataformas de Software a Medida | Reemplazá el Caos SaaS con Claridad",
