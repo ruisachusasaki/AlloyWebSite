@@ -42,7 +42,19 @@ function ScrollToTop() {
   const [location] = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
+    const hash = window.location.hash;
+    if (hash) {
+      // Delay to let the target page render before scrolling to the section
+      const timeout = setTimeout(() => {
+        const el = document.querySelector(hash);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 100);
+      return () => clearTimeout(timeout);
+    } else {
+      window.scrollTo(0, 0);
+    }
   }, [location]);
 
   return null;
