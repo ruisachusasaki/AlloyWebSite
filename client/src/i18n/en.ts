@@ -2,7 +2,7 @@ export const en: Record<string, string> = {
     // ─── Navbar ───
     "nav.solutions": "Solutions",
     "nav.pricing": "Prices",
-    "nav.portfolio": "Portfolio",
+    "nav.portfolio": "Cases",
     "nav.buildYourSolution": "Build Your Solution",
     "nav.clients": "Clients",
     "nav.contact": "Contact",
@@ -25,7 +25,7 @@ export const en: Record<string, string> = {
     "footer.rights": "All rights reserved.",
     "footer.nav.solutions": "Solutions",
     "footer.nav.pricing": "Pricing",
-    "footer.nav.portfolio": "Portfolio",
+    "footer.nav.portfolio": "Cases",
     "footer.nav.build": "Build Solution",
 
     // ─── Hero Section (Landing) ───
@@ -164,9 +164,9 @@ export const en: Record<string, string> = {
     "pricing.cta": "Start Your Transformation",
     "pricing.popular": "Most Popular",
 
-    // ─── Proof Section ───
-    "proof.badge": "The Proof",
-    "proof.title": "Real systems. Real results.",
+    // ─── Cases Section ───
+    "proof.badge": "Cases",
+    "proof.title": "Success Cases",
     "proof.subtitle": "Case studies from businesses that replaced their SaaS chaos with unified platforms.",
     "proof.wealthfit.category": "Financial Systems",
     "proof.wealthfit.description": "Unified investment tracking, client portal, and automated reporting for a wealth management firm.",
@@ -182,17 +182,7 @@ export const en: Record<string, string> = {
     "proof.datalight.tag": "Evolved with 50+ custom features since launch",
 
     // ─── Clients Section ───
-    "clients.title": "Industries we serve",
-    "clients.realEstate": "Real Estate",
-    "clients.supplyChain": "Supply Chain",
-    "clients.finance": "Finance",
-    "clients.agencies": "Agencies",
-    "clients.stat1": "15+",
-    "clients.stat1.label": "Platforms Built",
-    "clients.stat2": "4",
-    "clients.stat2.label": "Industries",
-    "clients.stat3": "500+",
-    "clients.stat3.label": "Features Delivered",
+    "clients.title": "Trusted by innovative companies",
 
     // ─── SEO (Landing) ───
     "seo.landing.title": "ALLOY - Custom Software Platforms | Replace SaaS Chaos with Clarity",

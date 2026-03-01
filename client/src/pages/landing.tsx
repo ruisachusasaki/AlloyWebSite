@@ -1229,7 +1229,7 @@ function ComparisonToggleSection() {
   );
 }
 
-function ProofSection() {
+function CasesSection() {
   const { t } = useLanguage();
   const portfolioItems = [
     {
@@ -1271,7 +1271,7 @@ function ProofSection() {
   ];
 
   return (
-    <section id="proof" className="py-24 bg-card/30">
+    <section id="cases" className="py-24 bg-card/30">
       <div className="max-w-6xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -1335,21 +1335,18 @@ function ProofSection() {
 
 function ClientsSection() {
   const { t } = useLanguage();
-  const industries = [
-    { name: t("clients.realEstate"), icon: Building2 },
-    { name: t("clients.supplyChain"), icon: Layers },
-    { name: t("clients.finance"), icon: DollarSign },
-    { name: t("clients.agencies"), icon: Briefcase },
+
+  const clients = [
+    { name: "Darwin AI", logo: "/logos/darwin-ai.png" },
+    { name: "Mercado Libre", logo: "/logos/mercado-libre.png" },
+    { name: "Tokko Broker", logo: "/logos/tokko-broker.png" },
   ];
 
-  const stats = [
-    { value: t("clients.stat1"), label: t("clients.stat1.label") },
-    { value: t("clients.stat2"), label: t("clients.stat2.label") },
-    { value: t("clients.stat3"), label: t("clients.stat3.label") },
-  ];
+  // Duplicate the list for seamless infinite scroll
+  const duplicatedClients = [...clients, ...clients];
 
   return (
-    <section id="clients" className="py-24 border-y border-border">
+    <section id="clients" className="py-24 border-y border-border overflow-hidden">
       <div className="max-w-6xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -1359,38 +1356,25 @@ function ClientsSection() {
         >
           <p className="text-muted-foreground text-lg">{t("clients.title")}</p>
         </motion.div>
+      </div>
 
-        <div className="grid grid-cols-3 gap-8 mb-12">
-          {stats.map((stat, i) => (
-            <motion.div
-              key={stat.label}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className={`text-center ${i < stats.length - 1 ? 'border-r border-border' : ''}`}
-            >
-              <p className="text-3xl md:text-4xl font-black text-primary">{stat.value}</p>
-              <p className="text-sm text-muted-foreground mt-1">{stat.label}</p>
-            </motion.div>
-          ))}
-        </div>
+      <div className="relative w-full">
+        {/* Fade edges */}
+        <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {industries.map((industry, i) => (
-            <motion.div
-              key={industry.name}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="flex flex-col items-center gap-3 text-center"
+        <div className="logo-scroll flex items-center gap-16 w-max">
+          {duplicatedClients.map((client, i) => (
+            <div
+              key={`${client.name}-${i}`}
+              className="client-logo flex-shrink-0 flex items-center justify-center h-16 px-8 rounded-xl border border-border bg-card/50"
             >
-              <div className="w-16 h-16 rounded-2xl bg-secondary flex items-center justify-center hover:scale-105 transition-transform duration-200">
-                <industry.icon className="w-8 h-8 text-muted-foreground" />
-              </div>
-              <span className="text-sm font-medium text-muted-foreground">{industry.name}</span>
-            </motion.div>
+              <img
+                src={client.logo}
+                alt={client.name}
+                className="h-8 w-auto max-w-[120px] object-contain"
+              />
+            </div>
           ))}
         </div>
       </div>
@@ -1430,7 +1414,7 @@ export default function LandingPage() {
         <AIPartnerSection />
         <ComparisonToggleSection />
         <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-        <ProofSection />
+        <CasesSection />
         <ClientsSection />
         <SharedFooter />
         <SchedulingModal

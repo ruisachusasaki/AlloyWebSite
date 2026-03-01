@@ -2,7 +2,7 @@ export const es: Record<string, string> = {
     // ─── Navbar ───
     "nav.solutions": "Soluciones",
     "nav.pricing": "Precios",
-    "nav.portfolio": "Portafolio",
+    "nav.portfolio": "Casos",
     "nav.buildYourSolution": "Armá tu Solución",
     "nav.clients": "Clientes",
     "nav.contact": "Contacto",
@@ -25,7 +25,7 @@ export const es: Record<string, string> = {
     "footer.rights": "Todos los derechos reservados.",
     "footer.nav.solutions": "Soluciones",
     "footer.nav.pricing": "Precios",
-    "footer.nav.portfolio": "Portafolio",
+    "footer.nav.portfolio": "Casos",
     "footer.nav.build": "Armá tu Solución",
 
     // ─── Hero Section (Landing) ───
@@ -164,9 +164,9 @@ export const es: Record<string, string> = {
     "pricing.cta": "Comenzar",
     "pricing.popular": "Más Popular",
 
-    // ─── Proof Section ───
-    "proof.badge": "La Prueba",
-    "proof.title": "Sistemas reales. Resultados reales.",
+    // ─── Cases Section ───
+    "proof.badge": "Casos",
+    "proof.title": "Casos de Éxito",
     "proof.subtitle": "Casos de éxito de negocios que reemplazaron su caos SaaS con plataformas unificadas.",
     "proof.wealthfit.category": "Sistemas Financieros",
     "proof.wealthfit.description": "Seguimiento de inversiones unificado, portal de clientes y reportería automatizada para una firma de wealth management.",
@@ -182,17 +182,7 @@ export const es: Record<string, string> = {
     "proof.datalight.tag": "Evolucionó con 50+ funciones personalizadas desde su lanzamiento",
 
     // ─── Clients Section ───
-    "clients.title": "Industrias que atendemos",
-    "clients.realEstate": "Inmobiliarias",
-    "clients.supplyChain": "Cadena de Suministro",
-    "clients.finance": "Finanzas",
-    "clients.agencies": "Agencias",
-    "clients.stat1": "15+",
-    "clients.stat1.label": "Plataformas Construidas",
-    "clients.stat2": "4",
-    "clients.stat2.label": "Industrias",
-    "clients.stat3": "500+",
-    "clients.stat3.label": "Funciones Entregadas",
+    "clients.title": "Confiado por empresas innovadoras",
 
     // ─── SEO (Landing) ───
     "seo.landing.title": "ALLOY - Plataformas de Software a Medida | Reemplazá el Caos SaaS con Claridad",

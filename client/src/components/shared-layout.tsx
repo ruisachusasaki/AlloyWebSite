@@ -87,11 +87,11 @@ export function SharedNavbar() {
           )}
 
           {isLandingPage ? (
-            <a href="#proof" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-portfolio">
+            <a href="#cases" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-cases">
               {t("nav.portfolio")}
             </a>
           ) : (
-            <Link href="/#proof" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-portfolio">
+            <Link href="/#cases" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-cases">
               {t("nav.portfolio")}
             </Link>
           )}
@@ -181,19 +181,19 @@ export function SharedNavbar() {
               <div className="border-t border-border pt-2">
                 {isLandingPage ? (
                   <a
-                    href="#proof"
+                    href="#cases"
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2 block"
                     onClick={() => setMobileMenuOpen(false)}
-                    data-testid="mobile-link-portfolio"
+                    data-testid="mobile-link-cases"
                   >
                     {t("nav.portfolio")}
                   </a>
                 ) : (
                   <Link
-                    href="/#proof"
+                    href="/#cases"
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2 block"
                     onClick={() => setMobileMenuOpen(false)}
-                    data-testid="mobile-link-portfolio"
+                    data-testid="mobile-link-cases"
                   >
                     {t("nav.portfolio")}
                   </Link>
@@ -324,7 +324,7 @@ export function SharedFooter() {
               <a href="#pricing" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
                 {t("footer.nav.pricing")}
               </a>
-              <a href="#proof" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
+              <a href="#cases" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
                 {t("footer.nav.portfolio")}
               </a>
               <Link href="/build" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">

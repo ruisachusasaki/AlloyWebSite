@@ -363,3 +363,29 @@
     transform: translate(-10px, -30px) scale(1.05);
   }
 }
+
+/* Logo carousel scroll animation */
+@keyframes scroll-logos {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.logo-scroll {
+  animation: scroll-logos 30s linear infinite;
+}
+
+.logo-scroll:hover {
+  animation-play-state: paused;
+}
+
+/* Client logo grayscale effect */
+.client-logo {
+  filter: grayscale(100%);
+  opacity: 0.5;
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.client-logo:hover {
+  filter: grayscale(0%);
+  opacity: 1;
+}
