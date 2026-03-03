@@ -1650,9 +1650,8 @@ function CasesSection() {
 
 function ClientsSection() {
   const { t } = useLanguage();
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const pausedRef = useRef(false);
-  const resumeTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const trackRef = useRef<HTMLDivElement>(null);
+  const offsetRef = useRef(0);
 
   // Auto-discover all logo files — just drop images into src/assets/logos/
   const logoFiles = import.meta.glob<{ default: string }>(
@@ -1675,42 +1674,24 @@ function ClientsSection() {
   const strip = Array.from({ length: repeats }, () => clients).flat();
   const scrollItems = [...strip, ...strip];
 
-  // JS-based auto-scroll so native touch/swipe still works
+  // Continuous auto-scroll via transform — never stops, works on all platforms
   useEffect(() => {
-    const el = scrollRef.current;
+    const el = trackRef.current;
     if (!el) return;
     let raf: number;
 
     const step = () => {
-      if (!pausedRef.current) {
-        el.scrollLeft += 0.5;
-        // Reset to start of duplicate half for seamless loop
-        if (el.scrollLeft >= el.scrollWidth / 2) {
-          el.scrollLeft = 0;
-        }
+      offsetRef.current -= 0.5;
+      const halfWidth = el.scrollWidth / 2;
+      if (halfWidth > 0 && Math.abs(offsetRef.current) >= halfWidth) {
+        offsetRef.current += halfWidth;
       }
+      el.style.transform = `translateX(${offsetRef.current}px)`;
       raf = requestAnimationFrame(step);
     };
     raf = requestAnimationFrame(step);
 
     return () => cancelAnimationFrame(raf);
-  }, []);
-
-  const pause = useCallback(() => {
-    clearTimeout(resumeTimerRef.current);
-    pausedRef.current = true;
-  }, []);
-
-  const resume = useCallback(() => {
-    clearTimeout(resumeTimerRef.current);
-    pausedRef.current = false;
-  }, []);
-
-  const resumeWithDelay = useCallback(() => {
-    clearTimeout(resumeTimerRef.current);
-    resumeTimerRef.current = setTimeout(() => {
-      pausedRef.current = false;
-    }, 2500);
   }, []);
 
   return (
@@ -1731,16 +1712,11 @@ function ClientsSection() {
         <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
         <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
 
-        <div
-          ref={scrollRef}
-          className="overflow-x-auto scrollbar-none"
-          onMouseEnter={pause}
-          onMouseLeave={resume}
-          onTouchStart={pause}
-          onTouchEnd={resumeWithDelay}
-          onTouchCancel={resume}
-        >
-          <div className="flex items-center gap-16 w-max">
+        <div className="overflow-hidden">
+          <div
+            ref={trackRef}
+            className="flex items-center gap-16 w-max will-change-transform"
+          >
             {scrollItems.map((client, i) => (
               <div
                 key={`${client.name}-${i}`}
