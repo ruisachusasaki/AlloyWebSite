@@ -1738,6 +1738,7 @@ function ClientsSection() {
           onMouseLeave={resume}
           onTouchStart={pause}
           onTouchEnd={resumeWithDelay}
+          onTouchCancel={resume}
         >
           <div className="flex items-center gap-16 w-max">
             {scrollItems.map((client, i) => (
