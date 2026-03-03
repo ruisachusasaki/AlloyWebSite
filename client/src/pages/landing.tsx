@@ -1336,14 +1336,26 @@ function CasesSection() {
 function ClientsSection() {
   const { t } = useLanguage();
 
-  const clients = [
-    { name: "Darwin AI", logo: "/logos/darwin-ai.png" },
-    { name: "Mercado Libre", logo: "/logos/mercado-libre.png" },
-    { name: "Tokko Broker", logo: "/logos/tokko-broker.png" },
-  ];
+  // Auto-discover all logo files — just drop images into src/assets/logos/
+  const logoFiles = import.meta.glob<{ default: string }>(
+    '../assets/logos/*.{png,svg,jpg,jpeg,webp}',
+    { eager: true }
+  );
 
-  // Duplicate the list for seamless infinite scroll
-  const duplicatedClients = [...clients, ...clients];
+  const clients = Object.entries(logoFiles).map(([path, mod]) => {
+    const filename = path.split('/').pop()!.replace(/\.[^.]+$/, '');
+    const name = filename
+      .split('-')
+      .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ');
+    return { name, logo: mod.default };
+  });
+
+  // Build a strip wide enough to fill any screen, then duplicate for seamless loop
+  const MIN_ITEMS_PER_STRIP = 12;
+  const repeats = Math.max(1, Math.ceil(MIN_ITEMS_PER_STRIP / clients.length));
+  const strip = Array.from({ length: repeats }, () => clients).flat();
+  const scrollItems = [...strip, ...strip];
 
   return (
     <section id="clients" className="py-24 border-y border-border overflow-hidden">
@@ -1364,15 +1376,16 @@ function ClientsSection() {
         <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
 
         <div className="logo-scroll flex items-center gap-16 w-max">
-          {duplicatedClients.map((client, i) => (
+          {scrollItems.map((client, i) => (
             <div
               key={`${client.name}-${i}`}
-              className="client-logo flex-shrink-0 flex items-center justify-center h-16 px-8 rounded-xl border border-border bg-card/50"
+              className="client-logo flex-shrink-0 flex items-center justify-center h-16 px-8"
             >
               <img
                 src={client.logo}
                 alt={client.name}
-                className="h-8 w-auto max-w-[120px] object-contain"
+                className="h-10 w-auto max-w-[180px] object-contain"
+                loading="lazy"
               />
             </div>
           ))}

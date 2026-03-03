@@ -371,7 +371,7 @@
 }
 
 .logo-scroll {
-  animation: scroll-logos 30s linear infinite;
+  animation: scroll-logos 40s linear infinite;
 }
 
 .logo-scroll:hover {
