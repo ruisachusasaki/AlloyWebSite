@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useContext, useCallback } from "react";
 import { useLanguage } from "@/context/language-context";
-import { motion, useScroll, useTransform, useInView, AnimatePresence } from "framer-motion";
+import { motion, useScroll, useTransform, useInView, useMotionValue, useSpring, useReducedMotion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -32,6 +32,7 @@ import {
   Lock,
   Rocket,
   ShoppingCart,
+  Globe,
   Star
 } from "lucide-react";
 import {
@@ -71,52 +72,305 @@ function ScrollProgress() {
 }
 
 
-function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
-  const { t } = useLanguage();
+function MagneticButton({ children }: { children: React.ReactNode }) {
+  const prefersReducedMotion = useReducedMotion();
+  const springConfig = { stiffness: 200, damping: 20, mass: 0.5 };
+  const x = useSpring(0, springConfig);
+  const y = useSpring(0, springConfig);
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (prefersReducedMotion) return;
+      const rect = e.currentTarget.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      x.set((e.clientX - centerX) * 0.15);
+      y.set((e.clientY - centerY) * 0.15);
+    },
+    [prefersReducedMotion, x, y],
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    x.set(0);
+    y.set(0);
+  }, [x, y]);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden grid-pattern">
-      <div className="hero-glow" />
+    <motion.div
+      style={{ x, y }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
+  const { t } = useLanguage();
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+
+  // Rotating highlight words
+  const highlights = [
+    t("hero.rotating.0"),
+    t("hero.rotating.1"),
+    t("hero.rotating.2"),
+    t("hero.rotating.3"),
+    t("hero.rotating.4"),
+    t("hero.rotating.5"),
+  ];
+  const [highlightIndex, setHighlightIndex] = useState(0);
+
+  // Rotating badge chips — each is a complete, self-sized unit with its own icon & color
+  const badgeChips = [
+    { icon: ShoppingCart, key: "hero.badge.ecommerce", className: "bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-400" },
+    { icon: Globe, key: "hero.badge.website", className: "bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400" },
+    { icon: Zap, key: "hero.badge.platform", className: "bg-primary/10 border-primary/20 text-primary" },
+    { icon: Layers, key: "hero.badge.crm", className: "bg-violet-500/10 border-violet-500/20 text-violet-600 dark:text-violet-400" },
+  ];
+  const [badgeIndex, setBadgeIndex] = useState(0);
+
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+    const interval = setInterval(() => {
+      setHighlightIndex((prev) => (prev + 1) % highlights.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [highlights.length, prefersReducedMotion]);
+
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+    const interval = setInterval(() => {
+      setBadgeIndex((prev) => (prev + 1) % badgeChips.length);
+    }, 3500);
+    return () => clearInterval(interval);
+  }, [badgeChips.length, prefersReducedMotion]);
+
+  // Mouse tracking for floating orbs
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      if (prefersReducedMotion) return;
+      const rect = sectionRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
+      mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
+    },
+    [prefersReducedMotion, mouseX, mouseY],
+  );
+
+  // Orb parallax transforms
+  const orb1X = useTransform(mouseX, [-0.5, 0.5], [-40, 40]);
+  const orb1Y = useTransform(mouseY, [-0.5, 0.5], [-30, 30]);
+  const orb2X = useTransform(mouseX, [-0.5, 0.5], [30, -30]);
+  const orb2Y = useTransform(mouseY, [-0.5, 0.5], [25, -25]);
+  const orb3X = useTransform(mouseX, [-0.5, 0.5], [-20, 20]);
+  const orb3Y = useTransform(mouseY, [-0.5, 0.5], [15, -15]);
+
+  // Scroll-based parallax exit
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+
+  const badgeY = useTransform(scrollYProgress, [0, 1], [0, -150]);
+  const badgeOpacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
+  const titleY = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const titleOpacity = useTransform(scrollYProgress, [0, 0.4], [1, 0]);
+  const subtitleY = useTransform(scrollYProgress, [0, 1], [0, -60]);
+  const subtitleOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
+  const ctaY = useTransform(scrollYProgress, [0, 1], [0, -30]);
+  const ctaOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+
+  // Split headline into words for stagger animation
+  const titleWords = t("hero.title.line1").split(" ");
+
+  return (
+    <section
+      ref={sectionRef}
+      className="relative min-h-screen flex items-center justify-center overflow-hidden grid-pattern"
+      onMouseMove={handleMouseMove}
+    >
+      {/* Floating gradient orbs — track mouse with parallax */}
+      <motion.div
+        className="absolute rounded-full pointer-events-none w-[400px] h-[400px] md:w-[600px] md:h-[600px]"
+        style={{
+          x: prefersReducedMotion ? 0 : orb1X,
+          y: prefersReducedMotion ? 0 : orb1Y,
+          top: "10%",
+          left: "5%",
+          background:
+            "radial-gradient(circle, hsl(199 89% 48% / 0.12) 0%, transparent 70%)",
+          filter: "blur(60px)",
+        }}
+      />
+      <motion.div
+        className="absolute rounded-full pointer-events-none w-[300px] h-[300px] md:w-[500px] md:h-[500px]"
+        style={{
+          x: prefersReducedMotion ? 0 : orb2X,
+          y: prefersReducedMotion ? 0 : orb2Y,
+          top: "50%",
+          right: "5%",
+          background:
+            "radial-gradient(circle, hsl(280 70% 55% / 0.08) 0%, hsl(199 89% 48% / 0.05) 50%, transparent 70%)",
+          filter: "blur(60px)",
+        }}
+      />
+      <motion.div
+        className="absolute rounded-full pointer-events-none w-[250px] h-[250px] md:w-[400px] md:h-[400px]"
+        style={{
+          x: prefersReducedMotion ? 0 : orb3X,
+          y: prefersReducedMotion ? 0 : orb3Y,
+          bottom: "10%",
+          left: "30%",
+          background:
+            "radial-gradient(circle, hsl(199 89% 48% / 0.06) 0%, hsl(160 60% 50% / 0.04) 50%, transparent 70%)",
+          filter: "blur(80px)",
+        }}
+      />
+
       <div className="relative z-10 max-w-5xl mx-auto px-6 py-20 md:py-32 text-center">
+        {/* Badge — parallax exits fastest */}
         <motion.div
-          initial="initial"
-          animate="animate"
-          variants={stagger}
-          className="flex flex-col items-center"
+          style={
+            !prefersReducedMotion
+              ? { y: badgeY, opacity: badgeOpacity }
+              : undefined
+          }
+          className="mb-5"
         >
-          <motion.div variants={fadeInUp} className="mb-5">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium">
-              <Zap className="w-4 h-4" />
-              {t("hero.badge")}
-            </span>
-          </motion.div>
+          <AnimatePresence mode="wait">
+            {(() => {
+              const BadgeIcon = badgeChips[badgeIndex].icon;
+              return (
+                <motion.span
+                  key={badgeIndex}
+                  initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium ${badgeChips[badgeIndex].className}`}
+                >
+                  <BadgeIcon className="w-4 h-4" />
+                  {t(badgeChips[badgeIndex].key)}
+                </motion.span>
+              );
+            })()}
+          </AnimatePresence>
+        </motion.div>
 
-          <motion.h1
-            variants={fadeInUp}
-            className="text-4xl sm:text-5xl md:text-7xl lg:text-[5.5rem] font-black leading-[1.05] text-balance mb-8"
-          >
-            {t("hero.title.line1")}{" "}
-            <span className="text-primary">{t("hero.title.highlight")}</span>
-          </motion.h1>
+        {/* Split-text headline — words slide up one-by-one from clip masks */}
+        <motion.div
+          style={
+            !prefersReducedMotion
+              ? { y: titleY, opacity: titleOpacity }
+              : undefined
+          }
+        >
+          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-[5.5rem] font-black leading-[1.05] mb-8">
+            {titleWords.map((word, i) => (
+              <span
+                key={i}
+                className="inline-block overflow-hidden align-bottom pb-1"
+              >
+                <motion.span
+                  className="inline-block pr-[0.3em]"
+                  initial={prefersReducedMotion ? false : { y: "110%" }}
+                  animate={{ y: "0%" }}
+                  transition={{
+                    duration: 0.6,
+                    delay: 0.3 + i * 0.06,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                >
+                  {word}
+                </motion.span>
+              </span>
+            ))}
 
+            {/* Rotating highlight with gradient shimmer */}
+            <motion.span
+              className="block h-[1.2em] relative overflow-hidden mt-1"
+              initial={prefersReducedMotion ? false : { opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.8, duration: 0.4 }}
+            >
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={highlightIndex}
+                  className="gradient-text-animated absolute inset-x-0"
+                  initial={
+                    prefersReducedMotion ? false : { y: "100%" }
+                  }
+                  animate={{ y: "0%" }}
+                  exit={{ y: "-100%" }}
+                  transition={{
+                    duration: 0.5,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                >
+                  {highlights[highlightIndex]}
+                </motion.span>
+              </AnimatePresence>
+            </motion.span>
+          </h1>
+        </motion.div>
+
+        {/* Subtitle — lingers slightly longer on scroll */}
+        <motion.div
+          style={
+            !prefersReducedMotion
+              ? { y: subtitleY, opacity: subtitleOpacity }
+              : undefined
+          }
+        >
           <motion.p
-            variants={fadeInUp}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.7,
+              delay: 0.9,
+              ease: [0.22, 1, 0.36, 1],
+            }}
             className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-10"
           >
             {t("hero.subtitle")}
           </motion.p>
+        </motion.div>
 
-          <motion.div variants={fadeInUp} className="flex flex-col items-center gap-4 mb-8">
+        {/* CTA buttons — fade last on scroll, magnetic primary button */}
+        <motion.div
+          style={
+            !prefersReducedMotion
+              ? { y: ctaY, opacity: ctaOpacity }
+              : undefined
+          }
+        >
+          <motion.div
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: 0.7,
+              delay: 1.1,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+            className="flex flex-col items-center gap-4 mb-8"
+          >
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Button
-                size="lg"
-                className="text-lg font-bold shimmer-btn glow-border shadow-lg shadow-primary/25 w-full sm:w-auto"
-                onClick={() => onScheduleClick()}
-                data-testid="button-cta-hero"
-              >
-                {t("hero.cta")}
-                <ArrowRight className="w-5 h-5 ml-2" />
-              </Button>
+              <MagneticButton>
+                <Button
+                  size="lg"
+                  className="text-lg font-bold shimmer-btn glow-border shadow-lg shadow-primary/25 w-full sm:w-auto"
+                  onClick={() => onScheduleClick()}
+                  data-testid="button-cta-hero"
+                >
+                  {t("hero.cta")}
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </MagneticButton>
               <Link href="/build">
                 <Button
                   variant="outline"
@@ -130,8 +384,14 @@ function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
             </div>
           </motion.div>
 
-          <motion.div variants={fadeInUp}>
-            <span className="text-muted-foreground text-sm opacity-70">{t("hero.noCommitment")}</span>
+          <motion.div
+            initial={prefersReducedMotion ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.4 }}
+          >
+            <span className="text-muted-foreground text-sm opacity-70">
+              {t("hero.noCommitment")}
+            </span>
           </motion.div>
         </motion.div>
       </div>

@@ -200,8 +200,8 @@
 /* Subtle grid pattern */
 .grid-pattern {
   background-image:
-    linear-gradient(hsl(var(--foreground) / 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, hsl(var(--foreground) / 0.03) 1px, transparent 1px);
+    linear-gradient(hsl(var(--foreground) / 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--foreground) / 0.04) 1px, transparent 1px);
   background-size: 80px 80px;
 }
 
@@ -246,6 +246,38 @@
       transparent 100%);
   background-size: 200% 100%;
   animation: shimmer 3s infinite;
+}
+
+/* Animated gradient text sweep for hero highlight */
+@keyframes gradient-text-sweep {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.gradient-text-animated {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--primary)) 0%,
+    hsl(var(--primary) / 0.7) 25%,
+    hsl(280 70% 60%) 50%,
+    hsl(var(--primary) / 0.7) 75%,
+    hsl(var(--primary)) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradient-text-sweep 4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gradient-text-animated {
+    animation: none;
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    color: hsl(var(--primary));
+  }
 }
 
 /* Glow border effect */
