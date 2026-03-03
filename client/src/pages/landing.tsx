@@ -1652,6 +1652,7 @@ function ClientsSection() {
   const { t } = useLanguage();
   const trackRef = useRef<HTMLDivElement>(null);
   const offsetRef = useRef(0);
+  const dragRef = useRef<{ lastX: number; startY: number; locked: boolean } | null>(null);
 
   // Auto-discover all logo files — just drop images into src/assets/logos/
   const logoFiles = import.meta.glob<{ default: string }>(
@@ -1694,6 +1695,53 @@ function ClientsSection() {
     return () => cancelAnimationFrame(raf);
   }, []);
 
+  // Touch handlers — drag adjusts offsetRef while auto-scroll keeps running
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    dragRef.current = { lastX: touch.clientX, startY: touch.clientY, locked: false };
+  }, []);
+
+  const onTouchMove = useCallback((e: React.TouchEvent) => {
+    const drag = dragRef.current;
+    if (!drag) return;
+    const touch = e.touches[0];
+    const dx = touch.clientX - drag.lastX;
+    const dy = touch.clientY - drag.startY;
+
+    if (!drag.locked) {
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(touch.clientX - drag.lastX) > 10) {
+        drag.locked = true;
+      } else {
+        return; // let vertical scroll happen
+      }
+    }
+
+    e.preventDefault(); // prevent vertical scroll while dragging horizontally
+    offsetRef.current += dx;
+    drag.lastX = touch.clientX;
+  }, []);
+
+  const onTouchEnd = useCallback(() => {
+    dragRef.current = null;
+  }, []);
+
+  // Mouse handlers — same pattern for desktop click-drag
+  const onMouseDown = useCallback((e: React.MouseEvent) => {
+    dragRef.current = { lastX: e.clientX, startY: e.clientY, locked: true };
+  }, []);
+
+  const onMouseMove = useCallback((e: React.MouseEvent) => {
+    const drag = dragRef.current;
+    if (!drag) return;
+    const dx = e.clientX - drag.lastX;
+    offsetRef.current += dx;
+    drag.lastX = e.clientX;
+  }, []);
+
+  const onMouseUp = useCallback(() => {
+    dragRef.current = null;
+  }, []);
+
   return (
     <section id="clients" className="py-24 border-y border-border overflow-hidden">
       <div className="max-w-6xl mx-auto px-6">
@@ -1715,7 +1763,15 @@ function ClientsSection() {
         <div className="overflow-hidden">
           <div
             ref={trackRef}
-            className="flex items-center gap-16 w-max will-change-transform"
+            className="flex items-center gap-16 w-max will-change-transform cursor-grab active:cursor-grabbing select-none"
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+            onTouchCancel={onTouchEnd}
+            onMouseDown={onMouseDown}
+            onMouseMove={onMouseMove}
+            onMouseUp={onMouseUp}
+            onMouseLeave={onMouseUp}
           >
             {scrollItems.map((client, i) => (
               <div
