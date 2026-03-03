@@ -345,7 +345,7 @@ function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
         <motion.div
           style={
             !prefersReducedMotion
-              ? { y: ctaY, opacity: ctaOpacity }
+              ? { y: ctaY, opacity: 1 }
               : undefined
           }
         >
@@ -404,21 +404,50 @@ function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
 function ChaosIcon({
   app,
   progress,
-  index
+  index,
+  prefersReducedMotion,
+  scaleFactor,
+  isTouchDevice
 }: {
   app: { icon?: React.ComponentType<{ className?: string; style?: React.CSSProperties }>; imageSrc?: string; name: string; color: string; x: number; y: number; rotate: number; scale: number; zIndex: number; iconSize: string; useThemeColor?: boolean };
   progress: any;
-  index: number
+  index: number;
+  prefersReducedMotion: boolean | null;
+  scaleFactor: number;
+  isTouchDevice: boolean;
 }) {
-  const x = useTransform(progress, [0, 0.5, 0.85, 1], [app.x, app.x * 0.6, app.x * 0.1, 0]);
-  const y = useTransform(progress, [0, 0.5, 0.85, 1], [app.y, app.y * 0.6, app.y * 0.1, 0]);
-  const rotate = useTransform(progress, [0, 0.7, 1], [app.rotate, app.rotate * 0.3, 0]);
-  const scale = useTransform(progress, [0, 0.7, 0.9, 1], [app.scale, app.scale, 0.7, 0]);
-  const opacity = useTransform(progress, [0, 0.8, 0.95, 1], [1, 1, 0.5, 0]);
+  const sx = app.x * scaleFactor;
+  const sy = app.y * scaleFactor;
+
+  const x = useTransform(
+    progress,
+    prefersReducedMotion ? [0, 0.7, 0.71, 1] : [0, 0.15, 0.5, 0.85, 1],
+    prefersReducedMotion ? [sx, sx, 0, 0] : [sx, sx * 0.85, sx * 0.4, sx * 0.05, 0]
+  );
+  const y = useTransform(
+    progress,
+    prefersReducedMotion ? [0, 0.7, 0.71, 1] : [0, 0.15, 0.5, 0.85, 1],
+    prefersReducedMotion ? [sy, sy, 0, 0] : [sy, sy * 0.85, sy * 0.4, sy * 0.05, 0]
+  );
+  const rotate = useTransform(
+    progress,
+    prefersReducedMotion ? [0, 0.7, 0.71, 1] : [0, 0.4, 0.85, 1],
+    prefersReducedMotion ? [app.rotate, app.rotate, 0, 0] : [app.rotate, app.rotate * 0.5, app.rotate * 0.1, 0]
+  );
+  const scale = useTransform(
+    progress,
+    prefersReducedMotion ? [0, 0.7, 0.71, 1] : [0, 0.6, 0.85, 1],
+    prefersReducedMotion ? [app.scale, app.scale, 0, 0] : [app.scale, app.scale, 0.6, 0]
+  );
+  const opacity = useTransform(
+    progress,
+    prefersReducedMotion ? [0, 0.7, 0.71, 1] : [0, 0.7, 0.9, 1],
+    prefersReducedMotion ? [1, 1, 0, 0] : [1, 1, 0.4, 0]
+  );
 
   return (
     <motion.div
-      className="absolute left-1/2 top-1/2 cursor-grab active:cursor-grabbing"
+      className={`absolute left-1/2 top-1/2 ${isTouchDevice ? '' : 'cursor-grab active:cursor-grabbing'}`}
       style={{
         x,
         y,
@@ -429,11 +458,11 @@ function ChaosIcon({
         translateY: "-50%",
         zIndex: app.zIndex,
       }}
-      drag
+      drag={!isTouchDevice}
       dragConstraints={{ left: -50, right: 50, top: -50, bottom: 50 }}
       dragElastic={0.3}
-      whileHover={{ scale: app.scale * 1.15, zIndex: 100 }}
-      whileTap={{ scale: app.scale * 0.95 }}
+      whileHover={isTouchDevice ? undefined : { scale: app.scale * 1.15, zIndex: 100 }}
+      whileTap={isTouchDevice ? undefined : { scale: app.scale * 0.95 }}
       transition={{
         type: "spring",
         stiffness: 400,
@@ -455,7 +484,7 @@ function ChaosIcon({
             style={{ color: app.useThemeColor ? undefined : app.color, filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.3))" }}
           />
         ) : null}
-        <span className="text-[8px] md:text-[10px] text-muted-foreground font-medium whitespace-nowrap">{app.name}</span>
+        <span className="hidden md:block text-[10px] text-muted-foreground font-medium whitespace-nowrap">{app.name}</span>
       </div>
     </motion.div>
   );
@@ -465,6 +494,24 @@ function SpaghettiChaosSection() {
   const { t } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
   const stickyRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+
+  const [scaleFactor, setScaleFactor] = useState(1);
+  const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+  useEffect(() => {
+    setIsTouchDevice(window.matchMedia('(pointer: coarse)').matches);
+  }, []);
+
+  useEffect(() => {
+    const el = stickyRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(([entry]) => {
+      setScaleFactor(Math.min(1, entry.contentRect.width / 800));
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -507,15 +554,16 @@ function SpaghettiChaosSection() {
   ];
 
   const unifiedOpacity = useTransform(scrollYProgress, [0.75, 0.9, 1], [0, 0.5, 1]);
-  const unifiedScale = useTransform(scrollYProgress, [0.75, 0.9, 1], [0.5, 0.8, 1]);
-  const glowOpacity = useTransform(scrollYProgress, [0.85, 1], [0, 1]);
+  const unifiedScale = useTransform(scrollYProgress, [0.75, 0.88, 0.94, 1], [0.5, 0.85, 1.06, 1]);
+  const glowOpacity = useTransform(scrollYProgress, [0.8, 0.95], [0, 0.8]);
+  const ringOpacity = useTransform(scrollYProgress, [0.88, 0.92, 1], [0, 1, 0]);
   const headlineOpacity = useTransform(scrollYProgress, [0.9, 1], [0, 1]);
   const headlineY = useTransform(scrollYProgress, [0.9, 1], [30, 0]);
 
   const chaosTextOpacity = useTransform(scrollYProgress, [0, 0.3, 0.6], [1, 1, 0]);
 
   return (
-    <section id="problem" ref={containerRef} className="relative md:mt-24" style={{ height: "200vh" }}>
+    <section id="problem" ref={containerRef} className="relative md:mt-24 h-[160vh] md:h-[200vh]">
       <div
         ref={stickyRef}
         className="sticky top-0 h-screen flex flex-col items-center justify-start md:justify-center overflow-x-hidden pt-12 md:pt-0 gap-4 md:gap-8"
@@ -536,7 +584,7 @@ function SpaghettiChaosSection() {
         <div className="relative w-full max-w-6xl h-[420px] sm:h-[520px] md:h-[700px] flex items-center justify-center">
           <div className="relative w-full h-full">
             {chaosApps.map((app, i) => (
-              <ChaosIcon key={app.name} app={app} progress={scrollYProgress} index={i} />
+              <ChaosIcon key={app.name} app={app} progress={scrollYProgress} index={i} prefersReducedMotion={prefersReducedMotion} scaleFactor={scaleFactor} isTouchDevice={isTouchDevice} />
             ))}
           </div>
 
@@ -545,11 +593,18 @@ function SpaghettiChaosSection() {
             style={{ opacity: unifiedOpacity, scale: unifiedScale }}
           >
             <motion.div
-              className="absolute w-80 h-80 rounded-full"
+              className="absolute w-96 h-96 rounded-full"
               style={{
                 opacity: glowOpacity,
-                background: "radial-gradient(circle, hsl(var(--primary) / 0.4) 0%, transparent 70%)",
-                filter: "blur(40px)"
+                background: "radial-gradient(circle, hsl(var(--primary) / 0.6) 0%, transparent 70%)",
+                filter: "blur(60px)"
+              }}
+            />
+            <motion.div
+              className="absolute w-44 h-44 md:w-56 md:h-56 rounded-3xl border-2 border-primary/40"
+              style={{
+                opacity: ringOpacity,
+                animation: prefersReducedMotion ? "none" : "pulse-ring 1s ease-out forwards"
               }}
             />
 
@@ -583,8 +638,8 @@ function SpaghettiChaosSection() {
           style={{ opacity: chaosTextOpacity }}
         >
           <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            animate={prefersReducedMotion ? undefined : { y: [0, 8, 0] }}
+            transition={{ duration: 1.5, repeat: 3, ease: "easeInOut" }}
             className="text-muted-foreground text-xs flex flex-col items-center gap-1"
           >
             <span>{t("chaos.scroll")}</span>
@@ -1595,6 +1650,9 @@ function CasesSection() {
 
 function ClientsSection() {
   const { t } = useLanguage();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const pausedRef = useRef(false);
+  const resumeTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
   // Auto-discover all logo files — just drop images into src/assets/logos/
   const logoFiles = import.meta.glob<{ default: string }>(
@@ -1617,6 +1675,44 @@ function ClientsSection() {
   const strip = Array.from({ length: repeats }, () => clients).flat();
   const scrollItems = [...strip, ...strip];
 
+  // JS-based auto-scroll so native touch/swipe still works
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    let raf: number;
+
+    const step = () => {
+      if (!pausedRef.current) {
+        el.scrollLeft += 0.5;
+        // Reset to start of duplicate half for seamless loop
+        if (el.scrollLeft >= el.scrollWidth / 2) {
+          el.scrollLeft = 0;
+        }
+      }
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+
+    return () => cancelAnimationFrame(raf);
+  }, []);
+
+  const pause = useCallback(() => {
+    clearTimeout(resumeTimerRef.current);
+    pausedRef.current = true;
+  }, []);
+
+  const resume = useCallback(() => {
+    clearTimeout(resumeTimerRef.current);
+    pausedRef.current = false;
+  }, []);
+
+  const resumeWithDelay = useCallback(() => {
+    clearTimeout(resumeTimerRef.current);
+    resumeTimerRef.current = setTimeout(() => {
+      pausedRef.current = false;
+    }, 2500);
+  }, []);
+
   return (
     <section id="clients" className="py-24 border-y border-border overflow-hidden">
       <div className="max-w-6xl mx-auto px-6">
@@ -1635,20 +1731,29 @@ function ClientsSection() {
         <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
         <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
 
-        <div className="logo-scroll flex items-center gap-16 w-max">
-          {scrollItems.map((client, i) => (
-            <div
-              key={`${client.name}-${i}`}
-              className="client-logo flex-shrink-0 flex items-center justify-center h-16 px-8"
-            >
-              <img
-                src={client.logo}
-                alt={client.name}
-                className="h-10 w-auto max-w-[180px] object-contain"
-                loading="lazy"
-              />
-            </div>
-          ))}
+        <div
+          ref={scrollRef}
+          className="overflow-x-auto scrollbar-none"
+          onMouseEnter={pause}
+          onMouseLeave={resume}
+          onTouchStart={pause}
+          onTouchEnd={resumeWithDelay}
+        >
+          <div className="flex items-center gap-16 w-max">
+            {scrollItems.map((client, i) => (
+              <div
+                key={`${client.name}-${i}`}
+                className="client-logo flex-shrink-0 flex items-center justify-center h-16 px-8"
+              >
+                <img
+                  src={client.logo}
+                  alt={client.name}
+                  className="h-10 w-auto max-w-[180px] object-contain"
+                  loading="lazy"
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

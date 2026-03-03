@@ -44,12 +44,19 @@ export function SharedNavbar() {
 
   const isLandingPage = location === "/";
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileMenuOpen]);
+
   return (
-    <motion.nav
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? "glass shadow-sm" : "bg-transparent"
+    <nav
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled || mobileMenuOpen ? "glass shadow-sm" : "bg-transparent"
         }`}
     >
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
@@ -128,7 +135,7 @@ export function SharedNavbar() {
           <ThemeToggle />
           <Button
             size="sm"
-            className="font-semibold shimmer-btn glow-border hidden sm:flex"
+            className="font-semibold shimmer-btn glow-border hidden md:flex"
             onClick={() => openScheduling()}
             data-testid="button-cta-nav"
           >
@@ -178,27 +185,45 @@ export function SharedNavbar() {
                 </Link>
               )}
 
-              <div className="border-t border-border pt-2">
-                {isLandingPage ? (
-                  <a
-                    href="#cases"
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2 block"
-                    onClick={() => setMobileMenuOpen(false)}
-                    data-testid="mobile-link-cases"
-                  >
-                    {t("nav.portfolio")}
-                  </a>
-                ) : (
-                  <Link
-                    href="/#cases"
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2 block"
-                    onClick={() => setMobileMenuOpen(false)}
-                    data-testid="mobile-link-cases"
-                  >
-                    {t("nav.portfolio")}
-                  </Link>
-                )}
-              </div>
+              {isLandingPage ? (
+                <a
+                  href="#pricing"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                  data-testid="mobile-link-pricing"
+                >
+                  {t("nav.pricing")}
+                </a>
+              ) : (
+                <Link
+                  href="/#pricing"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                  data-testid="mobile-link-pricing"
+                >
+                  {t("nav.pricing")}
+                </Link>
+              )}
+
+              {isLandingPage ? (
+                <a
+                  href="#cases"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                  data-testid="mobile-link-cases"
+                >
+                  {t("nav.portfolio")}
+                </a>
+              ) : (
+                <Link
+                  href="/#cases"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                  data-testid="mobile-link-cases"
+                >
+                  {t("nav.portfolio")}
+                </Link>
+              )}
 
               <Link
                 href="/build"
@@ -265,7 +290,7 @@ export function SharedNavbar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.nav>
+    </nav>
   );
 }
 

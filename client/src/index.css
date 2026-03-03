@@ -298,24 +298,17 @@
   mask-composite: exclude;
 }
 
-/* Chaos spaghetti lines animation */
-@keyframes pulse-line {
-
-  0%,
-  100% {
-    opacity: 0.3;
-  }
-
-  50% {
+/* Logo reveal pulse ring */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
     opacity: 0.6;
   }
-}
 
-.chaos-line {
-  stroke: rgba(255, 100, 100, 0.3);
-  stroke-width: 1;
-  fill: none;
-  animation: pulse-line 2s ease-in-out infinite;
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
 }
 
 /* Bento card hover effect */
@@ -394,20 +387,6 @@
   75% {
     transform: translate(-10px, -30px) scale(1.05);
   }
-}
-
-/* Logo carousel scroll animation */
-@keyframes scroll-logos {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
-}
-
-.logo-scroll {
-  animation: scroll-logos 40s linear infinite;
-}
-
-.logo-scroll:hover {
-  animation-play-state: paused;
 }
 
 /* Client logo grayscale effect */
