@@ -60,7 +60,7 @@ export function SharedNavbar() {
         }`}
     >
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
-        <Link href="/" className="flex items-center gap-2" data-testid="link-logo">
+        <Link href="/" className="flex items-center gap-2" data-testid="link-logo" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
           <img
             src={alloyLogo}
             alt="ALLOY"
@@ -366,7 +366,10 @@ export function SharedFooter() {
             className="flex flex-col justify-between"
           >
             <div>
-              <div className="flex items-center gap-2 mb-4">
+              <button
+                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                className="flex items-center gap-2 mb-4 cursor-pointer"
+              >
                 <img
                   src={alloyLogo}
                   alt="ALLOY"
@@ -376,7 +379,7 @@ export function SharedFooter() {
                   <span className="text-primary">ALL</span>
                   <span className="text-foreground">OY</span>
                 </span>
-              </div>
+              </button>
               <p className="text-muted-foreground max-w-sm text-lg">
                 {t("footer.tagline")}
               </p>
