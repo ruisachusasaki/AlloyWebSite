@@ -112,11 +112,16 @@
   }
 
   .glass {
-    @apply bg-background/80 backdrop-blur-2xl border-b border-border/50;
+    @apply backdrop-blur-2xl border-b;
+    background: hsl(0 0% 100% / 0.85);
+    border-color: hsl(220 13% 80% / 0.6);
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.06);
   }
 
   .dark .glass {
     background: hsl(220 10% 20% / 0.75);
+    border-color: hsl(var(--border) / 0.5);
+    box-shadow: none;
   }
 
   .glow {
@@ -416,4 +421,18 @@
   display: block;
   width: 100%;
   height: 100%;
+}
+
+/* In light mode, invert+hue-rotate makes black→white and preserves tube hues,
+   then darken blend hides the white (inverted black) against the white page
+   while keeping the darker tube colors visible. */
+:root:not(.dark) .tubes-cursor-wrapper {
+  filter: invert(1) hue-rotate(180deg);
+  mix-blend-mode: darken;
+}
+
+/* In dark mode, screen blend makes black transparent (screen(black, x) = x)
+   while bright tube colors become even more glowy against the dark background. */
+.dark .tubes-cursor-wrapper {
+  mix-blend-mode: screen;
 }
