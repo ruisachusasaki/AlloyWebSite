@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useContext, useCallback } from "react";
+import React, { useState, useEffect, useRef, useContext, useCallback, Suspense } from "react";
 import { useLanguage } from "@/context/language-context";
 import { motion, useScroll, useTransform, useInView, useMotionValue, useSpring, useReducedMotion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -28,6 +28,7 @@ import {
   MessageSquare,
   Bot,
   Check,
+  X,
   Send,
   Lock,
   Rocket,
@@ -41,6 +42,8 @@ import {
   SiShopify, SiWordpress, SiTelegram, SiGmail, SiGooglecalendar, SiStripe
 } from "react-icons/si";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+
+const TubesCursorBackground = React.lazy(() => import("@/components/tubes-cursor-background"));
 import darwinLogo from "@assets/darwin-ai-logo_1769368824707.png";
 import meliLogo from "@assets/image_1769370076739.png";
 import tokkoLogo from "@assets/tokko_broker_logo_(1)_1_1769369724733.png";
@@ -194,6 +197,9 @@ function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
       className="relative min-h-screen flex items-center justify-center overflow-hidden grid-pattern"
       onMouseMove={handleMouseMove}
     >
+      <Suspense fallback={null}>
+        <TubesCursorBackground />
+      </Suspense>
       {/* Floating gradient orbs — track mouse with parallax */}
       <motion.div
         className="absolute rounded-full pointer-events-none w-[400px] h-[400px] md:w-[600px] md:h-[600px]"
@@ -1077,6 +1083,14 @@ function PricingCard({ plan, index, openScheduling, ctaText, popularText }: {
               <span className="text-muted-foreground">{feature}</span>
             </div>
           ))}
+          {plan.excludedFeatures?.map((feature, i) => (
+            <div key={`excluded-${i}`} className="flex items-start gap-3 text-sm">
+              <X
+                className="w-4 h-4 shrink-0 mt-0.5 text-destructive"
+              />
+              <span className="text-muted-foreground line-through opacity-50">{feature}</span>
+            </div>
+          ))}
         </div>
 
         {/* Footer */}
@@ -1126,8 +1140,12 @@ function PricingSection() {
         t("pricing.ecommerce.feature1"),
         t("pricing.ecommerce.feature2"),
         t("pricing.ecommerce.feature3"),
-        t("pricing.ecommerce.feature4"),
-        t("pricing.ecommerce.feature5")
+        t("pricing.ecommerce.feature4")
+      ],
+      excludedFeatures: [
+        t("pricing.ecommerce.excluded1"),
+        t("pricing.ecommerce.excluded2"),
+        t("pricing.ecommerce.excluded3")
       ],
       goal: t("pricing.ecommerce.goal"),
       color: "245, 180, 60",
