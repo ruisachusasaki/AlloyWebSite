@@ -1610,105 +1610,427 @@ function ComparisonToggleSection() {
   );
 }
 
+function CaseCardMockup({ accentHsl, icon: Icon }: { accentHsl: string; icon: React.ElementType }) {
+  return (
+    <div className="w-full h-full rounded-xl overflow-hidden relative bg-card border border-border">
+      {/* Top bar */}
+      <div className="h-8 bg-muted/50 flex items-center gap-1.5 px-3">
+        <div className="w-2.5 h-2.5 rounded-full bg-destructive/40" />
+        <div className="w-2.5 h-2.5 rounded-full bg-accent-warm/40" />
+        <div className="w-2.5 h-2.5 rounded-full bg-primary/40" />
+        <div className="ml-auto w-20 h-3 rounded bg-muted-foreground/10" />
+      </div>
+      {/* Dashboard body */}
+      <div className="p-4 space-y-3">
+        {/* Stat row */}
+        <div className="flex gap-2">
+          {[1, 2, 3].map((n) => (
+            <div key={n} className="flex-1 rounded-lg p-3 border border-border bg-background/50">
+              <div className="w-8 h-2 rounded bg-muted-foreground/15 mb-2" />
+              <div className="w-12 h-4 rounded font-bold" style={{ background: `hsl(${accentHsl} / 0.2)` }} />
+            </div>
+          ))}
+        </div>
+        {/* Chart area */}
+        <div className="rounded-lg border border-border bg-background/50 p-3 h-24 flex items-end gap-1">
+          {[40, 65, 50, 80, 60, 90, 75, 85, 55, 70, 95, 68].map((h, i) => (
+            <div
+              key={i}
+              className="flex-1 rounded-sm transition-all"
+              style={{
+                height: `${h}%`,
+                background: `hsl(${accentHsl} / ${0.3 + (h / 100) * 0.5})`,
+              }}
+            />
+          ))}
+        </div>
+        {/* Table rows */}
+        <div className="space-y-1.5">
+          {[1, 2, 3].map((n) => (
+            <div key={n} className="flex items-center gap-3 rounded-lg p-2 bg-background/30">
+              <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: `hsl(${accentHsl} / 0.15)` }}>
+                <Icon className="w-3 h-3 text-foreground/50" />
+              </div>
+              <div className="flex-1 h-2.5 rounded bg-muted-foreground/10" />
+              <div className="w-10 h-2.5 rounded" style={{ background: `hsl(${accentHsl} / 0.2)` }} />
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function CasesSection() {
   const { t } = useLanguage();
+  const prefersReducedMotion = useReducedMotion();
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [showSwipeHint, setShowSwipeHint] = useState(true);
+
   const portfolioItems = [
     {
       name: "Wealthfit.com",
       category: t("proof.wealthfit.category"),
       description: t("proof.wealthfit.description"),
       icon: DollarSign,
-      gradient: "from-primary/20 to-primary/5",
+      accentHsl: "199 89% 48%",
       evolutionTag: t("proof.wealthfit.tag"),
       link: "https://wealthfit.com",
+      stats: [
+        { label: "Features", value: "100+" },
+        { label: "Uptime", value: "99.9%" },
+        { label: "Users", value: "2.4K" },
+      ],
     },
     {
       name: "EventGrowth.app",
       category: t("proof.eventgrowth.category"),
       description: t("proof.eventgrowth.description"),
       icon: TrendingUp,
-      gradient: "from-primary/15 to-primary/5",
+      accentHsl: "280 70% 55%",
       evolutionTag: t("proof.eventgrowth.tag"),
       link: "https://eventgrowth.app",
+      stats: [
+        { label: "Features", value: "100+" },
+        { label: "Events", value: "850+" },
+        { label: "Growth", value: "3.2x" },
+      ],
     },
     {
       name: "AgencyBoost.app",
       category: t("proof.agencyboost.category"),
       description: t("proof.agencyboost.description"),
       icon: Briefcase,
-      gradient: "from-accent/20 to-accent/5",
+      accentHsl: "36 95% 50%",
       evolutionTag: t("proof.agencyboost.tag"),
       link: "https://agencyboost.app",
+      stats: [
+        { label: "Features", value: "100+" },
+        { label: "Hours Saved", value: "60%" },
+        { label: "Clients", value: "180+" },
+      ],
     },
     {
       name: "DataLight.app",
       category: t("proof.datalight.category"),
       description: t("proof.datalight.description"),
       icon: Layers,
-      gradient: "from-accent/15 to-accent/5",
+      accentHsl: "160 60% 45%",
       evolutionTag: t("proof.datalight.tag"),
       link: "https://datalight.app",
+      stats: [
+        { label: "Features", value: "50+" },
+        { label: "Dashboards", value: "200+" },
+        { label: "Data Sources", value: "25+" },
+      ],
     },
   ];
 
-  return (
-    <section id="cases" className="py-24 bg-card/30 relative overflow-hidden">
-      <GhostText text="PORTFOLIO" />
-      <div className="max-w-6xl mx-auto px-6 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.7 }}
-          className="text-center mb-16"
-        >
-          <SectionNumber number="06" />
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-warm/10 border border-accent-warm/20 text-accent-warm text-sm font-medium mb-6 font-mono">
-            {t("proof.badge")}
-          </span>
-          <h2 className="text-4xl md:text-6xl font-black mb-6 section-title heading-glow">
-            {t("proof.title")}
-          </h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            {t("proof.subtitle")}
-          </p>
-        </motion.div>
+  const totalItems = portfolioItems.length;
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {portfolioItems.map((item, i) => (
-            <motion.a
-              key={item.name}
-              href={item.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="portfolio-card group cursor-pointer block"
-              data-testid={`card-portfolio-${item.name.toLowerCase().replace('.', '-')}`}
+  // Desktop: pin section and translate cards horizontally based on scroll
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"],
+  });
+
+  const rawX = useTransform(
+    scrollYProgress,
+    [0, 1],
+    ["0%", `-${(totalItems - 1) * 100}%`],
+  );
+  const smoothX = useSpring(rawX, { stiffness: 100, damping: 30, mass: 0.8 });
+
+  // Track active index from scrollYProgress
+  useEffect(() => {
+    const unsub = scrollYProgress.on("change", (v) => {
+      const idx = Math.round(v * (totalItems - 1));
+      setActiveIndex(Math.min(Math.max(idx, 0), totalItems - 1));
+    });
+    return unsub;
+  }, [scrollYProgress, totalItems]);
+
+  // Mobile: track snap-scroll position
+  const handleMobileScroll = useCallback(() => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+    const scrollLeft = el.scrollLeft;
+    const cardWidth = el.offsetWidth * 0.85;
+    const idx = Math.round(scrollLeft / cardWidth);
+    setActiveIndex(Math.min(Math.max(idx, 0), totalItems - 1));
+    if (showSwipeHint) setShowSwipeHint(false);
+  }, [totalItems, showSwipeHint]);
+
+  // Hide swipe hint after 4s
+  useEffect(() => {
+    const timer = setTimeout(() => setShowSwipeHint(false), 4000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Progress bar width
+  const progressWidth = useTransform(
+    scrollYProgress,
+    [0, 1],
+    ["0%", "100%"],
+  );
+
+  return (
+    <section id="cases" className="relative bg-card/30">
+      {/* ── DESKTOP: Sticky horizontal scroll ── */}
+      <div ref={sectionRef} className="hidden md:block" style={{ height: `${totalItems * 100}vh` }}>
+        <div className="sticky top-0 h-screen overflow-hidden">
+          {/* Progress bar */}
+          <div className="absolute top-0 left-0 right-0 z-20 h-[2px] bg-border/30">
+            <motion.div
+              className="h-full bg-gradient-to-r from-primary to-primary/50"
+              style={{ width: progressWidth }}
+            />
+          </div>
+
+          {/* Header */}
+          <div className="relative z-10 pt-24 pb-8 px-8 lg:px-16">
+            <div className="flex items-end justify-between gap-8">
+              <div>
+                <SectionNumber number="06" />
+                <h2 className="text-5xl lg:text-7xl font-black section-title heading-glow">
+                  {t("proof.title")}
+                </h2>
+              </div>
+              <span className="font-mono text-sm text-muted-foreground tracking-wider mb-2 shrink-0">
+                [{String(activeIndex + 1).padStart(2, "0")}/{String(totalItems).padStart(2, "0")}]
+              </span>
+            </div>
+            {/* Animated gradient rule */}
+            <div className="relative mt-6 h-px bg-border/30 overflow-hidden">
+              <motion.div
+                className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary via-primary/60 to-transparent"
+                style={{ width: progressWidth }}
+              />
+            </div>
+          </div>
+
+          {/* Horizontal track */}
+          <div className="absolute inset-0 top-[220px] lg:top-[240px]">
+            <motion.div
+              className="flex h-full"
+              style={{ x: prefersReducedMotion ? rawX : smoothX }}
             >
-              <div className={`h-36 lg:h-40 bg-gradient-to-br ${item.gradient} flex items-center justify-center relative`}>
-                <div className="w-16 h-16 lg:w-18 lg:h-18 rounded-2xl bg-background/50 backdrop-blur flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  <item.icon className="w-8 h-8 lg:w-9 lg:h-9 text-foreground" />
+              {portfolioItems.map((item, i) => {
+                // Per-card parallax for the mockup
+                const cardStart = i / totalItems;
+                const cardEnd = (i + 1) / totalItems;
+                const mockupX = useTransform(
+                  scrollYProgress,
+                  [cardStart, cardEnd],
+                  [40, -40],
+                );
+
+                return (
+                  <div
+                    key={item.name}
+                    className="shrink-0 w-screen px-8 lg:px-16 flex items-start"
+                    data-testid={`card-portfolio-${item.name.toLowerCase().replace(".", "-")}`}
+                  >
+                    <div className="w-full max-w-[1400px] mx-auto flex flex-col lg:flex-row gap-8 lg:gap-12 h-full">
+                      {/* Left: Mockup (55%) */}
+                      <motion.div
+                        className="lg:w-[55%] shrink-0 relative group"
+                        style={{ x: prefersReducedMotion ? 0 : mockupX }}
+                      >
+                        <div
+                          className="absolute inset-0 rounded-2xl opacity-20 blur-3xl -z-10"
+                          style={{ background: `hsl(${item.accentHsl} / 0.3)` }}
+                        />
+                        <motion.div
+                          className="rounded-2xl overflow-hidden shadow-2xl h-[340px] lg:h-[420px]"
+                          whileHover={{ scale: 1.02 }}
+                          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                        >
+                          <CaseCardMockup accentHsl={item.accentHsl} icon={item.icon} />
+                        </motion.div>
+                      </motion.div>
+
+                      {/* Right: Content (45%) */}
+                      <div className="lg:w-[45%] flex flex-col justify-center py-4">
+                        <span className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground mb-4">
+                          {item.category}
+                        </span>
+                        <h3 className="text-3xl lg:text-5xl font-black mb-4 text-foreground" style={{ letterSpacing: "-0.02em" }}>
+                          {item.name}
+                        </h3>
+                        <p className="text-muted-foreground text-base lg:text-lg leading-relaxed mb-6 max-w-md">
+                          {item.description}
+                        </p>
+
+                        {/* Stats row */}
+                        <div className="flex gap-6 mb-8">
+                          {item.stats.map((stat) => (
+                            <div key={stat.label}>
+                              <div className="text-2xl lg:text-3xl font-black text-foreground">{stat.value}</div>
+                              <div className="text-xs text-muted-foreground font-mono uppercase tracking-wider mt-1">{stat.label}</div>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Evolution tag */}
+                        <div className="mb-8">
+                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent-warm/10 border border-accent-warm/20 text-accent-warm text-xs font-medium font-mono">
+                            <Sparkles className="w-3 h-3" />
+                            {item.evolutionTag}
+                          </span>
+                        </div>
+
+                        {/* VIEW CASE link with magnetic effect */}
+                        <MagneticButton>
+                          <a
+                            href={item.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-foreground hover:text-primary transition-colors duration-200 group/link"
+                          >
+                            VIEW CASE
+                            <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform duration-200" />
+                          </a>
+                        </MagneticButton>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </motion.div>
+          </div>
+
+          {/* Dot indicators */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-3">
+            {portfolioItems.map((_, i) => (
+              <div
+                key={i}
+                className={`h-1.5 rounded-full transition-all duration-300 ${
+                  i === activeIndex ? "w-8 bg-primary" : "w-1.5 bg-muted-foreground/30"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── MOBILE: Snap-scroll carousel ── */}
+      <div className="md:hidden py-16 relative">
+        {/* Header */}
+        <div className="px-6 mb-8">
+          <SectionNumber number="06" />
+          <div className="flex items-end justify-between gap-4">
+            <h2 className="text-3xl font-black section-title heading-glow">
+              {t("proof.title")}
+            </h2>
+            <span className="font-mono text-xs text-muted-foreground tracking-wider mb-1 shrink-0">
+              [{String(activeIndex + 1).padStart(2, "0")}/{String(totalItems).padStart(2, "0")}]
+            </span>
+          </div>
+          <div className="relative mt-4 h-px bg-border/30 overflow-hidden">
+            <div
+              className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary via-primary/60 to-transparent transition-all duration-300"
+              style={{ width: `${((activeIndex + 1) / totalItems) * 100}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Swipe hint */}
+        <AnimatePresence>
+          {showSwipeHint && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex items-center gap-2 px-4 py-2 rounded-full bg-foreground/80 text-background text-sm font-medium pointer-events-none"
+            >
+              <motion.span
+                animate={{ x: [0, 8, 0] }}
+                transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
+              >
+                <ArrowRight className="w-4 h-4" />
+              </motion.span>
+              Swipe
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Scrollable container */}
+        <div
+          ref={scrollContainerRef}
+          onScroll={handleMobileScroll}
+          className="flex overflow-x-auto snap-x snap-mandatory scrollbar-none gap-4 px-6"
+          style={{ WebkitOverflowScrolling: "touch" }}
+        >
+          {portfolioItems.map((item) => (
+            <div
+              key={item.name}
+              className="snap-center shrink-0 w-[85vw] rounded-2xl border border-border bg-card overflow-hidden"
+              data-testid={`card-portfolio-mobile-${item.name.toLowerCase().replace(".", "-")}`}
+            >
+              {/* Mockup top */}
+              <div className="relative h-[220px]">
+                <div
+                  className="absolute inset-0 opacity-10"
+                  style={{ background: `hsl(${item.accentHsl} / 0.3)` }}
+                />
+                <div className="p-3 h-full">
+                  <CaseCardMockup accentHsl={item.accentHsl} icon={item.icon} />
                 </div>
               </div>
-              <div className="p-4 lg:p-5">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-accent-warm font-medium uppercase tracking-wider font-mono">{item.category}</span>
-                  <ExternalLink className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+
+              {/* Content bottom */}
+              <div className="p-5">
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                  {item.category}
+                </span>
+                <h3 className="text-xl font-black mt-2 mb-2 text-foreground">{item.name}</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+                  {item.description}
+                </p>
+
+                {/* Stats */}
+                <div className="flex gap-4 mb-4">
+                  {item.stats.map((stat) => (
+                    <div key={stat.label}>
+                      <div className="text-lg font-black text-foreground">{stat.value}</div>
+                      <div className="text-[10px] text-muted-foreground font-mono uppercase tracking-wider">{stat.label}</div>
+                    </div>
+                  ))}
                 </div>
-                <h3 className="text-lg font-bold mb-2">{item.name}</h3>
-                <p className="text-muted-foreground text-xs lg:text-sm mb-3">{item.description}</p>
-                <span
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent-warm/10 border border-accent-warm/20 text-accent-warm text-[10px] font-medium font-mono"
-                  data-testid={`tag-evolution-${item.name.toLowerCase().replace('.', '-')}`}
-                >
+
+                {/* Evolution tag */}
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent-warm/10 border border-accent-warm/20 text-accent-warm text-[10px] font-medium font-mono mb-4">
                   <Sparkles className="w-3 h-3" />
                   {item.evolutionTag}
                 </span>
+
+                {/* Link */}
+                <a
+                  href={item.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-foreground hover:text-primary transition-colors mt-4"
+                >
+                  VIEW CASE
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </a>
               </div>
-            </motion.a>
+            </div>
+          ))}
+        </div>
+
+        {/* Dot indicators mobile */}
+        <div className="flex items-center justify-center gap-2 mt-6">
+          {portfolioItems.map((_, i) => (
+            <div
+              key={i}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                i === activeIndex ? "w-6 bg-primary" : "w-1.5 bg-muted-foreground/30"
+              }`}
+            />
           ))}
         </div>
       </div>
