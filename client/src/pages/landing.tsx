@@ -954,6 +954,7 @@ interface PricingPlan {
   priceMonthly: string;
   popular: boolean;
   features: string[];
+  excludedFeatures?: string[];
   goal: string;
   color: string;
   auroraGradient: string;
@@ -1033,6 +1034,7 @@ function PricingCard({ plan, index, hoveredIdx, setHoveredIdx, openScheduling, c
         transform: `perspective(1200px) rotateX(${tilt.rotateX}deg) rotateY(${tilt.rotateY}deg) translateY(${isHovered ? -6 : 0}px)`,
         transition: "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
         transformStyle: "preserve-3d",
+        opacity: isDimmed ? 0.7 : 1,
       }}
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
@@ -1142,6 +1144,7 @@ function PricingCard({ plan, index, hoveredIdx, setHoveredIdx, openScheduling, c
           <CountUpPrice
             text={plan.priceMonthly}
             className="text-3xl md:text-4xl font-black text-foreground"
+            hovered={isHovered}
           />
         </div>
 
@@ -1201,6 +1204,11 @@ function PricingCard({ plan, index, hoveredIdx, setHoveredIdx, openScheduling, c
 function PricingSection() {
   const { t } = useLanguage();
   const { openScheduling } = useContext(SchedulingContext);
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+
+  const scrollToCard = useCallback((id: string) => {
+    document.getElementById(`pricing-${id}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, []);
 
   const plans = [
     {
@@ -1311,19 +1319,82 @@ function PricingSection() {
           </p>
         </motion.div>
 
-        {/* Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10" style={{ perspective: "1200px" }}>
+        {/* Sticky mobile nav */}
+        <div className="sticky top-16 z-30 lg:hidden mb-6 -mx-6 px-6 py-3 bg-background/80 backdrop-blur-md border-b border-border/30">
+          <div className="flex gap-2">
+            {[plans[1], plans[0], plans[2]].map((plan) => (
+              <button
+                key={plan.id}
+                onClick={() => scrollToCard(plan.id)}
+                className="flex-1 text-center text-xs font-medium py-2 rounded-lg border border-border/50 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {plan.subtitle}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop cards */}
+        <div className="hidden lg:grid grid-cols-3 gap-10" style={{ perspective: "1200px" }}>
           {plans.map((plan, index) => (
             <PricingCard
               key={plan.id}
               plan={plan}
               index={index}
+              hoveredIdx={hoveredIdx}
+              setHoveredIdx={setHoveredIdx}
               openScheduling={openScheduling}
               ctaText={t("pricing.cta")}
               popularText={t("pricing.popular")}
             />
           ))}
         </div>
+
+        {/* Mobile cards — reordered: Premium first */}
+        <div className="lg:hidden space-y-8" style={{ perspective: "1200px" }}>
+          {[plans[1], plans[0], plans[2]].map((plan) => {
+            const originalIndex = plans.indexOf(plan);
+            return (
+              <div key={plan.id} id={`pricing-${plan.id}`}>
+                <PricingCard
+                  plan={plan}
+                  index={originalIndex}
+                  hoveredIdx={hoveredIdx}
+                  setHoveredIdx={setHoveredIdx}
+                  openScheduling={openScheduling}
+                  ctaText={t("pricing.cta")}
+                  popularText={t("pricing.popular")}
+                />
+              </div>
+            );
+          })}
+        </div>
+
+        {/* CTA line */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-14 text-center"
+        >
+          <button
+            onClick={() => openScheduling("General")}
+            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group"
+          >
+            <span>{t("pricing.notSure")}</span>
+            <motion.span
+              className="inline-block"
+              animate={{ x: [0, 4, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <ArrowRight className="w-4 h-4" />
+            </motion.span>
+            <span className="font-semibold" style={{ color: "hsl(199, 89%, 48%)" }}>
+              {t("pricing.talkToUs")}
+            </span>
+          </button>
+        </motion.div>
       </div>
     </section>
   );
