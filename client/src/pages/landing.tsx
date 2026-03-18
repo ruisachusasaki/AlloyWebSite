@@ -1739,9 +1739,9 @@ function CasesSection() {
   const rawX = useTransform(
     scrollYProgress,
     [0, 1],
-    ["0%", `-${(totalItems - 1) * 100}%`],
+    ["0%", `${-((totalItems - 1) / totalItems) * 100}%`],
   );
-  const smoothX = useSpring(rawX, { stiffness: 100, damping: 30, mass: 0.8 });
+  const smoothX = useSpring(rawX, { stiffness: 150, damping: 30, mass: 0.5 });
 
   // Track active index from scrollYProgress
   useEffect(() => {
