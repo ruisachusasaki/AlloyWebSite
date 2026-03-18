@@ -175,6 +175,8 @@ export const es: Record<string, string> = {
     "pricing.enterprise.goal": "El Objetivo: Paz mental operativa total.",
     "pricing.cta": "Comenzar",
     "pricing.popular": "Más Popular",
+    "pricing.notSure": "¿No estás seguro qué plan te sirve?",
+    "pricing.talkToUs": "Hablemos",
 
     // ─── Cases Section ───
     "proof.badge": "Casos",

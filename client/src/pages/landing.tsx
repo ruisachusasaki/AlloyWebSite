@@ -874,10 +874,12 @@ function BentoGridSection() {
   );
 }
 
-function CountUpPrice({ text, className }: { text: string; className?: string }) {
+function CountUpPrice({ text, className, hovered }: { text: string; className?: string; hovered?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
   const [count, setCount] = useState(0);
+  const doneRef = useRef(false);
+  const prevHovered = useRef(false);
 
   const match = text.match(/\$([\d.,]+)/);
   const rawMatch = match ? match[1] : null;
@@ -885,7 +887,7 @@ function CountUpPrice({ text, className }: { text: string; className?: string })
   const usesPeriodSep = rawMatch ? /\d\.\d{3}/.test(rawMatch) : false;
 
   useEffect(() => {
-    if (!isInView || !targetNumber) return;
+    if (!isInView || !targetNumber || doneRef.current) return;
     const duration = 1400;
     const steps = 50;
     const increment = targetNumber / steps;
@@ -895,12 +897,37 @@ function CountUpPrice({ text, className }: { text: string; className?: string })
       if (current >= targetNumber) {
         setCount(targetNumber);
         clearInterval(timer);
+        doneRef.current = true;
       } else {
         setCount(Math.floor(current));
       }
     }, duration / steps);
     return () => clearInterval(timer);
   }, [isInView, targetNumber]);
+
+  /* Re-count on hover (only after initial animation completed) */
+  useEffect(() => {
+    if (hovered && !prevHovered.current && targetNumber && doneRef.current) {
+      setCount(0);
+      doneRef.current = false;
+      const steps = 25;
+      const inc = targetNumber / steps;
+      let cur = 0;
+      const id = setInterval(() => {
+        cur += inc;
+        if (cur >= targetNumber) {
+          setCount(targetNumber);
+          clearInterval(id);
+          doneRef.current = true;
+        } else {
+          setCount(Math.floor(cur));
+        }
+      }, 700 / steps);
+      prevHovered.current = true;
+      return () => clearInterval(id);
+    }
+    if (!hovered) prevHovered.current = false;
+  }, [hovered, targetNumber]);
 
   const fmt = (n: number) =>
     usesPeriodSep ? n.toLocaleString("de-DE") : n.toLocaleString("en-US");
@@ -934,16 +961,19 @@ interface PricingPlan {
   shadowHover: string;
 }
 
-function PricingCard({ plan, index, openScheduling, ctaText, popularText }: {
+function PricingCard({ plan, index, hoveredIdx, setHoveredIdx, openScheduling, ctaText, popularText }: {
   plan: PricingPlan;
   index: number;
+  hoveredIdx: number | null;
+  setHoveredIdx: (idx: number | null) => void;
   openScheduling: (title: string) => void;
   ctaText: string;
   popularText: string;
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [mousePos, setMousePos] = useState({ x: 50, y: 50 });
-  const [isHovered, setIsHovered] = useState(false);
+  const isHovered = hoveredIdx === index;
+  const isDimmed = hoveredIdx !== null && hoveredIdx !== index;
   const [tilt, setTilt] = useState({ rotateX: 0, rotateY: 0 });
 
   const rafRef = useRef<number>(0);
@@ -965,12 +995,12 @@ function PricingCard({ plan, index, openScheduling, ctaText, popularText }: {
     });
   }, []);
 
-  const handleMouseEnter = useCallback(() => setIsHovered(true), []);
+  const handleMouseEnter = useCallback(() => setHoveredIdx(index), [setHoveredIdx, index]);
   const handleMouseLeave = useCallback(() => {
-    setIsHovered(false);
+    setHoveredIdx(null);
     setTilt({ rotateX: 0, rotateY: 0 });
     setMousePos({ x: 50, y: 50 });
-  }, []);
+  }, [setHoveredIdx]);
 
   const orbConfigs = [
     { size: 10, x: "20%", y: "30%", duration: 6, delay: index * 0.5 },
