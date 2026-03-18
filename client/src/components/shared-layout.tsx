@@ -308,7 +308,7 @@ export function SharedFooter() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl md:text-5xl font-black mb-4 text-foreground">
+            <h2 className="text-4xl md:text-5xl font-black mb-4 text-foreground heading-glow" style={{ letterSpacing: "-0.02em" }}>
               {t("footer.readyToSimplify")}
             </h2>
             <p className="text-muted-foreground text-lg mb-8">
@@ -339,7 +339,7 @@ export function SharedFooter() {
             transition={{ delay: 0.1 }}
             className="flex flex-col"
           >
-            <h3 className="text-sm font-bold uppercase tracking-wider text-foreground mb-6">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-foreground mb-6 font-mono" style={{ letterSpacing: "0.15em" }}>
               {t("nav.solutions")}
             </h3>
             <nav className="flex flex-col gap-3">

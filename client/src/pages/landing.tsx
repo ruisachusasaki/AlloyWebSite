@@ -109,6 +109,46 @@ function MagneticButton({ children }: { children: React.ReactNode }) {
   );
 }
 
+function SectionNumber({ number }: { number: string }) {
+  return <span className="section-number">{number}</span>;
+}
+
+function GhostText({ text, className = "" }: { text: string; className?: string }) {
+  return (
+    <div className={`ghost-text left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 ${className}`} aria-hidden>
+      {text}
+    </div>
+  );
+}
+
+function AnimatedSectionTitle({ children, className = "" }: { children: string; className?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const prefersReducedMotion = useReducedMotion();
+  const words = children.split(" ");
+
+  return (
+    <span ref={ref} className={className}>
+      {words.map((word, i) => (
+        <span key={i} className="inline-block overflow-hidden">
+          <motion.span
+            className="inline-block"
+            initial={prefersReducedMotion ? false : { y: "100%", opacity: 0 }}
+            animate={isInView ? { y: "0%", opacity: 1 } : undefined}
+            transition={{
+              duration: 0.5,
+              delay: i * 0.06,
+              ease: [0.22, 1, 0.36, 1],
+            }}
+          >
+            {word}&nbsp;
+          </motion.span>
+        </span>
+      ))}
+    </span>
+  );
+}
+
 function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
   const { t } = useLanguage();
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -258,7 +298,7 @@ function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                   transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium ${badgeChips[badgeIndex].className}`}
+                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium font-mono ${badgeChips[badgeIndex].className}`}
                 >
                   <BadgeIcon className="w-4 h-4" />
                   {t(badgeChips[badgeIndex].key)}
@@ -276,14 +316,14 @@ function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
               : undefined
           }
         >
-          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-[5.5rem] font-black leading-[1.05] mb-8">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-[5.5rem] font-light leading-[1.05] mb-8 heading-glow" style={{ letterSpacing: "-0.02em" }}>
             {titleWords.map((word, i) => (
               <span
                 key={i}
                 className="inline-block overflow-hidden align-bottom pb-1"
               >
                 <motion.span
-                  className="inline-block pr-[0.3em]"
+                  className={`inline-block pr-[0.3em] ${word.length >= 5 ? "font-heavy" : ""}`}
                   initial={prefersReducedMotion ? false : { y: "110%" }}
                   animate={{ y: "0%" }}
                   transition={{
@@ -578,7 +618,8 @@ function SpaghettiChaosSection() {
           className="text-center mb-4 md:mb-8 px-6"
           style={{ opacity: chaosTextOpacity }}
         >
-          <h2 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black mb-2 md:mb-4">
+          <SectionNumber number="01" />
+          <h2 className="text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-black mb-2 md:mb-4 section-title heading-glow">
             {t("chaos.title.line1")}{" "}
             <span className="text-destructive">{t("chaos.title.highlight")}</span> {t("chaos.title.line2")}
           </h2>
@@ -673,7 +714,8 @@ function BentoGridSection() {
 
   return (
     <section id="solution" className="py-8 md:py-32 relative overflow-hidden">
-      <div className="max-w-6xl mx-auto px-6">
+      <GhostText text="SOLUTION" />
+      <div className="max-w-6xl mx-auto px-6 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -681,7 +723,8 @@ function BentoGridSection() {
           transition={{ duration: 0.7 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-6 px-4">
+          <SectionNumber number="02" />
+          <h2 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-6 px-4 section-title heading-glow">
             {t("bento.title.line1")} <span className="text-primary">{t("bento.title.highlight")}</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -1044,7 +1087,7 @@ function PricingCard({ plan, index, openScheduling, ctaText, popularText }: {
             {plan.title}
           </h3>
           <p
-            className="font-bold text-sm uppercase mb-4"
+            className="font-bold text-sm uppercase mb-4 font-mono"
             style={{ color: "hsl(199, 89%, 48%)", letterSpacing: "0.08em" }}
           >
             {plan.subtitle}
@@ -1202,6 +1245,7 @@ function PricingSection() {
 
   return (
     <section id="pricing" className="py-24 md:py-32 relative overflow-hidden bg-background">
+      <GhostText text="PRICING" />
       {/* Subtle grid overlay */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -1221,11 +1265,12 @@ function PricingSection() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-20"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border text-sm font-medium mb-8" style={{ color: "hsl(199, 89%, 48%)" }}>
+          <SectionNumber number="03" />
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border text-sm font-medium mb-8 font-mono" style={{ color: "hsl(199, 89%, 48%)" }}>
             <DollarSign className="w-4 h-4" />
             {t("nav.pricing")}
           </span>
-          <h2 className="text-4xl md:text-5xl lg:text-7xl font-black text-foreground mb-6" style={{ letterSpacing: "-0.04em" }}>
+          <h2 className="text-4xl md:text-5xl lg:text-7xl font-black text-foreground mb-6 section-title heading-glow" style={{ letterSpacing: "0.05em" }}>
             {t("pricing.title")}
           </h2>
           <p className="text-lg md:text-xl max-w-3xl mx-auto text-muted-foreground">
@@ -1256,7 +1301,8 @@ function AIPartnerSection() {
 
   return (
     <section className="py-32 relative overflow-hidden">
-      <div className="max-w-6xl mx-auto px-6">
+      <GhostText text="AI" className="opacity-[0.02]" />
+      <div className="max-w-6xl mx-auto px-6 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Content */}
           <motion.div
@@ -1265,11 +1311,12 @@ function AIPartnerSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
+            <SectionNumber number="04" />
+            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6 font-mono">
               <Bot className="w-4 h-4" />
               {t("ai.badge")}
             </span>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 tracking-tight">
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-6 section-title heading-glow" style={{ letterSpacing: "0.05em" }}>
               {t("ai.title.line1")} <span className="text-primary">{t("ai.title.highlight")}</span> {t("ai.title.line2")}
             </h2>
             <p className="text-xl text-muted-foreground mb-8">
@@ -1430,8 +1477,8 @@ function ComparisonToggleSection() {
   const [showYourPlatform, setShowYourPlatform] = useState(false);
 
   return (
-    <section className="py-24 bg-card/30">
-      <div className="max-w-4xl mx-auto px-6">
+    <section className="py-24 bg-card/30 relative">
+      <div className="max-w-4xl mx-auto px-6 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -1439,7 +1486,8 @@ function ComparisonToggleSection() {
           transition={{ duration: 0.7 }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl md:text-4xl font-black mb-4">
+          <SectionNumber number="05" />
+          <h2 className="text-3xl md:text-4xl font-black mb-4 section-title heading-glow">
             {t("comparison.title")}
           </h2>
           <p className="text-muted-foreground">
@@ -1604,8 +1652,9 @@ function CasesSection() {
   ];
 
   return (
-    <section id="cases" className="py-24 bg-card/30">
-      <div className="max-w-6xl mx-auto px-6">
+    <section id="cases" className="py-24 bg-card/30 relative overflow-hidden">
+      <GhostText text="PORTFOLIO" />
+      <div className="max-w-6xl mx-auto px-6 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -1613,10 +1662,11 @@ function CasesSection() {
           transition={{ duration: 0.7 }}
           className="text-center mb-16"
         >
-          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6">
+          <SectionNumber number="06" />
+          <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent-warm/10 border border-accent-warm/20 text-accent-warm text-sm font-medium mb-6 font-mono">
             {t("proof.badge")}
           </span>
-          <h2 className="text-4xl md:text-6xl font-black mb-6">
+          <h2 className="text-4xl md:text-6xl font-black mb-6 section-title heading-glow">
             {t("proof.title")}
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -1645,13 +1695,13 @@ function CasesSection() {
               </div>
               <div className="p-4 lg:p-5">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-primary font-medium uppercase tracking-wider">{item.category}</span>
+                  <span className="text-xs text-accent-warm font-medium uppercase tracking-wider font-mono">{item.category}</span>
                   <ExternalLink className="w-4 h-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
                 </div>
                 <h3 className="text-lg font-bold mb-2">{item.name}</h3>
                 <p className="text-muted-foreground text-xs lg:text-sm mb-3">{item.description}</p>
                 <span
-                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-medium"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-accent-warm/10 border border-accent-warm/20 text-accent-warm text-[10px] font-medium font-mono"
                   data-testid={`tag-evolution-${item.name.toLowerCase().replace('.', '-')}`}
                 >
                   <Sparkles className="w-3 h-3" />
