@@ -48,6 +48,9 @@ import darwinLogo from "@assets/darwin-ai-logo_1769368824707.png";
 import meliLogo from "@assets/image_1769370076739.png";
 import tokkoLogo from "@assets/tokko_broker_logo_(1)_1_1769369724733.png";
 import alloyLogo from "@assets/Alloy_Logo_1770503010900.png";
+import caseWealthfit from "@assets/cases/wealthfit.png";
+import caseEventgrowth from "@assets/cases/eventgrowth.png";
+import caseAgencyboost from "@assets/cases/AgencyBoost.png";
 
 const fadeInUp = {
   initial: { opacity: 0, y: 40 },
@@ -1610,53 +1613,68 @@ function ComparisonToggleSection() {
   );
 }
 
-function CaseCardMockup({ accentHsl, icon: Icon }: { accentHsl: string; icon: React.ElementType }) {
+function CaseCardMockup({ accentHsl, icon: Icon, image, url }: { accentHsl: string; icon: React.ElementType; image?: string; url?: string }) {
   return (
-    <div className="w-full h-full rounded-xl overflow-hidden relative bg-card border border-border">
-      {/* Top bar */}
-      <div className="h-8 bg-muted/50 flex items-center gap-1.5 px-3">
-        <div className="w-2.5 h-2.5 rounded-full bg-destructive/40" />
-        <div className="w-2.5 h-2.5 rounded-full bg-accent-warm/40" />
-        <div className="w-2.5 h-2.5 rounded-full bg-primary/40" />
-        <div className="ml-auto w-20 h-3 rounded bg-muted-foreground/10" />
+    <div className="w-full h-full rounded-xl overflow-hidden relative bg-card border border-border flex flex-col">
+      {/* Browser chrome bar */}
+      <div className="h-9 bg-muted/60 flex items-center gap-2 px-3 shrink-0 border-b border-border/50">
+        <div className="flex gap-1.5">
+          <div className="w-2.5 h-2.5 rounded-full bg-destructive/50" />
+          <div className="w-2.5 h-2.5 rounded-full bg-accent-warm/50" />
+          <div className="w-2.5 h-2.5 rounded-full bg-primary/50" />
+        </div>
+        {url && (
+          <div className="flex-1 mx-2 h-5 rounded-md bg-background/60 border border-border/40 flex items-center px-2.5 overflow-hidden">
+            <Lock className="w-2.5 h-2.5 text-primary/50 mr-1.5 shrink-0" />
+            <span className="text-[10px] text-muted-foreground/70 font-mono truncate">{url.replace(/^https?:\/\//, "")}</span>
+          </div>
+        )}
       </div>
-      {/* Dashboard body */}
-      <div className="p-4 space-y-3">
-        {/* Stat row */}
-        <div className="flex gap-2">
-          {[1, 2, 3].map((n) => (
-            <div key={n} className="flex-1 rounded-lg p-3 border border-border bg-background/50">
-              <div className="w-8 h-2 rounded bg-muted-foreground/15 mb-2" />
-              <div className="w-12 h-4 rounded font-bold" style={{ background: `hsl(${accentHsl} / 0.2)` }} />
-            </div>
-          ))}
+
+      {image ? (
+        <div className="flex-1 overflow-hidden relative">
+          <img
+            src={image}
+            alt={url || "Case study screenshot"}
+            className="w-full h-full object-cover object-top"
+          />
+          <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-card/80 to-transparent pointer-events-none" />
         </div>
-        {/* Chart area */}
-        <div className="rounded-lg border border-border bg-background/50 p-3 h-24 flex items-end gap-1">
-          {[40, 65, 50, 80, 60, 90, 75, 85, 55, 70, 95, 68].map((h, i) => (
-            <div
-              key={i}
-              className="flex-1 rounded-sm transition-all"
-              style={{
-                height: `${h}%`,
-                background: `hsl(${accentHsl} / ${0.3 + (h / 100) * 0.5})`,
-              }}
-            />
-          ))}
-        </div>
-        {/* Table rows */}
-        <div className="space-y-1.5">
-          {[1, 2, 3].map((n) => (
-            <div key={n} className="flex items-center gap-3 rounded-lg p-2 bg-background/30">
-              <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: `hsl(${accentHsl} / 0.15)` }}>
-                <Icon className="w-3 h-3 text-foreground/50" />
+      ) : (
+        <div className="flex-1 p-4 space-y-3 overflow-hidden">
+          <div className="flex gap-2">
+            {[1, 2, 3].map((n) => (
+              <div key={n} className="flex-1 rounded-lg p-3 border border-border bg-background/50">
+                <div className="w-8 h-2 rounded bg-muted-foreground/15 mb-2" />
+                <div className="w-12 h-4 rounded font-bold" style={{ background: `hsl(${accentHsl} / 0.2)` }} />
               </div>
-              <div className="flex-1 h-2.5 rounded bg-muted-foreground/10" />
-              <div className="w-10 h-2.5 rounded" style={{ background: `hsl(${accentHsl} / 0.2)` }} />
-            </div>
-          ))}
+            ))}
+          </div>
+          <div className="rounded-lg border border-border bg-background/50 p-3 h-24 flex items-end gap-1">
+            {[40, 65, 50, 80, 60, 90, 75, 85, 55, 70, 95, 68].map((h, i) => (
+              <div
+                key={i}
+                className="flex-1 rounded-sm transition-all"
+                style={{
+                  height: `${h}%`,
+                  background: `hsl(${accentHsl} / ${0.3 + (h / 100) * 0.5})`,
+                }}
+              />
+            ))}
+          </div>
+          <div className="space-y-1.5">
+            {[1, 2, 3].map((n) => (
+              <div key={n} className="flex items-center gap-3 rounded-lg p-2 bg-background/30">
+                <div className="w-6 h-6 rounded-md flex items-center justify-center" style={{ background: `hsl(${accentHsl} / 0.15)` }}>
+                  <Icon className="w-3 h-3 text-foreground/50" />
+                </div>
+                <div className="flex-1 h-2.5 rounded bg-muted-foreground/10" />
+                <div className="w-10 h-2.5 rounded" style={{ background: `hsl(${accentHsl} / 0.2)` }} />
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
@@ -1678,6 +1696,7 @@ function CasesSection() {
       accentHsl: "199 89% 48%",
       evolutionTag: t("proof.wealthfit.tag"),
       link: "https://wealthfit.com",
+      image: caseWealthfit,
       stats: [
         { label: "Features", value: "100+" },
         { label: "Uptime", value: "99.9%" },
@@ -1692,6 +1711,7 @@ function CasesSection() {
       accentHsl: "280 70% 55%",
       evolutionTag: t("proof.eventgrowth.tag"),
       link: "https://eventgrowth.app",
+      image: caseEventgrowth,
       stats: [
         { label: "Features", value: "100+" },
         { label: "Events", value: "850+" },
@@ -1706,6 +1726,7 @@ function CasesSection() {
       accentHsl: "36 95% 50%",
       evolutionTag: t("proof.agencyboost.tag"),
       link: "https://agencyboost.app",
+      image: caseAgencyboost,
       stats: [
         { label: "Features", value: "100+" },
         { label: "Hours Saved", value: "60%" },
@@ -1713,13 +1734,13 @@ function CasesSection() {
       ],
     },
     {
-      name: "DataLight.app",
+      name: "Lite.AnalyticsBrain.ai",
       category: t("proof.datalight.category"),
       description: t("proof.datalight.description"),
       icon: Layers,
       accentHsl: "160 60% 45%",
       evolutionTag: t("proof.datalight.tag"),
-      link: "https://datalight.app",
+      link: "https://lite.analyticsbrain.ai",
       stats: [
         { label: "Features", value: "50+" },
         { label: "Dashboards", value: "200+" },
@@ -1736,12 +1757,17 @@ function CasesSection() {
     offset: ["start start", "end end"],
   });
 
-  const rawX = useTransform(
+  // Numeric values (in vw conceptually: 0 → -300 for 4 cards)
+  const rawXNum = useTransform(
     scrollYProgress,
     [0, 1],
-    ["0%", `${-((totalItems - 1) / totalItems) * 100}%`],
+    [0, -(totalItems - 1) * 100],
   );
-  const smoothX = useSpring(rawX, { stiffness: 150, damping: 30, mass: 0.5 });
+  const smoothXNum = useSpring(rawXNum, { stiffness: 150, damping: 30, mass: 0.5 });
+
+  // Convert to vw strings so CSS translateX uses viewport units, not pixels
+  const rawX = useTransform(rawXNum, (v) => `${v}vw`);
+  const smoothX = useTransform(smoothXNum, (v) => `${v}vw`);
 
   // Track active index from scrollYProgress
   useEffect(() => {
@@ -1848,7 +1874,7 @@ function CasesSection() {
                           whileHover={{ scale: 1.02 }}
                           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                         >
-                          <CaseCardMockup accentHsl={item.accentHsl} icon={item.icon} />
+                          <CaseCardMockup accentHsl={item.accentHsl} icon={item.icon} image={item.image} url={item.link} />
                         </motion.div>
                       </motion.div>
 
@@ -1977,7 +2003,7 @@ function CasesSection() {
                   style={{ background: `hsl(${item.accentHsl} / 0.3)` }}
                 />
                 <div className="p-3 h-full">
-                  <CaseCardMockup accentHsl={item.accentHsl} icon={item.icon} />
+                  <CaseCardMockup accentHsl={item.accentHsl} icon={item.icon} image={item.image} url={item.link} />
                 </div>
               </div>
 

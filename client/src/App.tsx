@@ -7,6 +7,7 @@ import { LanguageProvider } from "@/context/language-context";
 import { useAuth } from "@/hooks/use-auth";
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
+import { Preloader } from "@/components/preloader";
 
 import LandingPage from "@/pages/landing";
 import HomePage from "@/pages/home";
@@ -80,6 +81,7 @@ function App() {
       <LanguageProvider>
         <TooltipProvider>
           <Toaster />
+          <Preloader />
           <Router />
         </TooltipProvider>
       </LanguageProvider>
