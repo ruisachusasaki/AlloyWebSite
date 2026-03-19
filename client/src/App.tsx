@@ -4,11 +4,13 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "@/context/language-context";
+import { NotificationProvider } from "@/context/notification-context";
 import { ScrollProvider } from "@/context/scroll-context";
 import { useAuth } from "@/hooks/use-auth";
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { PremiumNotification } from "@/components/premium-notification";
 import { Preloader } from "@/components/preloader";
 import { CustomCursor } from "@/components/custom-cursor";
 
@@ -112,14 +114,17 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
-        <ScrollProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Preloader />
-            <CustomCursor />
-            <Router />
-          </TooltipProvider>
-        </ScrollProvider>
+        <NotificationProvider>
+          <ScrollProvider>
+            <TooltipProvider>
+              <Toaster />
+              <PremiumNotification />
+              <Preloader />
+              <CustomCursor />
+              <Router />
+            </TooltipProvider>
+          </ScrollProvider>
+        </NotificationProvider>
       </LanguageProvider>
     </QueryClientProvider>
   );

@@ -475,6 +475,9 @@ export const es: Record<string, string> = {
     "modal.success.done": "Listo",
     "modal.success.duration": "30 min",
 
+    // ─── Notifications ───
+    "notification.bookingSuccess": "Tu llamada ha sido agendada! Revisa tu email para la confirmacion.",
+
     // ─── Not Found Page ───
     "notFound.title": "404 Página No Encontrada",
     "notFound.subtitle": "La página que buscás no existe o fue movida.",
