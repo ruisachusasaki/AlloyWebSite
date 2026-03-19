@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { useLanguage } from "@/context/language-context";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -230,39 +230,72 @@ function ModuleCard({
   );
 }
 
+function ScrollProgress() {
+  const { scrollYProgress } = useScroll();
+  return <motion.div className="scroll-progress" style={{ scaleX: scrollYProgress }} />;
+}
+
+const PARTICLES = Array.from({ length: 8 }, (_, i) => ({
+  id: i,
+  left: `${8 + i * 12}%`,
+  top: `${10 + ((i * 37) % 80)}%`,
+  size: i % 2 === 0 ? "1px" : "0.5px",
+  duration: 8 + (i % 5),
+  delay: i * 1.2,
+}));
+
+const HERO_STATS = [
+  { color: "bg-primary", key: "build.hero.stat1" },
+  { color: "bg-primary", key: "build.hero.stat2" },
+  { color: "bg-accent", key: "build.hero.stat3" },
+];
+
+const HERO_EASE = [0.22, 1, 0.36, 1] as const;
+
 function HeroSection() {
   const { t } = useLanguage();
-  return (
-    <section className="relative pt-32 pb-20 overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[150px] animate-pulse" />
-        <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-primary/8 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-primary/5 via-transparent to-primary/5 rounded-full blur-[100px]" />
-      </div>
 
+  // Stagger delays — 0.2s base accounts for page transition
+  const d = { number: 0.2, badge: 0.35, heading: 0.5, subtitle: 0.7, statsBase: 0.85, scroll: 1.3 };
+
+  return (
+    <section className="relative pt-32 pb-24 overflow-hidden">
+      {/* Floating gradient orbs — synced with landing page */}
+      <div
+        className="absolute rounded-full pointer-events-none w-[400px] h-[400px] md:w-[600px] md:h-[600px]"
+        style={{
+          top: "10%",
+          left: "5%",
+          background: "radial-gradient(circle, hsl(199 89% 48% / 0.12) 0%, transparent 70%)",
+          filter: "blur(60px)",
+          animation: "float-orb 12s ease-in-out infinite",
+        }}
+      />
+      <div
+        className="absolute rounded-full pointer-events-none w-[300px] h-[300px] md:w-[500px] md:h-[500px]"
+        style={{
+          top: "50%",
+          right: "5%",
+          background: "radial-gradient(circle, hsl(280 70% 55% / 0.08) 0%, hsl(199 89% 48% / 0.05) 50%, transparent 70%)",
+          filter: "blur(60px)",
+          animation: "float-orb-reverse 14s ease-in-out infinite",
+        }}
+      />
+
+      {/* Ambient particles — subtle, slow drift */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(20)].map((_, i) => (
+        {PARTICLES.map((p) => (
           <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-primary/30 rounded-full"
-            initial={{
-              x: Math.random() * (typeof window !== 'undefined' ? window.innerWidth : 1200),
-              y: Math.random() * 600,
-              opacity: 0
-            }}
-            animate={{
-              y: [null, Math.random() * 600],
-              opacity: [0, 1, 0]
-            }}
-            transition={{
-              duration: 5 + Math.random() * 5,
-              repeat: Infinity,
-              delay: Math.random() * 5
-            }}
+            key={p.id}
+            className="absolute rounded-full bg-primary/15"
+            style={{ left: p.left, top: p.top, width: p.size, height: p.size }}
+            animate={{ y: [0, -30, 0], opacity: [0.15, 0.08, 0.15] }}
+            transition={{ duration: p.duration, repeat: Infinity, delay: p.delay, ease: "easeInOut" }}
           />
         ))}
       </div>
 
+      {/* Subtle grid pattern */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none"
         style={{
           backgroundImage: 'linear-gradient(hsl(var(--foreground)) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground)) 1px, transparent 1px)',
@@ -270,81 +303,132 @@ function HeroSection() {
         }}
       />
 
-      <div className="max-w-5xl mx-auto px-6 relative z-10">
+      {/* Ghost text — large faded backdrop */}
+      <div className="ghost-text left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 z-[1]" aria-hidden>
+        BUILD
+      </div>
+
+      <div className="max-w-5xl mx-auto px-6 relative z-10 text-center">
+        {/* Section number */}
+        <motion.span
+          className="section-number"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: d.number, ease: HERO_EASE }}
+        >
+          01 /
+        </motion.span>
+
+        {/* Badge */}
         <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.6, delay: d.badge }}
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 border border-primary/30 text-primary text-sm font-semibold mb-8 backdrop-blur-sm shadow-lg shadow-primary/10"
+        >
+          <Sparkles className="w-4 h-4" />
+          <span className="text-current">Interactive Solution Builder</span>
+          <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+        </motion.div>
+
+        {/* Heading — clamp sizing, font-weight mixing, tight tracking */}
+        <motion.h1
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center"
+          transition={{ duration: 0.7, delay: d.heading, ease: HERO_EASE }}
+          className="font-light text-foreground mb-6 leading-[1.05] heading-glow"
+          style={{ fontSize: "clamp(2.5rem, 5.5vw, 4rem)", letterSpacing: "-0.03em" }}
         >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 border border-primary/30 text-primary text-sm font-semibold mb-8 backdrop-blur-sm shadow-lg shadow-primary/10"
-          >
-            <Sparkles className="w-4 h-4" />
-            <span className="text-current">Interactive Solution Builder</span>
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-          </motion.div>
-
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="text-5xl md:text-6xl lg:text-7xl font-black text-foreground mb-6 tracking-tight leading-[1.1]"
-          >
-            {useLanguage()?.t ? (useLanguage().t("build.hero.title.line1") || "Architect Your") : "Architect Your"}{" "}
-            <span className="relative inline-block">
-              <span className="text-gradient bg-gradient-to-r from-primary via-primary to-primary/70 bg-clip-text text-transparent">
-                {useLanguage()?.t ? (useLanguage().t("build.hero.title.highlight") || "Digital Empire") : "Digital Empire"}
-              </span>
-              <motion.span
-                className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-primary/60 via-primary to-primary/60 rounded-full"
-                initial={{ scaleX: 0 }}
-                animate={{ scaleX: 1 }}
-                transition={{ duration: 0.8, delay: 0.8 }}
-              />
+          <span className="font-light-display">
+            {useLanguage()?.t ? (useLanguage().t("build.hero.title.line1") || "Architect Your") : "Architect Your"}
+          </span>{" "}
+          <span className="relative inline-block">
+            <span className="font-heavy bg-gradient-to-r from-primary via-primary to-primary/70 bg-clip-text text-transparent">
+              {useLanguage()?.t ? (useLanguage().t("build.hero.title.highlight") || "Digital Empire") : "Digital Empire"}
             </span>
-          </motion.h1>
+            <motion.span
+              className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-primary/60 via-primary to-primary/60 rounded-full"
+              initial={{ scaleX: 0 }}
+              animate={{ scaleX: 1 }}
+              transition={{ duration: 0.8, delay: d.heading + 0.3 }}
+            />
+          </span>
+        </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-10"
-          >
-            {useLanguage()?.t ? (useLanguage().t("build.hero.subtitle.line1") || "Select the modules that power your vision. We craft a") : "Select the modules that power your vision. We craft a"}{" "}
-            <span className="text-foreground font-semibold">
-              {useLanguage()?.t ? (useLanguage().t("build.hero.subtitle.highlight") || "unified platform") : "unified platform"}
-            </span>{" "}
-            {useLanguage()?.t ? (useLanguage().t("build.hero.subtitle.line2") || "that eliminates tool chaos and amplifies your business.") : "that eliminates tool chaos and amplifies your business."}
-          </motion.p>
+        {/* Subheadline — monospace prefix accent */}
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: d.subtitle, ease: HERO_EASE }}
+          className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-10"
+        >
+          <span className="font-mono text-primary/50 mr-1">&gt;</span>
+          {useLanguage()?.t ? (useLanguage().t("build.hero.subtitle.line1") || "Select the modules that power your vision. We craft a") : "Select the modules that power your vision. We craft a"}{" "}
+          <span className="text-foreground font-semibold">
+            {useLanguage()?.t ? (useLanguage().t("build.hero.subtitle.highlight") || "unified platform") : "unified platform"}
+          </span>{" "}
+          {useLanguage()?.t ? (useLanguage().t("build.hero.subtitle.line2") || "that eliminates tool chaos and amplifies your business.") : "that eliminates tool chaos and amplifies your business."}
+        </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.7 }}
-            className="flex flex-wrap items-center justify-center gap-8 text-sm text-muted-foreground"
-          >
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-green-500" />
-              <span>{t("build.hero.stat1")}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-primary" />
-              <span>{t("build.hero.stat2")}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-blue-500" />
-              <span>{t("build.hero.stat3")}</span>
-            </div>
-          </motion.div>
-        </motion.div>
+        {/* Stats — individually staggered with pulse-once dots */}
+        <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-muted-foreground">
+          {HERO_STATS.map((stat, i) => (
+            <motion.div
+              key={stat.key}
+              className="flex items-center gap-2"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: d.statsBase + i * 0.15, ease: HERO_EASE }}
+            >
+              <motion.div
+                className={`w-2 h-2 rounded-full ${stat.color}`}
+                initial={{ scale: 0 }}
+                animate={{ scale: [0, 1.5, 1] }}
+                transition={{ duration: 0.4, delay: d.statsBase + i * 0.15 + 0.1 }}
+              />
+              <span>{t(stat.key)}</span>
+            </motion.div>
+          ))}
+        </div>
       </div>
+
+      {/* Scroll indicator */}
+      <motion.div
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: d.scroll, duration: 0.6 }}
+      >
+        <div className="scroll-indicator rounded-full" />
+      </motion.div>
 
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent pointer-events-none" />
     </section>
+  );
+}
+
+const CATEGORY_IDS = Object.keys(CATEGORY_COLORS);
+
+function HeroDivider() {
+  const { t } = useLanguage();
+  const categories = CATEGORY_IDS.map(id => t(`category.${id}`));
+  const doubled = [...categories, ...categories];
+
+  return (
+    <div className="relative">
+      <div className="h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+      <div className="hero-marquee py-3 bg-secondary/30">
+        <div className="hero-marquee-track text-xs uppercase tracking-[0.2em] font-mono text-muted-foreground/40">
+          {doubled.map((cat, i) => (
+            <span key={i} className="inline-flex items-center">
+              <span>{cat}</span>
+              <span className="mx-4 text-muted-foreground/20">&bull;</span>
+            </span>
+          ))}
+        </div>
+      </div>
+      <div className="h-px bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+    </div>
   );
 }
 
@@ -465,6 +549,7 @@ export default function BuildSolutionPage() {
   return (
     <SchedulingContext.Provider value={{ openScheduling }}>
       <div className="min-h-screen bg-background noise-bg">
+        <ScrollProgress />
         <SeoHead
           title={t("build.seo.title")}
           description={t("build.seo.description")}
@@ -482,8 +567,9 @@ export default function BuildSolutionPage() {
 
         <main className="pb-32">
           <HeroSection />
+          <HeroDivider />
 
-          <div className="max-w-7xl mx-auto px-6">
+          <div className="max-w-7xl mx-auto px-6 mt-10">
             <div className="flex flex-col lg:flex-row gap-8">
               <div className="flex-1">
                 <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-5">
@@ -519,7 +605,7 @@ export default function BuildSolutionPage() {
                         )}
                       </div>
 
-                      <div className="min-h-[180px] max-h-[280px] overflow-y-auto mb-6 scrollbar-thin">
+                      <div className="min-h-[180px] max-h-[280px] overflow-y-auto mb-6 scrollbar-thin" data-lenis-prevent>
                         <AnimatePresence mode="popLayout">
                           {selectedModules.size === 0 ? (
                             <motion.div
