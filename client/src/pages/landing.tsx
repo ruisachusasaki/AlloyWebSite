@@ -238,7 +238,7 @@ function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen flex items-center overflow-hidden grid-pattern"
+      className="relative z-20 min-h-screen flex items-center overflow-x-clip overflow-y-visible grid-pattern"
       onMouseMove={handleMouseMove}
     >
       {/* Floating gradient orbs — track mouse with parallax */}
@@ -280,9 +280,9 @@ function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
       />
 
       {/* Main content — split layout */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 py-20 md:py-32 flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 py-20 md:py-32 flex flex-col lg:flex-row items-center gap-8 lg:gap-12 overflow-visible">
         {/* LEFT — Typography (60%) */}
-        <div className="w-full lg:w-[60%] text-center lg:text-left relative">
+        <div className="w-full lg:w-[60%] text-center lg:text-left relative z-10">
           {/* Ghost text behind headline */}
           <div
             className="absolute pointer-events-none select-none -top-[0.2em] left-1/2 lg:left-0 -translate-x-1/2 lg:translate-x-0 whitespace-nowrap"
@@ -460,12 +460,13 @@ function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
           </motion.div>
         </div>
 
-        {/* RIGHT — 3D Cube (40%) */}
-        <div className="w-full lg:w-[40%]">
+        {/* RIGHT — 3D Planet (breaks out of flex on desktop) */}
+        <div className="w-full lg:absolute lg:right-[-8%] lg:top-1/2 lg:-translate-y-1/2 lg:w-[60%] overflow-visible pointer-events-none z-0">
           <motion.div
             initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="overflow-visible"
           >
             <Suspense fallback={null}>
               <HeroCube />
@@ -483,7 +484,7 @@ function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
       </motion.div>
 
       {/* Gradient fade at bottom */}
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background to-transparent z-0" />
     </section>
   );
 }

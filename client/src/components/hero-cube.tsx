@@ -16,7 +16,7 @@ const ORBIT_LABELS = ["CRM", "AI", "API", "E-COMM", "DATA", "OPS", "ERP", "WEB"]
 /** CSS-only fallback for mobile / no-WebGL: orbiting labels around a glowing core */
 function CSSFallback() {
   return (
-    <div className="flex items-center justify-center w-full h-[280px] sm:h-[320px] relative" aria-hidden>
+    <div className="flex items-center justify-center w-full h-[350px] sm:h-[420px] relative" aria-hidden>
       {/* Central glow */}
       <div className="absolute w-20 h-20 rounded-full bg-primary/20 blur-xl" />
       <div className="absolute w-8 h-8 rounded-full bg-primary/40 blur-md" />
@@ -68,8 +68,8 @@ function CSSFallback() {
   );
 }
 
-/** Three.js particle constellation sphere with orbiting text labels */
-function ParticleConstellation() {
+/** Three.js planet sphere with wireframe grid, glow, and orbiting text labels */
+function PlanetSphere() {
   const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -82,134 +82,164 @@ function ParticleConstellation() {
     import("three").then((THREE) => {
       if (disposed || !container) return;
 
-      const width = container.clientWidth;
-      const height = container.clientHeight;
+      // Oversized canvas so orbiting labels can extend beyond the container
+      const OVERFLOW_SCALE = 1.6;
+      const containerW = container.clientWidth;
+      const containerH = container.clientHeight;
+      const canvasW = Math.round(containerW * OVERFLOW_SCALE);
+      const canvasH = Math.round(containerH * OVERFLOW_SCALE);
 
       // Scene
       const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
-      camera.position.z = 5.5;
+      const camera = new THREE.PerspectiveCamera(50, canvasW / canvasH, 0.1, 100);
+      camera.position.z = 4.5;
 
       const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-      renderer.setSize(width, height);
+      renderer.setSize(canvasW, canvasH);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      container.appendChild(renderer.domElement);
+
+      // Position canvas centered but overflowing the container
+      const el = renderer.domElement;
+      el.style.position = "absolute";
+      el.style.left = "50%";
+      el.style.top = "50%";
+      el.style.transform = "translate(-50%, -50%)";
+      container.appendChild(el);
 
       const primaryColor = new THREE.Color("hsl(199, 89%, 48%)");
-      const accentColor = new THREE.Color("hsl(280, 70%, 60%)");
 
-      // ── Particles on sphere surface ──
-      const PARTICLE_COUNT = 600;
-      const SPHERE_RADIUS = 1.6;
-      const positions = new Float32Array(PARTICLE_COUNT * 3);
-      const colors = new Float32Array(PARTICLE_COUNT * 3);
-      const sizes = new Float32Array(PARTICLE_COUNT);
+      // ── Scene group (mouse parallax) wraps everything ──
+      const sceneGroup = new THREE.Group();
+      scene.add(sceneGroup);
 
-      for (let i = 0; i < PARTICLE_COUNT; i++) {
-        // Fibonacci sphere for even distribution
-        const phi = Math.acos(1 - 2 * (i + 0.5) / PARTICLE_COUNT);
+      // ── Auto-rotation group (sphere + grid + particles) ──
+      const autoGroup = new THREE.Group();
+      sceneGroup.add(autoGroup);
+
+      // ── Core sphere — semi-transparent glowing surface ──
+      const SPHERE_RADIUS = 1.4;
+      const coreGeo = new THREE.SphereGeometry(SPHERE_RADIUS, 48, 36);
+      const coreMat = new THREE.MeshBasicMaterial({
+        color: primaryColor,
+        transparent: true,
+        opacity: 0.08,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+      });
+      const coreSphere = new THREE.Mesh(coreGeo, coreMat);
+      autoGroup.add(coreSphere);
+
+      // ── Fresnel-like edge glow — slightly larger sphere ──
+      const fresnelGeo = new THREE.SphereGeometry(SPHERE_RADIUS * 1.02, 48, 36);
+      const fresnelMat = new THREE.ShaderMaterial({
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+        uniforms: {
+          uColor: { value: primaryColor },
+          uOpacity: { value: 0.45 },
+        },
+        vertexShader: `
+          varying vec3 vNormal;
+          varying vec3 vViewDir;
+          void main() {
+            vNormal = normalize(normalMatrix * normal);
+            vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+            vViewDir = normalize(-mvPos.xyz);
+            gl_Position = projectionMatrix * mvPos;
+          }
+        `,
+        fragmentShader: `
+          uniform vec3 uColor;
+          uniform float uOpacity;
+          varying vec3 vNormal;
+          varying vec3 vViewDir;
+          void main() {
+            float fresnel = 1.0 - abs(dot(vNormal, vViewDir));
+            fresnel = pow(fresnel, 3.0);
+            gl_FragColor = vec4(uColor, fresnel * uOpacity);
+          }
+        `,
+      });
+      const fresnelSphere = new THREE.Mesh(fresnelGeo, fresnelMat);
+      autoGroup.add(fresnelSphere);
+
+      // ── Wireframe grid overlay — techy low-segment grid ──
+      const wireGeo = new THREE.SphereGeometry(SPHERE_RADIUS * 1.005, 16, 12);
+      const wireMat = new THREE.MeshBasicMaterial({
+        color: primaryColor,
+        wireframe: true,
+        transparent: true,
+        opacity: 0.12,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+      });
+      const wireSphere = new THREE.Mesh(wireGeo, wireMat);
+      autoGroup.add(wireSphere);
+
+      // ── Atmosphere glow — larger sphere behind ──
+      const atmosGeo = new THREE.SphereGeometry(SPHERE_RADIUS * 1.35, 32, 24);
+      const atmosMat = new THREE.MeshBasicMaterial({
+        color: primaryColor,
+        transparent: true,
+        opacity: 0.035,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        side: THREE.BackSide,
+      });
+      const atmosSphere = new THREE.Mesh(atmosGeo, atmosMat);
+      autoGroup.add(atmosSphere);
+
+      // ── Surface dots — particles scattered on sphere surface ──
+      const DOT_COUNT = 200;
+      const dotPositions = new Float32Array(DOT_COUNT * 3);
+      const dotColors = new Float32Array(DOT_COUNT * 3);
+
+      for (let i = 0; i < DOT_COUNT; i++) {
+        const phi = Math.acos(1 - 2 * (i + 0.5) / DOT_COUNT);
         const theta = Math.PI * (1 + Math.sqrt(5)) * i;
-        // Add slight randomness to radius
-        const r = SPHERE_RADIUS * (0.9 + Math.random() * 0.2);
+        const r = SPHERE_RADIUS * 1.01;
 
-        positions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-        positions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-        positions[i * 3 + 2] = r * Math.cos(phi);
+        dotPositions[i * 3] = r * Math.sin(phi) * Math.cos(theta);
+        dotPositions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
+        dotPositions[i * 3 + 2] = r * Math.cos(phi);
 
-        // Mix primary and accent colors
-        const mixFactor = Math.random();
-        const color = primaryColor.clone().lerp(accentColor, mixFactor * 0.4);
-        colors[i * 3] = color.r;
-        colors[i * 3 + 1] = color.g;
-        colors[i * 3 + 2] = color.b;
-
-        sizes[i] = 1.5 + Math.random() * 2.5;
+        const brightness = 0.7 + Math.random() * 0.3;
+        dotColors[i * 3] = primaryColor.r * brightness;
+        dotColors[i * 3 + 1] = primaryColor.g * brightness;
+        dotColors[i * 3 + 2] = primaryColor.b * brightness;
       }
 
-      const particleGeometry = new THREE.BufferGeometry();
-      particleGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
-      particleGeometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
-      particleGeometry.setAttribute("size", new THREE.BufferAttribute(sizes, 1));
+      const dotGeo = new THREE.BufferGeometry();
+      dotGeo.setAttribute("position", new THREE.BufferAttribute(dotPositions, 3));
+      dotGeo.setAttribute("color", new THREE.BufferAttribute(dotColors, 3));
 
-      // Custom particle texture — soft glow circle
-      const particleCanvas = document.createElement("canvas");
-      particleCanvas.width = 64;
-      particleCanvas.height = 64;
-      const pCtx = particleCanvas.getContext("2d")!;
-      const gradient = pCtx.createRadialGradient(32, 32, 0, 32, 32, 32);
+      // Soft glow dot texture
+      const dotCanvas = document.createElement("canvas");
+      dotCanvas.width = 64;
+      dotCanvas.height = 64;
+      const dCtx = dotCanvas.getContext("2d")!;
+      const gradient = dCtx.createRadialGradient(32, 32, 0, 32, 32, 32);
       gradient.addColorStop(0, "rgba(255,255,255,1)");
       gradient.addColorStop(0.3, "rgba(255,255,255,0.6)");
       gradient.addColorStop(1, "rgba(255,255,255,0)");
-      pCtx.fillStyle = gradient;
-      pCtx.fillRect(0, 0, 64, 64);
-      const particleTexture = new THREE.CanvasTexture(particleCanvas);
+      dCtx.fillStyle = gradient;
+      dCtx.fillRect(0, 0, 64, 64);
+      const dotTexture = new THREE.CanvasTexture(dotCanvas);
 
-      const particleMaterial = new THREE.PointsMaterial({
-        size: 0.04,
-        map: particleTexture,
+      const dotMat = new THREE.PointsMaterial({
+        size: 0.03,
+        map: dotTexture,
         transparent: true,
-        opacity: 0.85,
+        opacity: 0.7,
         vertexColors: true,
         blending: THREE.AdditiveBlending,
         depthWrite: false,
         sizeAttenuation: true,
       });
 
-      const particles = new THREE.Points(particleGeometry, particleMaterial);
-      scene.add(particles);
-
-      // ── Connection lines between nearby particles ──
-      const linePositions: number[] = [];
-      const lineColors: number[] = [];
-      const CONNECTION_DIST = 0.55;
-      const MAX_CONNECTIONS = 400;
-      let connectionCount = 0;
-
-      for (let i = 0; i < PARTICLE_COUNT && connectionCount < MAX_CONNECTIONS; i++) {
-        for (let j = i + 1; j < PARTICLE_COUNT && connectionCount < MAX_CONNECTIONS; j++) {
-          const dx = positions[i * 3] - positions[j * 3];
-          const dy = positions[i * 3 + 1] - positions[j * 3 + 1];
-          const dz = positions[i * 3 + 2] - positions[j * 3 + 2];
-          const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-          if (dist < CONNECTION_DIST) {
-            linePositions.push(
-              positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2],
-              positions[j * 3], positions[j * 3 + 1], positions[j * 3 + 2]
-            );
-            const alpha = 1 - dist / CONNECTION_DIST;
-            lineColors.push(
-              primaryColor.r, primaryColor.g, primaryColor.b,
-              primaryColor.r * alpha, primaryColor.g * alpha, primaryColor.b * alpha
-            );
-            connectionCount++;
-          }
-        }
-      }
-
-      const lineGeometry = new THREE.BufferGeometry();
-      lineGeometry.setAttribute("position", new THREE.Float32BufferAttribute(linePositions, 3));
-      lineGeometry.setAttribute("color", new THREE.Float32BufferAttribute(lineColors, 3));
-
-      const lineMaterial = new THREE.LineBasicMaterial({
-        vertexColors: true,
-        transparent: true,
-        opacity: 0.15,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false,
-      });
-      const lines = new THREE.LineSegments(lineGeometry, lineMaterial);
-      scene.add(lines);
-
-      // ── Central glow sphere ──
-      const glowGeo = new THREE.SphereGeometry(0.5, 32, 32);
-      const glowMat = new THREE.MeshBasicMaterial({
-        color: primaryColor,
-        transparent: true,
-        opacity: 0.06,
-        blending: THREE.AdditiveBlending,
-      });
-      const glowSphere = new THREE.Mesh(glowGeo, glowMat);
-      scene.add(glowSphere);
+      const dots = new THREE.Points(dotGeo, dotMat);
+      autoGroup.add(dots);
 
       // ── Orbiting text labels as sprites ──
       const labelSprites: InstanceType<typeof THREE.Sprite>[] = [];
@@ -219,8 +249,7 @@ function ParticleConstellation() {
         canvas.height = 64;
         const ctx = canvas.getContext("2d")!;
 
-        // Rounded pill background
-        const pillW = ctx.measureText(label).width; // approximate
+        // Measure text with correct font
         ctx.font = "bold 28px monospace";
         const textW = ctx.measureText(label).width;
         const pillPadX = 24;
@@ -265,28 +294,20 @@ function ParticleConstellation() {
         });
         const sprite = new THREE.Sprite(spriteMat);
         sprite.scale.set(1.6, 0.4, 1);
-        scene.add(sprite);
+        sceneGroup.add(sprite);
         labelSprites.push(sprite);
 
-        // Orbit params — each label has different orbit plane and speed
-        const orbitRadius = 2.2 + (i % 3) * 0.35;
+        // Orbit params
+        const orbitRadius = 2.4 + (i % 3) * 0.35;
         const speed = 0.15 + (i % 4) * 0.06;
         const phaseOffset = (i / ORBIT_LABELS.length) * Math.PI * 2;
-        // Tilt the orbit plane
         const tiltX = (i % 2 === 0 ? 1 : -1) * (0.3 + (i % 3) * 0.25);
         const tiltZ = (i % 3 === 0 ? 1 : -1) * 0.2;
 
         return { orbitRadius, speed, phaseOffset, tiltX, tiltZ };
       });
 
-      // ── Group for rotation ──
-      const mainGroup = new THREE.Group();
-      mainGroup.add(particles);
-      mainGroup.add(lines);
-      mainGroup.add(glowSphere);
-      scene.add(mainGroup);
-
-      // Mouse parallax
+      // ── Mouse parallax ──
       let mouseX = 0;
       let mouseY = 0;
       const onMouseMove = (e: MouseEvent) => {
@@ -295,9 +316,9 @@ function ParticleConstellation() {
       };
       window.addEventListener("mousemove", onMouseMove);
 
-      // Target rotation for smooth lerp
-      let targetRotX = 0;
-      let targetRotY = 0;
+      // Smooth parallax targets
+      let currentParallaxX = 0;
+      let currentParallaxY = 0;
 
       const clock = new THREE.Clock();
 
@@ -307,41 +328,47 @@ function ParticleConstellation() {
 
         const elapsed = clock.getElapsedTime();
 
-        // Slow auto-rotation
-        mainGroup.rotation.y += 0.002;
-        mainGroup.rotation.x = Math.sin(elapsed * 0.1) * 0.1;
+        // Auto-rotation — always runs on autoGroup
+        autoGroup.rotation.y += 0.003;
+        autoGroup.rotation.x = Math.sin(elapsed * 0.15) * 0.08;
 
-        // Mouse parallax — smooth lerp
-        targetRotX = mouseY * 0.3;
-        targetRotY = mouseX * 0.4;
-        mainGroup.rotation.x += (targetRotX - mainGroup.rotation.x) * 0.03;
-        mainGroup.rotation.y += (targetRotY - mainGroup.rotation.y) * 0.03;
+        // Mouse parallax — applied to sceneGroup via lerp
+        const targetParallaxX = mouseY * 0.3;
+        const targetParallaxY = mouseX * 0.4;
+        currentParallaxX += (targetParallaxX - currentParallaxX) * 0.03;
+        currentParallaxY += (targetParallaxY - currentParallaxY) * 0.03;
+        sceneGroup.rotation.x = currentParallaxX;
+        sceneGroup.rotation.y = currentParallaxY;
 
         // Animate orbiting labels
         labelOrbits.forEach((orbit, i) => {
           const angle = elapsed * orbit.speed + orbit.phaseOffset;
-          const x = Math.cos(angle) * orbit.orbitRadius;
-          const z = Math.sin(angle) * orbit.orbitRadius;
-          const y = Math.sin(angle + orbit.tiltX) * orbit.orbitRadius * 0.35;
-          labelSprites[i].position.set(x, y, z);
+          const lx = Math.cos(angle) * orbit.orbitRadius;
+          const lz = Math.sin(angle) * orbit.orbitRadius;
+          const ly = Math.sin(angle + orbit.tiltX) * orbit.orbitRadius * 0.35;
+          labelSprites[i].position.set(lx, ly, lz);
 
-          // Fade based on z depth (further away = more transparent)
-          const depthFade = THREE.MathUtils.clamp((z + orbit.orbitRadius) / (orbit.orbitRadius * 2), 0.3, 1);
+          // Depth-based opacity fade
+          const depthFade = THREE.MathUtils.clamp(
+            (lz + orbit.orbitRadius) / (orbit.orbitRadius * 2),
+            0.3,
+            1,
+          );
           labelSprites[i].material.opacity = depthFade;
         });
 
-        // Subtle particle size pulsing via glow sphere
-        glowSphere.scale.setScalar(1 + Math.sin(elapsed * 0.8) * 0.1);
+        // Subtle atmosphere pulse
+        atmosSphere.scale.setScalar(1 + Math.sin(elapsed * 0.8) * 0.04);
 
         renderer.render(scene, camera);
       };
       animate();
 
-      // Resize handler
+      // Resize handler — keep canvas oversized
       const onResize = () => {
         if (!container || disposed) return;
-        const w = container.clientWidth;
-        const h = container.clientHeight;
+        const w = Math.round(container.clientWidth * OVERFLOW_SCALE);
+        const h = Math.round(container.clientHeight * OVERFLOW_SCALE);
         camera.aspect = w / h;
         camera.updateProjectionMatrix();
         renderer.setSize(w, h);
@@ -354,13 +381,17 @@ function ParticleConstellation() {
         window.removeEventListener("resize", onResize);
         cancelAnimationFrame(animId);
         renderer.dispose();
-        particleGeometry.dispose();
-        particleMaterial.dispose();
-        particleTexture.dispose();
-        lineGeometry.dispose();
-        lineMaterial.dispose();
-        glowGeo.dispose();
-        glowMat.dispose();
+        coreGeo.dispose();
+        coreMat.dispose();
+        fresnelGeo.dispose();
+        fresnelMat.dispose();
+        wireGeo.dispose();
+        wireMat.dispose();
+        atmosGeo.dispose();
+        atmosMat.dispose();
+        dotGeo.dispose();
+        dotMat.dispose();
+        dotTexture.dispose();
         labelSprites.forEach((s) => {
           s.material.map?.dispose();
           s.material.dispose();
@@ -382,7 +413,7 @@ function ParticleConstellation() {
   return (
     <div
       ref={mountRef}
-      className="w-full h-[280px] sm:h-[350px] lg:h-[420px]"
+      className="relative w-full h-[350px] sm:h-[420px] lg:h-[620px] overflow-visible"
       aria-hidden
     />
   );
@@ -397,7 +428,7 @@ function HeroCubeInner() {
     return <CSSFallback />;
   }
 
-  return <ParticleConstellation />;
+  return <PlanetSphere />;
 }
 
 export const HeroCube = memo(HeroCubeInner);
