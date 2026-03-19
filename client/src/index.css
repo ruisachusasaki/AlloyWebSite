@@ -577,7 +577,41 @@
 .wordmark-container:hover .wordmark-letter:nth-child(4) { transform: translate(10px, 6px) rotate(7deg); }
 .wordmark-container:hover .wordmark-letter:nth-child(5) { transform: translate(-6px, 14px) rotate(-6deg); }
 
+/* ── Hero marquee infinite scroll ── */
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.hero-marquee {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.hero-marquee-track {
+  display: inline-flex;
+  animation: marquee-scroll 30s linear infinite;
+}
+
+.hero-marquee-track.reverse {
+  animation-direction: reverse;
+}
+
+/* ── Scroll indicator pulse ── */
+@keyframes scroll-line {
+  0%, 100% { opacity: 0.3; height: 20px; }
+  50% { opacity: 1; height: 40px; }
+}
+
+.scroll-indicator {
+  width: 2px;
+  background: hsl(var(--muted-foreground));
+  animation: scroll-line 2s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .hero-marquee-track { animation: none; }
+  .scroll-indicator { animation: none; opacity: 0.5; height: 40px; }
   .footer-particles span { animation: none; }
   .wordmark-container:hover .wordmark-letter { transform: none; }
 }

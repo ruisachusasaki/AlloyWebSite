@@ -62,6 +62,18 @@ export const es: Record<string, string> = {
     "hero.ctaSecondary": "Armalo Vos Mismo",
     "hero.noCommitment": "Sin compromiso",
 
+    // ─── Hero Marquee ───
+    "hero.marquee.crm": "CRM A MEDIDA",
+    "hero.marquee.workflows": "FLUJOS AUTOMATIZADOS",
+    "hero.marquee.payments": "PAGOS INTEGRADOS",
+    "hero.marquee.debt": "CERO DEUDA TÉCNICA",
+    "hero.marquee.platform": "UNA PLATAFORMA",
+    "hero.marquee2.ecommerce": "E-COMMERCE",
+    "hero.marquee2.ai": "POTENCIADO POR IA",
+    "hero.marquee2.saas": "PLATAFORMAS SAAS",
+    "hero.marquee2.automation": "AUTOMATIZACIÓN EMPRESARIAL",
+    "hero.marquee2.analytics": "ANALÍTICA EN TIEMPO REAL",
+
     // ─── Spaghetti Chaos Section ───
     "chaos.title.line1": "Tu negocio se está",
     "chaos.title.highlight": "ahogando",

@@ -44,6 +44,7 @@ import {
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 const TubesCursorBackground = React.lazy(() => import("@/components/tubes-cursor-background"));
+const HeroCube = React.lazy(() => import("@/components/hero-cube"));
 import darwinLogo from "@assets/darwin-ai-logo_1769368824707.png";
 import meliLogo from "@assets/image_1769370076739.png";
 import tokkoLogo from "@assets/tokko_broker_logo_(1)_1_1769369724733.png";
@@ -229,7 +230,7 @@ function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
   const subtitleY = useTransform(scrollYProgress, [0, 1], [0, -60]);
   const subtitleOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   const ctaY = useTransform(scrollYProgress, [0, 1], [0, -30]);
-  const ctaOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+  const scrollIndicatorOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
 
   // Split headline into words for stagger animation
   const titleWords = t("hero.title.line1").split(" ");
@@ -237,12 +238,9 @@ function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden grid-pattern"
+      className="relative min-h-screen flex items-center overflow-hidden grid-pattern"
       onMouseMove={handleMouseMove}
     >
-      <Suspense fallback={null}>
-        <TubesCursorBackground />
-      </Suspense>
       {/* Floating gradient orbs — track mouse with parallax */}
       <motion.div
         className="absolute rounded-full pointer-events-none w-[400px] h-[400px] md:w-[600px] md:h-[600px]"
@@ -281,172 +279,258 @@ function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
         }}
       />
 
-      <div className="relative z-10 max-w-5xl mx-auto px-6 py-20 md:py-32 text-center">
-        {/* Badge — parallax exits fastest */}
-        <motion.div
-          style={
-            !prefersReducedMotion
-              ? { y: badgeY, opacity: badgeOpacity }
-              : undefined
-          }
-          className="mb-5"
-        >
-          <AnimatePresence mode="wait">
-            {(() => {
-              const BadgeIcon = badgeChips[badgeIndex].icon;
-              return (
-                <motion.span
-                  key={badgeIndex}
-                  initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-                  className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium font-mono ${badgeChips[badgeIndex].className}`}
-                >
-                  <BadgeIcon className="w-4 h-4" />
-                  {t(badgeChips[badgeIndex].key)}
-                </motion.span>
-              );
-            })()}
-          </AnimatePresence>
-        </motion.div>
+      {/* Main content — split layout */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 py-20 md:py-32 flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+        {/* LEFT — Typography (60%) */}
+        <div className="w-full lg:w-[60%] text-center lg:text-left relative">
+          {/* Ghost text behind headline */}
+          <div
+            className="absolute pointer-events-none select-none -top-[0.2em] left-1/2 lg:left-0 -translate-x-1/2 lg:translate-x-0 whitespace-nowrap"
+            style={{ fontSize: "15vw", fontFamily: "var(--font-display)", fontWeight: 900, opacity: 0.03, lineHeight: 1 }}
+            aria-hidden
+          >
+            ALLOY
+          </div>
 
-        {/* Split-text headline — words slide up one-by-one from clip masks */}
-        <motion.div
-          style={
-            !prefersReducedMotion
-              ? { y: titleY, opacity: titleOpacity }
-              : undefined
-          }
-        >
-          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-[5.5rem] font-light leading-[1.05] mb-8 heading-glow" style={{ letterSpacing: "-0.02em" }}>
-            {titleWords.map((word, i) => (
-              <span
-                key={i}
-                className="inline-block overflow-hidden align-bottom pb-1"
+          {/* Badge chips — rotating */}
+          <motion.div
+            style={
+              !prefersReducedMotion
+                ? { y: badgeY, opacity: badgeOpacity }
+                : undefined
+            }
+            className="mb-5"
+          >
+            <AnimatePresence mode="wait">
+              {(() => {
+                const BadgeIcon = badgeChips[badgeIndex].icon;
+                return (
+                  <motion.span
+                    key={badgeIndex}
+                    initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                    className={`inline-flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium font-mono ${badgeChips[badgeIndex].className}`}
+                  >
+                    <BadgeIcon className="w-4 h-4" />
+                    {t(badgeChips[badgeIndex].key)}
+                  </motion.span>
+                );
+              })()}
+            </AnimatePresence>
+          </motion.div>
+
+          {/* H1 — oversized, mixed weights */}
+          <motion.div
+            style={
+              !prefersReducedMotion
+                ? { y: titleY, opacity: titleOpacity }
+                : undefined
+            }
+          >
+            <h1
+              className="font-light leading-[1.05] mb-6 heading-glow"
+              style={{ fontSize: "clamp(2.2rem, 5vw, 4.5rem)", letterSpacing: "-0.03em" }}
+            >
+              {titleWords.map((word, i) => (
+                <span
+                  key={i}
+                  className="inline-block overflow-hidden align-bottom pb-1"
+                >
+                  <motion.span
+                    className={`inline-block pr-[0.3em] ${word.length >= 5 ? "font-heavy" : ""}`}
+                    initial={prefersReducedMotion ? false : { y: "110%" }}
+                    animate={{ y: "0%" }}
+                    transition={{
+                      duration: 0.6,
+                      delay: 0.3 + i * 0.06,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                  >
+                    {word}
+                  </motion.span>
+                </span>
+              ))}
+
+              {/* Rotating highlight with gradient shimmer */}
+              <motion.span
+                className="block h-[1.2em] relative overflow-hidden mt-1"
+                initial={prefersReducedMotion ? false : { opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8, duration: 0.4 }}
               >
-                <motion.span
-                  className={`inline-block pr-[0.3em] ${word.length >= 5 ? "font-heavy" : ""}`}
-                  initial={prefersReducedMotion ? false : { y: "110%" }}
-                  animate={{ y: "0%" }}
-                  transition={{
-                    duration: 0.6,
-                    delay: 0.3 + i * 0.06,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                >
-                  {word}
-                </motion.span>
-              </span>
-            ))}
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={highlightIndex}
+                    className="gradient-text-animated absolute inset-x-0"
+                    initial={
+                      prefersReducedMotion ? false : { y: "100%" }
+                    }
+                    animate={{ y: "0%" }}
+                    exit={{ y: "-100%" }}
+                    transition={{
+                      duration: 0.5,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                  >
+                    {highlights[highlightIndex]}
+                  </motion.span>
+                </AnimatePresence>
+              </motion.span>
+            </h1>
+          </motion.div>
 
-            {/* Rotating highlight with gradient shimmer */}
-            <motion.span
-              className="block h-[1.2em] relative overflow-hidden mt-1"
+          {/* Subtitle — monospace terminal style */}
+          <motion.div
+            style={
+              !prefersReducedMotion
+                ? { y: subtitleY, opacity: subtitleOpacity }
+                : undefined
+            }
+          >
+            <motion.p
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.7,
+                delay: 0.9,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="font-mono text-sm md:text-base text-muted-foreground max-w-xl mx-auto lg:mx-0 leading-relaxed mb-8"
+            >
+              <span className="text-primary font-bold">{">"} </span>
+              {t("hero.subtitle")}
+            </motion.p>
+          </motion.div>
+
+          {/* CTA — left-aligned on desktop */}
+          <motion.div
+            style={
+              !prefersReducedMotion
+                ? { y: ctaY }
+                : undefined
+            }
+          >
+            <motion.div
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.7,
+                delay: 1.1,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="flex flex-col items-center lg:items-start gap-4 mb-6"
+            >
+              <div className="flex flex-col sm:flex-row items-center gap-4">
+                <MagneticButton>
+                  <Button
+                    size="lg"
+                    className="text-lg font-bold shimmer-btn glow-border shadow-lg shadow-primary/25 w-full sm:w-auto"
+                    onClick={() => onScheduleClick()}
+                    data-testid="button-cta-hero"
+                  >
+                    {t("hero.cta")}
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </MagneticButton>
+                <Link href="/build">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    className="text-lg font-bold w-full sm:w-auto"
+                    data-testid="button-cta-hero-build"
+                  >
+                    {t("hero.ctaSecondary")}
+                  </Button>
+                </Link>
+              </div>
+            </motion.div>
+
+            <motion.div
               initial={prefersReducedMotion ? false : { opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.8, duration: 0.4 }}
+              transition={{ delay: 1.4 }}
+              className="text-center lg:text-left"
             >
-              <AnimatePresence mode="wait">
-                <motion.span
-                  key={highlightIndex}
-                  className="gradient-text-animated absolute inset-x-0"
-                  initial={
-                    prefersReducedMotion ? false : { y: "100%" }
-                  }
-                  animate={{ y: "0%" }}
-                  exit={{ y: "-100%" }}
-                  transition={{
-                    duration: 0.5,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                >
-                  {highlights[highlightIndex]}
-                </motion.span>
-              </AnimatePresence>
-            </motion.span>
-          </h1>
-        </motion.div>
-
-        {/* Subtitle — lingers slightly longer on scroll */}
-        <motion.div
-          style={
-            !prefersReducedMotion
-              ? { y: subtitleY, opacity: subtitleOpacity }
-              : undefined
-          }
-        >
-          <motion.p
-            initial={prefersReducedMotion ? false : { opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.7,
-              delay: 0.9,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed mb-10"
-          >
-            {t("hero.subtitle")}
-          </motion.p>
-        </motion.div>
-
-        {/* CTA buttons — fade last on scroll, magnetic primary button */}
-        <motion.div
-          style={
-            !prefersReducedMotion
-              ? { y: ctaY, opacity: 1 }
-              : undefined
-          }
-        >
-          <motion.div
-            initial={prefersReducedMotion ? false : { opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{
-              duration: 0.7,
-              delay: 1.1,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-            className="flex flex-col items-center gap-4 mb-8"
-          >
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <MagneticButton>
-                <Button
-                  size="lg"
-                  className="text-lg font-bold shimmer-btn glow-border shadow-lg shadow-primary/25 w-full sm:w-auto"
-                  onClick={() => onScheduleClick()}
-                  data-testid="button-cta-hero"
-                >
-                  {t("hero.cta")}
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </MagneticButton>
-              <Link href="/build">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="text-lg font-bold w-full sm:w-auto"
-                  data-testid="button-cta-hero-build"
-                >
-                  {t("hero.ctaSecondary")}
-                </Button>
-              </Link>
-            </div>
+              <span className="text-muted-foreground text-sm opacity-70">
+                {t("hero.noCommitment")}
+              </span>
+            </motion.div>
           </motion.div>
+        </div>
 
+        {/* RIGHT — 3D Cube (40%) */}
+        <div className="w-full lg:w-[40%]">
           <motion.div
-            initial={prefersReducedMotion ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.4 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
-            <span className="text-muted-foreground text-sm opacity-70">
-              {t("hero.noCommitment")}
-            </span>
+            <Suspense fallback={null}>
+              <HeroCube />
+            </Suspense>
           </motion.div>
-        </motion.div>
+        </div>
       </div>
 
+      {/* Scroll indicator — bottom center */}
+      <motion.div
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10"
+        style={{ opacity: prefersReducedMotion ? 1 : scrollIndicatorOpacity }}
+      >
+        <div className="scroll-indicator rounded-full" />
+      </motion.div>
+
+      {/* Gradient fade at bottom */}
       <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background to-transparent" />
     </section>
+  );
+}
+
+function HeroMarquee() {
+  const { t } = useLanguage();
+
+  const strip1 = [
+    t("hero.marquee.crm"),
+    t("hero.marquee.workflows"),
+    t("hero.marquee.payments"),
+    t("hero.marquee.debt"),
+    t("hero.marquee.platform"),
+  ];
+
+  const strip2 = [
+    t("hero.marquee2.ecommerce"),
+    t("hero.marquee2.ai"),
+    t("hero.marquee2.saas"),
+    t("hero.marquee2.automation"),
+    t("hero.marquee2.analytics"),
+  ];
+
+  const renderStrip = (items: string[]) => {
+    // Duplicate for seamless loop
+    const doubled = [...items, ...items];
+    return doubled.map((item, i) => (
+      <span key={i} className="inline-flex items-center">
+        <span>{item}</span>
+        <span className="mx-6 text-muted-foreground/40">&bull;</span>
+      </span>
+    ));
+  };
+
+  return (
+    <div className="border-y border-border overflow-hidden bg-secondary/50 py-4">
+      <div className="hero-marquee mb-3">
+        <div className="hero-marquee-track text-sm uppercase tracking-[0.2em] font-mono text-muted-foreground">
+          {renderStrip(strip1)}
+        </div>
+      </div>
+      <div className="hero-marquee">
+        <div className="hero-marquee-track reverse text-sm uppercase tracking-[0.2em] font-mono text-muted-foreground">
+          {renderStrip(strip2)}
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -2340,6 +2424,7 @@ export default function LandingPage() {
         <ScrollProgress />
         <SharedNavbar />
         <HeroSection onScheduleClick={openScheduling} />
+        <HeroMarquee />
         <SpaghettiChaosSection />
         <BentoGridSection />
         <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
