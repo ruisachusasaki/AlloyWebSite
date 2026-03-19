@@ -249,13 +249,9 @@
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     background: hsl(var(--card) / 0.5);
-    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    transition: background 0.4s ease,
+                border-color 0.4s ease,
                 box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-
-  .module-glass-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 40px -12px hsl(var(--primary) / 0.15);
   }
 
   /* ── Thin scrollbar for sidebar lists ── */
@@ -702,4 +698,5 @@
   .wordmark-container:hover .wordmark-letter { transform: none; }
   .tap-ripple:active::after { transform: none; opacity: 0; }
   .bento-card:active, .portfolio-card:active { transform: none; }
+  .module-glass-card { transition: opacity 0.3s ease, box-shadow 0.3s ease; }
 }

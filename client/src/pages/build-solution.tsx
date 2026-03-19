@@ -1,6 +1,6 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useLanguage } from "@/context/language-context";
-import { motion, AnimatePresence, useScroll } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useAnimationControls, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -134,99 +134,198 @@ function ModuleCard({
   index: number;
 }) {
   const Icon = module.icon;
-  const cardRef = useRef<HTMLButtonElement>(null);
-  const color = CATEGORY_COLORS[module.categoryId] || "215 25% 27%"; // Default if missing
+  const tiltRef = useRef<HTMLDivElement>(null);
+  const color = CATEGORY_COLORS[module.categoryId] || "215 25% 27%";
+  const [isHovered, setIsHovered] = useState(false);
+  const [ripple, setRipple] = useState<{ x: number; y: number; key: number } | null>(null);
+  const controls = useAnimationControls();
+  const prefersReducedMotion = useReducedMotion();
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const card = e.currentTarget;
-    const rect = card.getBoundingClientRect();
+  // Row-based stagger: 3 cols on xl, 2 on smaller screens
+  const cols = typeof window !== 'undefined' && window.matchMedia('(min-width: 1280px)').matches ? 3 : 2;
+  const staggerDelay = Math.floor(index / cols) * 0.08 + (index % cols) * 0.03;
+
+  useEffect(() => {
+    controls.start({
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, delay: staggerDelay }
+    });
+  }, []);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const wrapper = tiltRef.current;
+    if (!wrapper) return;
+    const rect = wrapper.getBoundingClientRect();
     const x = ((e.clientX - rect.left) / rect.width) * 100;
     const y = ((e.clientY - rect.top) / rect.height) * 100;
-    card.style.setProperty('--mouse-x', `${x}%`);
-    card.style.setProperty('--mouse-y', `${y}%`);
+
+    // CSS custom properties inherit to inner card for glow tracking
+    wrapper.style.setProperty('--mouse-x', `${x}%`);
+    wrapper.style.setProperty('--mouse-y', `${y}%`);
+
+    if (!prefersReducedMotion) {
+      const rotateY = ((x - 50) / 50) * 6;
+      const rotateX = ((y - 50) / 50) * -6;
+      wrapper.style.transition = 'none';
+      wrapper.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-3px)`;
+      wrapper.style.willChange = 'transform';
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    const wrapper = tiltRef.current;
+    if (wrapper) {
+      wrapper.style.transition = 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)';
+      wrapper.style.transform = '';
+      wrapper.style.willChange = 'auto';
+    }
+  };
+
+  const handleClick = async (e: React.MouseEvent) => {
+    // Radial ripple from click point
+    if (!prefersReducedMotion) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const rx = ((e.clientX - rect.left) / rect.width) * 100;
+      const ry = ((e.clientY - rect.top) / rect.height) * 100;
+      setRipple({ x: rx, y: ry, key: Date.now() });
+
+      if (!isSelected) {
+        // Select pulse: 1.0 → 0.95 → 1.02 → 1.0
+        await controls.start({
+          scale: [1, 0.95, 1.02, 1],
+          transition: { duration: 0.2, times: [0, 0.3, 0.7, 1], ease: "easeOut" }
+        });
+      } else {
+        // Deselect pulse: 1.0 → 1.02 → 0.98 → 1.0
+        await controls.start({
+          scale: [1, 1.02, 0.98, 1],
+          transition: { duration: 0.15, times: [0, 0.3, 0.7, 1], ease: "easeOut" }
+        });
+      }
+    }
+
+    onToggle();
   };
 
   return (
-    <motion.button
-      ref={cardRef}
-      onClick={onToggle}
+    <div
+      ref={tiltRef}
       onMouseMove={handleMouseMove}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: index * 0.02 }}
-      whileTap={{ scale: 0.98 }}
-      className={`module-glass-card relative w-full text-left p-4 md:p-6 rounded-2xl transition-all duration-500 group overflow-hidden
-        ${isSelected
-          ? "border-transparent shadow-[0_0_40px_-10px]"
-          : "border-border/40 hover:shadow-[0_0_50px_-15px]"
-        }
-        backdrop-blur-xl border`}
-      style={{
-        background: isSelected
-          ? `linear-gradient(135deg, hsl(${color} / 0.15), hsl(${color} / 0.05), transparent)`
-          : `linear-gradient(135deg, hsl(${color} / 0.03), hsl(var(--card) / 0.8), hsl(var(--card) / 0.5))`,
-        borderColor: isSelected ? `hsl(${color} / 0.5)` : undefined,
-        boxShadow: isSelected ? `0 0 40px -10px hsl(${color} / 0.3)` : undefined
-      }}
-      data-testid={`module-card-${module.id}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={handleMouseLeave}
     >
-      <div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+      <motion.button
+        onClick={handleClick}
+        initial={{ opacity: 0, y: 20 }}
+        animate={controls}
+        whileTap={{ scale: 0.97 }}
+        className={`module-glass-card relative w-full h-full text-left p-4 md:p-6 rounded-2xl group overflow-hidden
+          ${isSelected
+            ? "border-transparent"
+            : "border-border/40"
+          }
+          backdrop-blur-xl border`}
         style={{
-          background: `radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), hsl(${color} / 0.15), transparent 50%)`
+          background: isSelected
+            ? `linear-gradient(135deg, hsl(${color} / 0.15), hsl(${color} / 0.05), transparent)`
+            : `linear-gradient(135deg, hsl(${color} / 0.03), hsl(var(--card) / 0.8), hsl(var(--card) / 0.5))`,
+          borderColor: isSelected ? `hsl(${color} / 0.5)` : undefined,
+          boxShadow: isSelected
+            ? `0 0 40px -10px hsl(${color} / 0.3)`
+            : isHovered
+              ? `0 12px 40px -12px hsl(${color} / 0.2)`
+              : undefined,
         }}
-      />
-
-      <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-        style={{
-          background: `linear-gradient(135deg, hsl(${color} / 0.05), transparent, hsl(${color} / 0.02))`
-        }}
-      />
-
-      {isSelected && (
-        <motion.div
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ type: "spring", stiffness: 400, damping: 15 }}
-          className="absolute top-4 right-4 w-7 h-7 rounded-full flex items-center justify-center shadow-lg"
-          style={{ backgroundColor: `hsl(${color})`, boxShadow: `0 0 15px hsl(${color} / 0.4)` }}
-        >
-          <Check className="w-4 h-4 text-white" />
-        </motion.div>
-      )}
-
-      <div className={`relative w-10 h-10 md:w-14 md:h-14 rounded-2xl flex items-center justify-center mb-3 md:mb-5 transition-all duration-500 overflow-hidden`}>
-        {/* Icon Background */}
+        data-testid={`module-card-${module.id}`}
+      >
+        {/* Mouse-tracking glow */}
         <div
-          className="absolute inset-0 transition-colors duration-500"
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
           style={{
-            backgroundColor: isSelected ? `hsl(${color})` : `hsl(${color} / 0.08)`,
+            background: `radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), hsl(${color} / 0.15), transparent 50%)`
           }}
         />
 
-        {/* Shine effect on icon bg */}
-        <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent" />
-
-        <Icon
-          className={`w-5 h-5 md:w-7 md:h-7 relative z-10 transition-colors duration-500`}
-          style={{ color: isSelected ? '#ffffff' : `hsl(${color})` }}
+        {/* Hover gradient overlay */}
+        <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+          style={{
+            background: `linear-gradient(135deg, hsl(${color} / 0.05), transparent, hsl(${color} / 0.02))`
+          }}
         />
-      </div>
 
-      <h3 className="font-bold text-foreground mb-2 text-sm md:text-lg tracking-tight">{module.title}</h3>
-      <p className="text-xs md:text-sm text-muted-foreground leading-relaxed mb-4">{module.description}</p>
+        {/* Click ripple */}
+        {ripple && (
+          <motion.div
+            key={ripple.key}
+            initial={{ scale: 0, opacity: 0.35 }}
+            animate={{ scale: 2.5, opacity: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            onAnimationComplete={() => setRipple(null)}
+            className="absolute rounded-full pointer-events-none z-10"
+            style={{
+              left: `${ripple.x}%`,
+              top: `${ripple.y}%`,
+              width: 120,
+              height: 120,
+              marginLeft: -60,
+              marginTop: -60,
+              background: `radial-gradient(circle, hsl(${color} / 0.3), transparent 70%)`
+            }}
+          />
+        )}
 
-      <span
-        className={`inline-flex items-center text-xs font-semibold px-3 py-1.5 rounded-full transition-all duration-300 border`}
-        style={{
-          backgroundColor: isSelected ? `hsl(${color} / 0.2)` : `hsl(${color} / 0.05)`,
-          color: `hsl(${color})`,
-          borderColor: `hsl(${color} / 0.2)`
-        }}
-      >
-        {module.category}
-      </span>
-    </motion.button>
+        {/* Checkmark with scale overshoot + exit */}
+        <AnimatePresence>
+          {isSelected && (
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: [0, 1.2, 1], opacity: 1 }}
+              exit={{ scale: 0, opacity: 0, transition: { duration: 0.15 } }}
+              transition={{ type: "spring", stiffness: 400, damping: 15 }}
+              className="absolute top-4 right-4 w-7 h-7 rounded-full flex items-center justify-center shadow-lg z-20"
+              style={{ backgroundColor: `hsl(${color})`, boxShadow: `0 0 15px hsl(${color} / 0.4)` }}
+            >
+              <Check className="w-4 h-4 text-white" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Icon container — glow intensifies on hover */}
+        <div className="relative w-10 h-10 md:w-14 md:h-14 rounded-2xl flex items-center justify-center mb-3 md:mb-5 transition-all duration-500 overflow-hidden">
+          <div
+            className="absolute inset-0 transition-all duration-500"
+            style={{
+              backgroundColor: isSelected ? `hsl(${color})` : `hsl(${color} / ${isHovered ? 0.15 : 0.08})`,
+            }}
+          />
+          <div
+            className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent transition-opacity duration-300"
+            style={{ opacity: isHovered && !isSelected ? 1 : 0.7 }}
+          />
+          <Icon
+            className="w-5 h-5 md:w-7 md:h-7 relative z-10 transition-colors duration-500"
+            style={{ color: isSelected ? '#ffffff' : `hsl(${color})` }}
+          />
+        </div>
+
+        <h3 className="font-bold text-foreground mb-2 text-sm md:text-lg tracking-tight">{module.title}</h3>
+        <p className="text-xs md:text-sm text-muted-foreground leading-relaxed mb-4">{module.description}</p>
+
+        {/* Category badge — border & bg shift on hover */}
+        <span
+          className="inline-flex items-center text-xs font-semibold px-3 py-1.5 rounded-full transition-all duration-300 border"
+          style={{
+            backgroundColor: isSelected ? `hsl(${color} / 0.2)` : `hsl(${color} / ${isHovered ? 0.1 : 0.05})`,
+            color: `hsl(${color})`,
+            borderColor: `hsl(${color} / ${isHovered ? 0.35 : 0.2})`
+          }}
+        >
+          {module.category}
+        </span>
+      </motion.button>
+    </div>
   );
 }
 
