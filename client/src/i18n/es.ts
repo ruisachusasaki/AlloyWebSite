@@ -231,6 +231,74 @@ export const es: Record<string, string> = {
     "seo.landing.ogTitle": "ALLOY - Plataformas de Software a Medida",
     "seo.landing.ogDescription": "Reemplazá tu stack tecnológico desordenado por un sistema digital hecho a medida. Una tarifa fija, evolución ilimitada.",
 
+    // ─── SEO Extended ───
+    "seo.landing.ogImage": "https://alloyready.io/og-image.png",
+    "seo.landing.twitterTitle": "ALLOY - Plataformas de Software a Medida",
+    "seo.landing.twitterDescription": "Reemplazá tu stack tecnológico desordenado por un sistema digital hecho a medida. Una tarifa fija, evolución ilimitada.",
+    "seo.build.ogTitle": "Armá tu Solución | ALLOY",
+    "seo.build.ogDescription": "Seleccioná las funciones que necesitás para tu herramienta interna. Constructor interactivo de módulos con 30+ integraciones.",
+    "seo.canonical.base": "https://alloyready.io",
+
+    // ─── Structured Data ───
+    "schema.org.name": "ALLOY",
+    "schema.org.description": "Constructor de plataformas de software a medida que reemplaza el caos SaaS con sistemas unificados y evolutivos.",
+    "schema.org.url": "https://alloyready.io",
+    "schema.org.logo": "https://alloyready.io/alloy-favicon.png",
+    "schema.org.address.street": "Buenos Aires",
+    "schema.org.address.city": "Buenos Aires",
+    "schema.org.address.region": "CABA",
+    "schema.org.address.country": "AR",
+    "schema.org.email": "hello@alloyready.io",
+    "schema.org.priceRange": "$$",
+
+    // ─── Breadcrumbs ───
+    "breadcrumb.home": "Inicio",
+    "breadcrumb.build": "Armá tu Solución",
+    "breadcrumb.pricing": "Precios",
+
+    // ─── FAQ Section ───
+    "faq.badge": "Preguntas Frecuentes",
+    "faq.title.line1": "¿Preguntas?",
+    "faq.title.highlight": "Respondidas.",
+    "faq.subtitle": "Todo lo que necesitás saber sobre desarrollo de software productizado.",
+
+    "faq.q1": "¿Qué es un servicio de software productizado?",
+    "faq.a1": "Un servicio de software productizado entrega software hecho a medida a través de una suscripción mensual fija en lugar de cobrar por proyecto. Tenés un equipo de desarrollo dedicado que construye, mantiene y evoluciona tu plataforma continuamente — como tener un equipo tech interno sin los costos fijos.",
+
+    "faq.q2": "¿Cuánto cuesta el desarrollo de software a medida?",
+    "faq.a2": "Los proyectos tradicionales de software a medida van de $50,000 a $500,000+ por adelantado. El modelo productizado de ALLOY empieza en $200/mes para sitios eCommerce y $599/mes para plataformas completas, sin inversión inicial grande. Pagás una tarifa fija mensual por desarrollo y evolución continua.",
+
+    "faq.q3": "¿Cuál es la diferencia entre SaaS y una plataforma a medida?",
+    "faq.a3": "Las herramientas SaaS son productos genéricos para millones de usuarios — vos adaptás tu flujo de trabajo a la herramienta. Una plataforma a medida se construye alrededor de tu flujo exacto, integrando todos tus procesos en un solo sistema. Sos dueño del código, controlás la hoja de ruta y nunca pagás por funciones que no usás.",
+
+    "faq.q4": "¿Puedo reemplazar HubSpot, Airtable o Zapier con una herramienta propia?",
+    "faq.a4": "Sí. La mayoría de las empresas usan 5-15 herramientas SaaS que no se comunican entre sí, gastando $2,000-5,000/mes solo en suscripciones. Una plataforma a medida unifica CRM, automatización, gestión de datos e integraciones en un solo sistema — muchas veces por menos que el gasto combinado en SaaS.",
+
+    "faq.q5": "¿Qué incluye una suscripción de software ilimitada?",
+    "faq.a5": "Las suscripciones de ALLOY incluyen desarrollo continuo, corrección de bugs, nuevas funcionalidades, actualizaciones de seguridad, hosting y sesiones de estrategia. No hay cargos por funcionalidad. Pedí una función nueva hoy y puede estar activa en días — no meses.",
+
+    "faq.q6": "¿Cuánto tiempo tarda construir una herramienta interna a medida?",
+    "faq.a6": "Un MVP inicial se entrega típicamente en 2-4 semanas. Desde ahí, la plataforma evoluciona continuamente según tu feedback. A diferencia del desarrollo tradicional donde esperás meses por un producto 'terminado', empezás a usar y refinar tu herramienta casi inmediatamente.",
+
+    "faq.q7": "¿Soy dueño del código que ALLOY construye para mí?",
+    "faq.a7": "Sí, sos dueño del 100% del código y la propiedad intelectual. Tu plataforma corre en tu infraestructura y tenés acceso completo al código fuente. Si alguna vez decidís irte, te llevás todo.",
+
+    "faq.q8": "¿ALLOY es solo para empresas en Argentina?",
+    "faq.a8": "No. ALLOY tiene base en Buenos Aires pero atiende clientes globalmente. Nuestro modelo productizado funciona para cualquier empresa que necesite software a medida, sin importar la ubicación. Trabajamos asincrónicamente entre zonas horarias con sesiones de estrategia regulares.",
+
+    // ─── Learn More Section ───
+    "learnMore.title": "Más Información",
+    "learnMore.toggle": "Leer más sobre desarrollo de software productizado",
+    "learnMore.h2.problem": "El Problema: Fragmentación SaaS",
+    "learnMore.p1": "Las empresas en crecimiento enfrentan una crisis silenciosa: la fragmentación SaaS. A medida que los equipos escalan de 5 a 50 personas, la empresa promedio acumula 15-25 suscripciones de software diferentes. Cada herramienta resuelve un problema específico — un CRM acá, un gestor de proyectos allá, un dashboard de analytics aparte, otra herramienta más para facturación. El resultado es un stack tecnológico Frankenstein sostenido por automatizaciones de Zapier y carga manual de datos.",
+    "learnMore.p2": "Esta fragmentación cuesta más que las suscripciones. Cuesta claridad. Cuando tus datos de clientes viven en HubSpot, el estado de tus proyectos en Asana, tus finanzas en QuickBooks y tu comunicación en Slack, ninguna persona tiene una imagen completa del negocio. Las decisiones se toman con información parcial. Los equipos pierden horas copiando datos entre sistemas. Actualizaciones críticas se pierden en el camino.",
+    "learnMore.h2.solution": "Cómo Funciona el Desarrollo de Software Productizado",
+    "learnMore.p3": "El desarrollo de software productizado reemplaza el modelo tradicional de agencia — donde pagás decenas de miles por adelantado por un producto 'terminado' que ya está desactualizado al lanzarse — con una asociación de desarrollo continuo. Por una tarifa fija mensual, tenés un equipo dedicado que construye, mantiene y evoluciona tu plataforma de forma indefinida.",
+    "learnMore.p4": "El proceso comienza con tu flujo de trabajo más doloroso. En 2-4 semanas, tenés un MVP funcional que aborda tu cuello de botella principal. Desde ahí, la plataforma crece orgánicamente. ¿Necesitás un portal de clientes? Se construye y despliega en días. ¿Querés reportes con IA? Se agrega en el próximo sprint. Tu plataforma se convierte en un sistema vivo que se adapta tan rápido como tu negocio.",
+    "learnMore.h2.alloy": "Por Qué el Modelo de ALLOY Es Diferente",
+    "learnMore.p5": "ALLOY combina la previsibilidad de precios SaaS con el poder del desarrollo a medida. Desde $200/mes para sitios eCommerce y $599/mes para plataformas completas, tenés solicitudes de funciones ilimitadas, correcciones prioritarias, sesiones de estrategia y una plataforma que nunca deja de evolucionar. Sin tarifas por hora, sin negociaciones de alcance y sin facturas sorpresa.",
+    "learnMore.p6": "Con base en Buenos Aires y clientes globales, ALLOY opera como tu departamento tech externo. Nos encargamos de decisiones de arquitectura, actualizaciones de seguridad, optimización de rendimiento y gestión de infraestructura — para que puedas enfocarte en tu negocio. Cada línea de código que escribimos te pertenece, y te la llevás si alguna vez decidís irte.",
+
     // ─── Build Solution Page ───
     "build.seo.title": "Armá tu Solución | ALLOY",
     "build.seo.description": "Seleccioná las funciones que necesitás para tu herramienta interna personalizada. Constructor interactivo de módulos con 30+ integraciones.",

@@ -4,8 +4,11 @@ import { motion, useScroll, useTransform, useInView, useMotionValue, useSpring, 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Helmet } from "react-helmet";
 import { Link } from "wouter";
+import { SeoHead } from "@/components/seo/seo-head";
+import { OrganizationSchema, LocalBusinessSchema, ServiceSchema, FAQSchema, BreadcrumbSchema } from "@/components/seo/structured-data";
+import { FAQSection } from "@/components/faq-section";
+import { LearnMoreSection } from "@/components/learn-more-section";
 import { SchedulingModal } from "@/components/scheduling-modal";
 import { SharedNavbar, SharedFooter } from "@/components/shared-layout";
 import { SchedulingContext } from "@/context/scheduling-context";
@@ -237,6 +240,8 @@ function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
 
   return (
     <section
+      id="hero"
+      aria-label="Hero"
       ref={sectionRef}
       className="relative z-20 min-h-screen flex items-center overflow-x-clip overflow-y-visible grid-pattern"
       onMouseMove={handleMouseMove}
@@ -697,7 +702,7 @@ function SpaghettiChaosSection() {
   const chaosTextOpacity = useTransform(scrollYProgress, [0, 0.3, 0.6], [1, 1, 0]);
 
   return (
-    <section id="problem" ref={containerRef} className="relative md:mt-24 h-[160vh] md:h-[200vh]">
+    <section id="problem" aria-label="The Problem" ref={containerRef} className="relative md:mt-24 h-[160vh] md:h-[200vh]">
       <div
         ref={stickyRef}
         className="sticky top-0 h-screen flex flex-col items-center justify-start md:justify-center overflow-x-hidden pt-12 md:pt-0 gap-4 md:gap-8"
@@ -801,7 +806,7 @@ function BentoGridSection() {
   };
 
   return (
-    <section id="solution" className="py-8 md:py-32 relative overflow-hidden">
+    <section id="solution" aria-label="The Solution" className="py-8 md:py-32 relative overflow-hidden">
       <GhostText text="SOLUTION" />
       <div className="max-w-6xl mx-auto px-6 relative z-10">
         <motion.div
@@ -1376,7 +1381,7 @@ function PricingSection() {
   ];
 
   return (
-    <section id="pricing" className="py-24 md:py-32 relative overflow-hidden bg-background">
+    <section id="pricing" aria-label="Pricing Plans" className="py-24 md:py-32 relative overflow-hidden bg-background">
       <GhostText text="PRICING" />
       {/* Subtle grid overlay */}
       <div
@@ -1495,7 +1500,7 @@ function AIPartnerSection() {
   const { t } = useLanguage();
 
   return (
-    <section className="py-32 relative overflow-hidden">
+    <section id="ai-partner" aria-label="AI Partner" className="py-32 relative overflow-hidden">
       <GhostText text="AI" className="opacity-[0.02]" />
       <div className="max-w-6xl mx-auto px-6 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -1672,7 +1677,7 @@ function ComparisonToggleSection() {
   const [showYourPlatform, setShowYourPlatform] = useState(false);
 
   return (
-    <section className="py-24 bg-card/30 relative">
+    <section id="comparison" aria-label="SaaS vs Custom Platform Comparison" className="py-24 bg-card/30 relative">
       <div className="max-w-4xl mx-auto px-6 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -1995,7 +2000,7 @@ function CasesSection() {
   );
 
   return (
-    <section id="cases" className="relative bg-card/30">
+    <section id="cases" aria-label="Success Cases" className="relative bg-card/30">
       {/* ── DESKTOP: Sticky horizontal scroll ── */}
       <div ref={sectionRef} className="hidden md:block" style={{ height: `${totalItems * 100}vh` }}>
         <div className="sticky top-0 h-screen overflow-hidden">
@@ -2351,7 +2356,7 @@ function ClientsSection() {
   }, []);
 
   return (
-    <section id="clients" className="py-24 border-y border-border overflow-hidden">
+    <section id="clients" aria-label="Trusted Clients" className="py-24 border-y border-border overflow-hidden">
       <div className="max-w-6xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -2415,27 +2420,67 @@ export default function LandingPage() {
   return (
     <SchedulingContext.Provider value={{ openScheduling }}>
       <div className="min-h-screen bg-background noise-bg">
-        <Helmet>
-          <title>{t("seo.landing.title")}</title>
-          <meta name="description" content={t("seo.landing.description")} />
-          <meta property="og:title" content={t("seo.landing.ogTitle")} />
-          <meta property="og:description" content={t("seo.landing.ogDescription")} />
-          <meta property="og:type" content="website" />
-        </Helmet>
+        <SeoHead
+          title={t("seo.landing.title")}
+          description={t("seo.landing.description")}
+          path="/"
+          ogTitle={t("seo.landing.ogTitle")}
+          ogDescription={t("seo.landing.ogDescription")}
+          ogImage={t("seo.landing.ogImage")}
+        />
+
+        {/* Structured Data */}
+        <OrganizationSchema />
+        <LocalBusinessSchema />
+        <BreadcrumbSchema items={[
+          { name: t("breadcrumb.home"), url: "https://alloyready.io/" },
+          { name: t("breadcrumb.pricing"), url: "https://alloyready.io/#pricing" },
+        ]} />
+        <ServiceSchema
+          name={t("pricing.ecommerce.title")}
+          description={t("pricing.ecommerce.description")}
+          price="200"
+        />
+        <ServiceSchema
+          name={t("pricing.premium.title")}
+          description={t("pricing.premium.description")}
+          price="599"
+        />
+        <ServiceSchema
+          name={t("pricing.enterprise.title")}
+          description={t("pricing.enterprise.description")}
+          price="1499"
+        />
+        <FAQSchema items={[
+          { question: t("faq.q1"), answer: t("faq.a1") },
+          { question: t("faq.q2"), answer: t("faq.a2") },
+          { question: t("faq.q3"), answer: t("faq.a3") },
+          { question: t("faq.q4"), answer: t("faq.a4") },
+          { question: t("faq.q5"), answer: t("faq.a5") },
+          { question: t("faq.q6"), answer: t("faq.a6") },
+          { question: t("faq.q7"), answer: t("faq.a7") },
+          { question: t("faq.q8"), answer: t("faq.a8") },
+        ]} />
+
         <ScrollProgress />
         <SharedNavbar />
-        <HeroSection onScheduleClick={openScheduling} />
-        <HeroMarquee />
-        <SpaghettiChaosSection />
-        <BentoGridSection />
-        <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-        <AIPartnerSection />
-        <ComparisonToggleSection />
-        <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-        <CasesSection />
-        <ClientsSection />
-        <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-        <PricingSection />
+        <main>
+          <HeroSection onScheduleClick={openScheduling} />
+          <HeroMarquee />
+          <SpaghettiChaosSection />
+          <BentoGridSection />
+          <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+          <AIPartnerSection />
+          <ComparisonToggleSection />
+          <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+          <CasesSection />
+          <ClientsSection />
+          <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+          <PricingSection />
+          <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+          <FAQSection />
+          <LearnMoreSection />
+        </main>
         <SharedFooter />
         <SchedulingModal
           open={schedulingOpen}

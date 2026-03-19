@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Helmet } from "react-helmet";
+import { SeoHead } from "@/components/seo/seo-head";
+import { BreadcrumbSchema } from "@/components/seo/structured-data";
 import { SchedulingModal } from "@/components/scheduling-modal";
 import { SharedNavbar, SharedFooter } from "@/components/shared-layout";
 import { SchedulingContext } from "@/context/scheduling-context";
@@ -464,10 +465,18 @@ export default function BuildSolutionPage() {
   return (
     <SchedulingContext.Provider value={{ openScheduling }}>
       <div className="min-h-screen bg-background noise-bg">
-        <Helmet>
-          <title>{t("build.seo.title")}</title>
-          <meta name="description" content={t("build.seo.description")} />
-        </Helmet>
+        <SeoHead
+          title={t("build.seo.title")}
+          description={t("build.seo.description")}
+          path="/build"
+          ogTitle={t("seo.build.ogTitle")}
+          ogDescription={t("seo.build.ogDescription")}
+          ogImage={t("seo.landing.ogImage")}
+        />
+        <BreadcrumbSchema items={[
+          { name: t("breadcrumb.home"), url: "https://alloyready.io/" },
+          { name: t("breadcrumb.build"), url: "https://alloyready.io/build" },
+        ]} />
 
         <SharedNavbar />
 

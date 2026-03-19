@@ -231,6 +231,74 @@ export const en: Record<string, string> = {
     "seo.landing.ogTitle": "ALLOY - Custom Software Platforms",
     "seo.landing.ogDescription": "Replace your messy tech stack with a single, custom-coded digital backbone. One flat fee, unlimited evolution.",
 
+    // ─── SEO Extended ───
+    "seo.landing.ogImage": "https://alloyready.io/og-image.png",
+    "seo.landing.twitterTitle": "ALLOY - Custom Software Platforms",
+    "seo.landing.twitterDescription": "Replace your messy tech stack with a single, custom-coded digital backbone. One flat fee, unlimited evolution.",
+    "seo.build.ogTitle": "Build Your Solution | ALLOY",
+    "seo.build.ogDescription": "Select the features you need for your custom internal tool. Interactive module builder with 30+ integrations.",
+    "seo.canonical.base": "https://alloyready.io",
+
+    // ─── Structured Data ───
+    "schema.org.name": "ALLOY",
+    "schema.org.description": "Custom software platform builder that replaces SaaS chaos with unified, evolving systems.",
+    "schema.org.url": "https://alloyready.io",
+    "schema.org.logo": "https://alloyready.io/alloy-favicon.png",
+    "schema.org.address.street": "Buenos Aires",
+    "schema.org.address.city": "Buenos Aires",
+    "schema.org.address.region": "CABA",
+    "schema.org.address.country": "AR",
+    "schema.org.email": "hello@alloyready.io",
+    "schema.org.priceRange": "$$",
+
+    // ─── Breadcrumbs ───
+    "breadcrumb.home": "Home",
+    "breadcrumb.build": "Build Your Solution",
+    "breadcrumb.pricing": "Pricing",
+
+    // ─── FAQ Section ───
+    "faq.badge": "FAQ",
+    "faq.title.line1": "Questions?",
+    "faq.title.highlight": "Answered.",
+    "faq.subtitle": "Everything you need to know about productized software development.",
+
+    "faq.q1": "What is a productized software service?",
+    "faq.a1": "A productized software service delivers custom-built software through a fixed monthly subscription instead of per-project billing. You get a dedicated development team that continuously builds, maintains, and evolves your platform — like having an in-house tech team without the overhead.",
+
+    "faq.q2": "How much does custom software development cost?",
+    "faq.a2": "Traditional custom software projects range from $50,000 to $500,000+ upfront. ALLOY's productized model starts at $200/month for eCommerce sites and $599/month for full custom platforms, with no large upfront investment. You pay a flat monthly fee for continuous development and evolution.",
+
+    "faq.q3": "What's the difference between SaaS and a custom platform?",
+    "faq.a3": "SaaS tools are generic products built for millions of users — you adapt your workflow to fit the tool. A custom platform is built around your exact workflow, integrating all your processes into one system. You own the code, control the roadmap, and never pay for features you don't use.",
+
+    "faq.q4": "Can I replace HubSpot, Airtable, or Zapier with a custom tool?",
+    "faq.a4": "Yes. Most businesses use 5-15 SaaS tools that don't talk to each other, costing $2,000-5,000/month in subscriptions alone. A custom platform unifies CRM, automation, data management, and integrations into one system — often for less than the combined SaaS spend.",
+
+    "faq.q5": "What is included in an unlimited software subscription?",
+    "faq.a5": "ALLOY subscriptions include continuous development, bug fixes, feature additions, security updates, hosting, and strategy sessions. There are no per-feature charges. Request a new feature today, and it can be live within days — not months.",
+
+    "faq.q6": "How long does it take to build a custom internal tool?",
+    "faq.a6": "An initial MVP is typically delivered within 2-4 weeks. From there, the platform evolves continuously based on your feedback. Unlike traditional development where you wait months for a 'finished' product, you start using and refining your tool almost immediately.",
+
+    "faq.q7": "Do I own the code that ALLOY builds for me?",
+    "faq.a7": "Yes, you own 100% of the code and intellectual property. Your platform runs on your infrastructure, and you retain full access to the codebase. If you ever decide to leave, you take everything with you.",
+
+    "faq.q8": "Is ALLOY only for businesses in Argentina?",
+    "faq.a8": "No. ALLOY is based in Buenos Aires but serves clients globally. Our productized model works for any business that needs custom software, regardless of location. We work asynchronously across time zones with regular strategy sessions.",
+
+    // ─── Learn More Section ───
+    "learnMore.title": "Learn More",
+    "learnMore.toggle": "Read more about productized software development",
+    "learnMore.h2.problem": "The Problem: SaaS Fragmentation",
+    "learnMore.p1": "Growing businesses face a silent crisis: SaaS fragmentation. As teams scale from 5 to 50 people, the average company accumulates 15-25 different software subscriptions. Each tool solves one narrow problem — a CRM here, a project manager there, a separate analytics dashboard, yet another tool for invoicing. The result is a Frankenstein tech stack held together by Zapier automations and manual data entry.",
+    "learnMore.p2": "This fragmentation costs more than subscription fees. It costs clarity. When your client data lives in HubSpot, your project status in Asana, your finances in QuickBooks, and your communications in Slack, no single person has a complete picture of the business. Decisions are made on partial information. Teams waste hours copying data between systems. Critical updates fall through the cracks.",
+    "learnMore.h2.solution": "How Productized Software Development Works",
+    "learnMore.p3": "Productized software development replaces the traditional agency model — where you pay tens of thousands upfront for a 'finished' product that's outdated by launch — with a continuous development partnership. For a fixed monthly fee, you get a dedicated team that builds, maintains, and evolves your custom platform indefinitely.",
+    "learnMore.p4": "The process starts with your most painful workflow. Within 2-4 weeks, you have a working MVP that addresses your core bottleneck. From there, the platform grows organically. Need a client portal? It's built and deployed within days. Want AI-powered reporting? Added next sprint. Your platform becomes a living system that adapts as fast as your business does.",
+    "learnMore.h2.alloy": "Why ALLOY's Model Is Different",
+    "learnMore.p5": "ALLOY combines the predictability of SaaS pricing with the power of custom development. Starting at $200/month for eCommerce sites and $599/month for full custom platforms, you get unlimited feature requests, priority bug fixes, strategy sessions, and a platform that never stops evolving. There are no hourly rates, no scope negotiations, and no surprise invoices.",
+    "learnMore.p6": "Based in Buenos Aires with a global client base, ALLOY operates as your external tech department. We handle architecture decisions, security updates, performance optimization, and infrastructure management — so you can focus on running your business. Every line of code we write belongs to you, and you can take it with you if you ever leave.",
+
     // ─── Build Solution Page ───
     "build.seo.title": "Build Your Solution | ALLOY",
     "build.seo.description": "Select the features you need for your custom internal tool. Interactive module builder with 30+ integrations.",
