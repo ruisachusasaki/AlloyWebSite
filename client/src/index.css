@@ -243,6 +243,19 @@
     opacity: 1;
     transition: transform 0.15s ease-out, opacity 0.1s ease-out;
   }
+
+  /* ── Skeleton shimmer for loading states ── */
+  .skeleton-shimmer {
+    @apply rounded-lg;
+    background: linear-gradient(
+      90deg,
+      hsl(var(--muted)) 0%,
+      hsl(var(--muted-foreground) / 0.08) 50%,
+      hsl(var(--muted)) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
 }
 
 /* Custom Scrollbar */
