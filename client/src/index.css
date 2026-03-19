@@ -501,3 +501,83 @@
 .dark .tubes-cursor-wrapper {
   mix-blend-mode: screen;
 }
+
+/* ── Footer: Floating particles (CSS-only) ── */
+@keyframes float-up {
+  0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-120px) translateX(20px); opacity: 0; }
+}
+
+@keyframes float-up-alt {
+  0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100px) translateX(-18px); opacity: 0; }
+}
+
+.footer-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.footer-particles span {
+  position: absolute;
+  border-radius: 50%;
+  animation: float-up linear infinite;
+}
+
+.footer-particles span:nth-child(even) { animation-name: float-up-alt; }
+
+/* Size + color: blue (primary) and purple mix */
+.footer-particles span:nth-child(3n)   { width: 5px; height: 5px; background: hsl(var(--primary) / 0.3); }
+.footer-particles span:nth-child(3n+1) { width: 7px; height: 7px; background: hsl(280 70% 60% / 0.3); }
+.footer-particles span:nth-child(3n+2) { width: 4px; height: 4px; background: hsl(var(--primary) / 0.2); }
+/* Every 5th particle is a brighter purple */
+.footer-particles span:nth-child(5n)   { width: 6px; height: 6px; background: hsl(260 60% 55% / 0.35); }
+
+/* 24 particles spread across full width */
+.footer-particles span:nth-child(1)  { left: 3%;  bottom: 10%; animation-duration: 6s;   animation-delay: 0s; }
+.footer-particles span:nth-child(2)  { left: 8%;  bottom: 25%; animation-duration: 8s;   animation-delay: 1.5s; }
+.footer-particles span:nth-child(3)  { left: 12%; bottom: 5%;  animation-duration: 7s;   animation-delay: 3s; }
+.footer-particles span:nth-child(4)  { left: 17%; bottom: 30%; animation-duration: 9s;   animation-delay: 0.5s; }
+.footer-particles span:nth-child(5)  { left: 22%; bottom: 15%; animation-duration: 7.5s; animation-delay: 4s; }
+.footer-particles span:nth-child(6)  { left: 27%; bottom: 35%; animation-duration: 10s;  animation-delay: 2s; }
+.footer-particles span:nth-child(7)  { left: 32%; bottom: 8%;  animation-duration: 6.5s; animation-delay: 5s; }
+.footer-particles span:nth-child(8)  { left: 37%; bottom: 20%; animation-duration: 8.5s; animation-delay: 1s; }
+.footer-particles span:nth-child(9)  { left: 42%; bottom: 40%; animation-duration: 7s;   animation-delay: 3.5s; }
+.footer-particles span:nth-child(10) { left: 47%; bottom: 12%; animation-duration: 9.5s; animation-delay: 0s; }
+.footer-particles span:nth-child(11) { left: 52%; bottom: 28%; animation-duration: 8s;   animation-delay: 2.5s; }
+.footer-particles span:nth-child(12) { left: 57%; bottom: 6%;  animation-duration: 6s;   animation-delay: 5.5s; }
+.footer-particles span:nth-child(13) { left: 62%; bottom: 32%; animation-duration: 7.5s; animation-delay: 1s; }
+.footer-particles span:nth-child(14) { left: 67%; bottom: 18%; animation-duration: 10s;  animation-delay: 4s; }
+.footer-particles span:nth-child(15) { left: 72%; bottom: 38%; animation-duration: 8.5s; animation-delay: 0.5s; }
+.footer-particles span:nth-child(16) { left: 77%; bottom: 10%; animation-duration: 7s;   animation-delay: 3s; }
+.footer-particles span:nth-child(17) { left: 82%; bottom: 22%; animation-duration: 9s;   animation-delay: 6s; }
+.footer-particles span:nth-child(18) { left: 87%; bottom: 5%;  animation-duration: 6.5s; animation-delay: 2s; }
+.footer-particles span:nth-child(19) { left: 92%; bottom: 30%; animation-duration: 8s;   animation-delay: 4.5s; }
+.footer-particles span:nth-child(20) { left: 97%; bottom: 15%; animation-duration: 10.5s;animation-delay: 1.5s; }
+.footer-particles span:nth-child(21) { left: 5%;  bottom: 42%; animation-duration: 11s;  animation-delay: 3.5s; }
+.footer-particles span:nth-child(22) { left: 35%; bottom: 45%; animation-duration: 9.5s; animation-delay: 6.5s; }
+.footer-particles span:nth-child(23) { left: 55%; bottom: 3%;  animation-duration: 7.5s; animation-delay: 0.5s; }
+.footer-particles span:nth-child(24) { left: 75%; bottom: 48%; animation-duration: 8s;   animation-delay: 5s; }
+
+/* ── Footer: Giant wordmark letter scatter on hover ── */
+.wordmark-letter {
+  display: inline-block;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.5s ease;
+}
+
+.wordmark-container:hover .wordmark-letter:nth-child(1) { transform: translate(-8px, -12px) rotate(-8deg); }
+.wordmark-container:hover .wordmark-letter:nth-child(2) { transform: translate(5px, 10px) rotate(5deg); }
+.wordmark-container:hover .wordmark-letter:nth-child(3) { transform: translate(-3px, -8px) rotate(-3deg); }
+.wordmark-container:hover .wordmark-letter:nth-child(4) { transform: translate(10px, 6px) rotate(7deg); }
+.wordmark-container:hover .wordmark-letter:nth-child(5) { transform: translate(-6px, 14px) rotate(-6deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  .footer-particles span { animation: none; }
+  .wordmark-container:hover .wordmark-letter { transform: none; }
+}

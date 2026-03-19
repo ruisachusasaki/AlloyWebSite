@@ -926,7 +926,13 @@ function CountUpPrice({ text, className, hovered }: { text: string; className?: 
       prevHovered.current = true;
       return () => clearInterval(id);
     }
-    if (!hovered) prevHovered.current = false;
+    if (!hovered) {
+      prevHovered.current = false;
+      if (!doneRef.current && targetNumber) {
+        setCount(targetNumber);
+        doneRef.current = true;
+      }
+    }
   }, [hovered, targetNumber]);
 
   const fmt = (n: number) =>
@@ -1306,7 +1312,7 @@ function PricingSection() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="text-center mb-20"
         >
-          <SectionNumber number="03" />
+          <SectionNumber number="06" />
           <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border text-sm font-medium mb-8 font-mono" style={{ color: "hsl(199, 89%, 48%)" }}>
             <DollarSign className="w-4 h-4" />
             {t("nav.pricing")}
@@ -1415,7 +1421,7 @@ function AIPartnerSection() {
             viewport={{ once: true }}
             transition={{ duration: 0.7 }}
           >
-            <SectionNumber number="04" />
+            <SectionNumber number="03" />
             <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium mb-6 font-mono">
               <Bot className="w-4 h-4" />
               {t("ai.badge")}
@@ -1590,7 +1596,7 @@ function ComparisonToggleSection() {
           transition={{ duration: 0.7 }}
           className="text-center mb-12"
         >
-          <SectionNumber number="05" />
+          <SectionNumber number="04" />
           <h2 className="text-3xl md:text-4xl font-black mb-4 section-title heading-glow">
             {t("comparison.title")}
           </h2>
@@ -1920,7 +1926,7 @@ function CasesSection() {
           <div className="relative z-10 pt-24 pb-8 px-8 lg:px-16">
             <div className="flex items-end justify-between gap-8">
               <div>
-                <SectionNumber number="06" />
+                <SectionNumber number="05" />
                 <h2 className="text-5xl lg:text-7xl font-black section-title heading-glow">
                   {t("proof.title")}
                 </h2>
@@ -2047,7 +2053,7 @@ function CasesSection() {
       <div className="md:hidden py-16 relative">
         {/* Header */}
         <div className="px-6 mb-8">
-          <SectionNumber number="06" />
+          <SectionNumber number="05" />
           <div className="flex items-end justify-between gap-4">
             <h2 className="text-3xl font-black section-title heading-glow">
               {t("proof.title")}
@@ -2337,13 +2343,13 @@ export default function LandingPage() {
         <SpaghettiChaosSection />
         <BentoGridSection />
         <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-        <PricingSection />
-        <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
         <AIPartnerSection />
         <ComparisonToggleSection />
         <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
         <CasesSection />
         <ClientsSection />
+        <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+        <PricingSection />
         <SharedFooter />
         <SchedulingModal
           open={schedulingOpen}

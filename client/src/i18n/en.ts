@@ -27,6 +27,21 @@ export const en: Record<string, string> = {
     "footer.nav.pricing": "Pricing",
     "footer.nav.portfolio": "Cases",
     "footer.nav.build": "Build Solution",
+    // ─── Footer CTA ───
+    "footer.cta.ready": "Ready to replace",
+    "footer.cta.chaos": "chaos",
+    "footer.cta.with": "with clarity?",
+    "footer.cta.button": "Start Your Transformation",
+    // ─── Footer Main ───
+    "footer.description": "Custom software platforms that turn operational chaos into streamlined clarity.",
+    "footer.col.links": "Quick Links",
+    "footer.col.connect": "Connect",
+    "footer.nav.home": "Home",
+    "footer.bookCall": "Book a Call",
+    "footer.email": "hello@alloyready.io",
+    // ─── Footer Bottom ───
+    "footer.location": "Buenos Aires, Argentina",
+    "footer.backToTop": "Back to top",
 
     // ─── Hero Section (Landing) ───
     "hero.badge": "Productized Software Development",

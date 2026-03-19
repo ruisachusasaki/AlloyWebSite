@@ -1,5 +1,5 @@
-import { useState, useEffect, useContext } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useContext, useRef } from "react";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
@@ -7,10 +7,13 @@ import { useLanguage } from "@/context/language-context";
 import { Link, useLocation } from "wouter";
 import {
   ArrowRight,
+  ArrowUp,
   ChevronDown,
   DollarSign,
   TrendingUp,
   Briefcase,
+  Mail,
+  MapPin,
   Menu,
   X
 } from "lucide-react";
@@ -84,16 +87,6 @@ export function SharedNavbar() {
           )}
 
           {isLandingPage ? (
-            <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-pricing">
-              {t("nav.pricing")}
-            </a>
-          ) : (
-            <Link href="/#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-pricing">
-              {t("nav.pricing")}
-            </Link>
-          )}
-
-          {isLandingPage ? (
             <a href="#cases" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-cases">
               {t("nav.portfolio")}
             </a>
@@ -117,6 +110,15 @@ export function SharedNavbar() {
           ) : (
             <Link href="/#clients" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-clients">
               {t("nav.clients")}
+            </Link>
+          )}
+          {isLandingPage ? (
+            <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-pricing">
+              {t("nav.pricing")}
+            </a>
+          ) : (
+            <Link href="/#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-pricing">
+              {t("nav.pricing")}
             </Link>
           )}
           {isLandingPage ? (
@@ -187,26 +189,6 @@ export function SharedNavbar() {
 
               {isLandingPage ? (
                 <a
-                  href="#pricing"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                  data-testid="mobile-link-pricing"
-                >
-                  {t("nav.pricing")}
-                </a>
-              ) : (
-                <Link
-                  href="/#pricing"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                  data-testid="mobile-link-pricing"
-                >
-                  {t("nav.pricing")}
-                </Link>
-              )}
-
-              {isLandingPage ? (
-                <a
                   href="#cases"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
                   onClick={() => setMobileMenuOpen(false)}
@@ -256,6 +238,26 @@ export function SharedNavbar() {
 
               {isLandingPage ? (
                 <a
+                  href="#pricing"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                  data-testid="mobile-link-pricing"
+                >
+                  {t("nav.pricing")}
+                </a>
+              ) : (
+                <Link
+                  href="/#pricing"
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
+                  onClick={() => setMobileMenuOpen(false)}
+                  data-testid="mobile-link-pricing"
+                >
+                  {t("nav.pricing")}
+                </Link>
+              )}
+
+              {isLandingPage ? (
+                <a
                   href="#contact"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
                   onClick={() => setMobileMenuOpen(false)}
@@ -296,79 +298,105 @@ export function SharedNavbar() {
 
 export function SharedFooter() {
   const { openScheduling } = useContext(SchedulingContext);
-  const { t } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
+
+  /* ── Strikethrough animation on "chaos" ── */
+  const strikeRef = useRef<HTMLSpanElement>(null);
+  const strikeInView = useInView(strikeRef, { once: true, margin: "-100px" });
 
   return (
-    <footer id="contact" className="relative py-24 bg-background dark:bg-[hsl(225,25%,8%)]">
-      <div className="absolute -top-16 left-0 right-0 h-16 bg-gradient-to-b from-transparent to-background dark:to-[hsl(225,25%,8%)] pointer-events-none" />
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="grid lg:grid-cols-3 gap-16">
+    <footer id="contact">
+      {/* ═══════════════════════════════════════════
+          1. PRE-FOOTER CTA
+      ═══════════════════════════════════════════ */}
+      <section className="relative py-32 md:py-40 bg-secondary dark:bg-[hsl(225,25%,6%)] overflow-hidden">
+        {/* Snow particles */}
+        <div className="footer-particles">
+          <span /><span /><span /><span /><span /><span />
+          <span /><span /><span /><span /><span /><span />
+          <span /><span /><span /><span /><span /><span />
+          <span /><span /><span /><span /><span /><span />
+        </div>
+
+        <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
+          <motion.h2
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-foreground heading-glow mb-10"
+            style={{ letterSpacing: "-0.03em", lineHeight: 1.1 }}
+          >
+            {t("footer.cta.ready")}{" "}
+            <span ref={strikeRef} className="relative inline-block text-muted-foreground">
+              {t("footer.cta.chaos")}
+              <motion.span
+                className="absolute left-0 top-1/2 h-[3px] bg-primary rounded-full"
+                initial={{ width: "0%" }}
+                animate={strikeInView ? { width: "100%" } : { width: "0%" }}
+                transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              />
+            </span>{" "}
+            {t("footer.cta.with")}
+          </motion.h2>
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <h2 className="text-4xl md:text-5xl font-black mb-4 text-foreground heading-glow" style={{ letterSpacing: "-0.02em" }}>
-              {t("footer.readyToSimplify")}
-            </h2>
-            <p className="text-muted-foreground text-lg mb-8">
-              {t("footer.subtitle")}
-            </p>
             <Button
               size="lg"
-              className="text-lg font-bold shimmer-btn glow-border"
+              className="text-lg md:text-xl font-bold shimmer-btn glow-border px-10 py-6"
               onClick={() => openScheduling()}
-              data-testid="button-footer-schedule"
+              data-testid="button-footer-cta"
             >
-              {t("footer.scheduleCall")}
+              {t("footer.cta.button")}
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
-            <div className="mt-4">
-              <Link href="/build">
-                <Button variant="outline" size="lg" className="text-lg font-bold w-full sm:w-auto" data-testid="button-footer-build">
-                  {t("footer.buildSolution")}
-                </Button>
-              </Link>
-            </div>
           </motion.div>
+        </div>
+      </section>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="flex flex-col"
-          >
-            <h3 className="text-sm font-bold uppercase tracking-wider text-foreground mb-6 font-mono" style={{ letterSpacing: "0.15em" }}>
-              {t("nav.solutions")}
-            </h3>
-            <nav className="flex flex-col gap-3">
-              <a href="#solution" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
-                {t("footer.nav.solutions")}
-              </a>
-              <a href="#pricing" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
-                {t("footer.nav.pricing")}
-              </a>
-              <a href="#cases" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
-                {t("footer.nav.portfolio")}
-              </a>
-              <Link href="/build" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
-                {t("footer.nav.build")}
-              </Link>
-            </nav>
-          </motion.div>
+      {/* ═══════════════════════════════════════════
+          2. MAIN FOOTER
+      ═══════════════════════════════════════════ */}
+      <section className="relative py-20 md:py-24 bg-background dark:bg-[hsl(225,25%,8%)] overflow-hidden">
+        {/* Giant "ALLOY" wordmark backdrop */}
+        <div
+          className="wordmark-container absolute inset-0 flex items-center justify-center pointer-events-none select-none"
+          aria-hidden="true"
+        >
+          {"ALLOY".split("").map((letter, i) => (
+            <span
+              key={i}
+              className="wordmark-letter font-display font-black text-foreground pointer-events-auto"
+              style={{
+                fontSize: "clamp(8rem, 25vw, 20rem)",
+                opacity: 0.04,
+                lineHeight: 1,
+                letterSpacing: "-0.04em",
+              }}
+            >
+              {letter}
+            </span>
+          ))}
+        </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="flex flex-col justify-between"
-          >
-            <div>
+        {/* Footer content grid */}
+        <div className="relative z-10 max-w-6xl mx-auto px-6">
+          <div className="grid md:grid-cols-3 gap-12 md:gap-16">
+            {/* Column 1: Logo + description + social */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
               <button
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="flex items-center gap-2 mb-4 cursor-pointer"
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                className="flex items-center gap-2 mb-5 cursor-pointer"
               >
                 <img
                   src={alloyLogo}
@@ -380,16 +408,120 @@ export function SharedFooter() {
                   <span className="text-foreground">OY</span>
                 </span>
               </button>
-              <p className="text-muted-foreground max-w-sm text-lg">
-                {t("footer.tagline")}
+              <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
+                {t("footer.description")}
               </p>
+            </motion.div>
+
+            {/* Column 2: Quick Links */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+            >
+              <h3
+                className="text-sm font-bold uppercase tracking-wider text-foreground mb-6 font-mono"
+                style={{ letterSpacing: "0.15em" }}
+              >
+                {t("footer.col.links")}
+              </h3>
+              <nav className="flex flex-col gap-3">
+                <a href="#" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
+                  {t("footer.nav.home")}
+                </a>
+                <a href="#cases" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
+                  {t("footer.nav.portfolio")}
+                </a>
+                <a href="#pricing" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
+                  {t("footer.nav.pricing")}
+                </a>
+                <Link href="/build" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
+                  {t("footer.nav.build")}
+                </Link>
+              </nav>
+            </motion.div>
+
+            {/* Column 3: Contact + Book a Call */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <h3
+                className="text-sm font-bold uppercase tracking-wider text-foreground mb-6 font-mono"
+                style={{ letterSpacing: "0.15em" }}
+              >
+                {t("footer.col.connect")}
+              </h3>
+              <div className="flex flex-col gap-3">
+                <a
+                  href="mailto:hello@alloyready.io"
+                  className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors duration-200 text-sm"
+                >
+                  <Mail className="w-4 h-4" />
+                  {t("footer.email")}
+                </a>
+                <button
+                  onClick={() => openScheduling()}
+                  className="flex items-center gap-2 text-primary hover:text-primary/80 transition-colors duration-200 text-sm font-medium cursor-pointer text-left"
+                  data-testid="button-footer-book-call"
+                >
+                  <ArrowRight className="w-4 h-4" />
+                  {t("footer.bookCall")}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════
+          3. BOTTOM BAR
+      ═══════════════════════════════════════════ */}
+      <div className="bg-background dark:bg-[hsl(225,25%,8%)] border-t border-border">
+        <div className="max-w-6xl mx-auto px-6 py-5">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            {/* Left: Copyright */}
+            <p className="text-muted-foreground text-xs font-mono order-2 sm:order-1">
+              &copy; {new Date().getFullYear()} ALLOY
+            </p>
+
+            {/* Center: Language toggle */}
+            <div className="flex items-center gap-3 order-1 sm:order-2">
+              <button
+                onClick={() => setLanguage("en")}
+                className={`text-xs font-mono transition-colors duration-200 cursor-pointer ${language === "en" ? "text-foreground font-bold" : "text-muted-foreground hover:text-foreground"}`}
+              >
+                EN
+              </button>
+              <span className="text-muted-foreground/40 text-xs">|</span>
+              <button
+                onClick={() => setLanguage("es")}
+                className={`text-xs font-mono transition-colors duration-200 cursor-pointer ${language === "es" ? "text-foreground font-bold" : "text-muted-foreground hover:text-foreground"}`}
+              >
+                ES
+              </button>
             </div>
-            <div className="mt-8 pt-8 border-t border-border">
-              <p className="text-muted-foreground text-sm">
-                &copy; {new Date().getFullYear()} ALLOY. {t("footer.rights")}
-              </p>
+
+            {/* Right: Location + back to top */}
+            <div className="flex items-center gap-4 order-3">
+              <span className="text-muted-foreground text-xs font-mono flex items-center gap-1.5">
+                <MapPin className="w-3 h-3" />
+                {t("footer.location")}
+                <span className="text-muted-foreground/50 ml-1">34.6°S 58.4°W</span>
+              </span>
+              <button
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors duration-200 text-xs font-mono cursor-pointer"
+                data-testid="button-back-to-top"
+              >
+                {t("footer.backToTop")}
+                <ArrowUp className="w-3 h-3" />
+              </button>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </footer>
