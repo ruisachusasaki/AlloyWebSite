@@ -1,5 +1,5 @@
 import { useState, useEffect, useContext, useRef } from "react";
-import { motion, AnimatePresence, useInView } from "framer-motion";
+import { motion, AnimatePresence, useInView, useReducedMotion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { LanguageToggle } from "@/components/ui/language-toggle";
@@ -30,6 +30,7 @@ export function SharedNavbar() {
   const { openScheduling } = useContext(SchedulingContext);
   const [location] = useLocation();
   const { t } = useLanguage();
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -133,8 +134,10 @@ export function SharedNavbar() {
         </div>
 
         <div className="flex items-center gap-2">
-          <LanguageToggle />
-          <ThemeToggle />
+          <div className="hidden md:flex items-center gap-2">
+            <LanguageToggle />
+            <ThemeToggle />
+          </div>
           <Button
             size="sm"
             className="font-semibold shimmer-btn glow-border hidden md:flex"
@@ -157,138 +160,89 @@ export function SharedNavbar() {
         </div>
       </div>
 
+      {/* Full-screen mobile overlay */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="md:hidden glass border-t border-border"
+            initial={prefersReducedMotion ? { opacity: 0 } : { x: "100%" }}
+            animate={prefersReducedMotion ? { opacity: 1 } : { x: 0 }}
+            exit={prefersReducedMotion ? { opacity: 0 } : { x: "100%" }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-0 z-[60] md:hidden bg-background/95 backdrop-blur-xl flex flex-col"
           >
-            <div className="max-w-6xl mx-auto px-6 py-4 flex flex-col gap-4">
-              {isLandingPage ? (
-                <a
-                  href="#solution"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                  data-testid="mobile-link-solutions"
-                >
-                  {t("nav.solutions")}
-                </a>
-              ) : (
-                <Link
-                  href="/#solution"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                  data-testid="mobile-link-solutions"
-                >
-                  {t("nav.solutions")}
-                </Link>
-              )}
-
-              {isLandingPage ? (
-                <a
-                  href="#cases"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                  data-testid="mobile-link-cases"
-                >
-                  {t("nav.portfolio")}
-                </a>
-              ) : (
-                <Link
-                  href="/#cases"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                  data-testid="mobile-link-cases"
-                >
-                  {t("nav.portfolio")}
-                </Link>
-              )}
-
-              <Link
-                href="/build"
-                className={`text-sm py-2 transition-colors duration-200 ${location === '/build' ? 'text-primary font-medium' : 'text-muted-foreground hover:text-foreground'}`}
-                onClick={() => setMobileMenuOpen(false)}
-                data-testid="mobile-link-build"
-              >
-                {t("nav.buildYourSolution")}
+            {/* Top bar with logo + close */}
+            <div className="flex items-center justify-between px-6 py-4">
+              <Link href="/" className="flex items-center gap-2" onClick={() => { setMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
+                <img src={alloyLogo} alt="ALLOY" className="h-8 w-auto dark:brightness-110 brightness-90 dark:drop-shadow-[0_0_4px_rgba(200,160,120,0.3)]" />
+                <span className="text-lg font-bold tracking-tight">
+                  <span className="text-primary">ALL</span>
+                  <span className="text-foreground">OY</span>
+                </span>
               </Link>
+              <Button size="icon" variant="ghost" onClick={() => setMobileMenuOpen(false)} data-testid="button-mobile-close">
+                <X className="w-6 h-6" />
+              </Button>
+            </div>
 
-              {isLandingPage ? (
-                <a
-                  href="#clients"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                  data-testid="mobile-link-clients"
+            {/* Nav links — staggered */}
+            <nav className="flex-1 flex flex-col justify-center px-10 gap-6">
+              {[
+                { href: isLandingPage ? "#solution" : "/#solution", label: t("nav.solutions"), isAnchor: isLandingPage, isActive: false },
+                { href: isLandingPage ? "#cases" : "/#cases", label: t("nav.portfolio"), isAnchor: isLandingPage, isActive: false },
+                { href: "/build", label: t("nav.buildYourSolution"), isAnchor: false, isActive: location === "/build" },
+                { href: isLandingPage ? "#clients" : "/#clients", label: t("nav.clients"), isAnchor: isLandingPage, isActive: false },
+                { href: isLandingPage ? "#pricing" : "/#pricing", label: t("nav.pricing"), isAnchor: isLandingPage, isActive: false },
+                { href: isLandingPage ? "#contact" : "/#contact", label: t("nav.contact"), isAnchor: isLandingPage, isActive: false },
+              ].map((item, i) => (
+                <motion.div
+                  key={item.href}
+                  initial={prefersReducedMotion ? false : { opacity: 0, x: 40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4, delay: 0.1 + i * 0.05, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  {t("nav.clients")}
-                </a>
-              ) : (
-                <Link
-                  href="/#clients"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                  data-testid="mobile-link-clients"
-                >
-                  {t("nav.clients")}
-                </Link>
-              )}
+                  {item.isAnchor ? (
+                    <a
+                      href={item.href}
+                      className={`text-2xl font-display font-semibold transition-colors duration-200 ${item.isActive ? "text-primary" : "text-foreground hover:text-primary"}`}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {item.label}
+                    </a>
+                  ) : (
+                    <Link
+                      href={item.href}
+                      className={`text-2xl font-display font-semibold transition-colors duration-200 ${item.isActive ? "text-primary" : "text-foreground hover:text-primary"}`}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  )}
+                </motion.div>
+              ))}
+            </nav>
 
-              {isLandingPage ? (
-                <a
-                  href="#pricing"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                  data-testid="mobile-link-pricing"
-                >
-                  {t("nav.pricing")}
-                </a>
-              ) : (
-                <Link
-                  href="/#pricing"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                  data-testid="mobile-link-pricing"
-                >
-                  {t("nav.pricing")}
-                </Link>
-              )}
-
-              {isLandingPage ? (
-                <a
-                  href="#contact"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                  data-testid="mobile-link-contact"
-                >
-                  {t("nav.contact")}
-                </a>
-              ) : (
-                <Link
-                  href="/#contact"
-                  className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                  data-testid="mobile-link-contact"
-                >
-                  {t("nav.contact")}
-                </Link>
-              )}
-
+            {/* Bottom: CTA + Language/Theme toggle */}
+            <motion.div
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              className="px-10 pb-10 flex flex-col gap-5"
+            >
               <Button
-                size="sm"
-                className="font-semibold shimmer-btn glow-border w-full mt-2"
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  openScheduling();
-                }}
+                size="lg"
+                className="font-semibold shimmer-btn glow-border w-full text-lg"
+                onClick={() => { setMobileMenuOpen(false); openScheduling(); }}
                 data-testid="mobile-button-cta"
               >
                 {t("nav.scheduleCall")}
-                <ArrowRight className="w-4 h-4 ml-1" />
+                <ArrowRight className="w-5 h-5 ml-1" />
               </Button>
-            </div>
+
+              <div className="flex items-center justify-center gap-3">
+                <LanguageToggle />
+                <ThemeToggle />
+              </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
