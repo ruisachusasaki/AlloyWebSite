@@ -217,6 +217,32 @@
   .bg-accent-warm {
     background-color: hsl(var(--accent-warm));
   }
+
+  /* ── Touch micro-interactions ── */
+
+  /* Tap ripple — opt-in via class, CSS-only */
+  .tap-ripple {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .tap-ripple::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 50%, hsl(var(--primary) / 0.15), transparent 60%);
+    transform: scale(0);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  .tap-ripple:active::after {
+    transform: scale(2.5);
+    opacity: 1;
+    transition: transform 0.15s ease-out, opacity 0.1s ease-out;
+  }
 }
 
 /* Custom Scrollbar */
@@ -393,6 +419,10 @@
   box-shadow: 0 0 60px -20px hsl(var(--primary) / 0.3);
 }
 
+.bento-card:active {
+  transform: perspective(800px) rotateX(1deg);
+}
+
 .bento-card::before {
   content: "";
   position: absolute;
@@ -413,6 +443,10 @@
 
 .portfolio-card:hover {
   @apply border-primary/40 -translate-y-1 shadow-lg;
+}
+
+.portfolio-card:active {
+  transform: perspective(800px) rotateX(1deg);
 }
 
 /* Pricing card aurora animation */
@@ -616,4 +650,6 @@
   .scroll-indicator { animation: none; opacity: 0.5; height: 40px; }
   .footer-particles span { animation: none; }
   .wordmark-container:hover .wordmark-letter { transform: none; }
+  .tap-ripple:active::after { transform: none; opacity: 0; }
+  .bento-card:active, .portfolio-card:active { transform: none; }
 }
