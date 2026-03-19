@@ -4,10 +4,13 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "@/context/language-context";
+import { ScrollProvider } from "@/context/scroll-context";
 import { useAuth } from "@/hooks/use-auth";
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Preloader } from "@/components/preloader";
+import { CustomCursor } from "@/components/custom-cursor";
 
 import LandingPage from "@/pages/landing";
 import HomePage from "@/pages/home";
@@ -45,7 +48,6 @@ function ScrollToTop() {
   useEffect(() => {
     const hash = window.location.hash;
     if (hash) {
-      // Delay to let the target page render before scrolling to the section
       const timeout = setTimeout(() => {
         const el = document.querySelector(hash);
         if (el) {
@@ -61,16 +63,47 @@ function ScrollToTop() {
   return null;
 }
 
+/* Page transition variants */
+const pageVariants = {
+  initial: { opacity: 0, y: 12 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -12 },
+};
+
+const pageTransition = {
+  duration: 0.2,
+  ease: [0.22, 1, 0.36, 1],
+};
+
+function AnimatedRoutes() {
+  const [location] = useLocation();
+
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location}
+        variants={pageVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        transition={pageTransition}
+      >
+        <Switch location={location}>
+          <Route path="/" component={() => <PrivateRoute component={HomePage} />} />
+          <Route path="/chat/:id" component={() => <PrivateRoute component={HomePage} />} />
+          <Route path="/build" component={BuildSolutionPage} />
+          <Route component={NotFound} />
+        </Switch>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
 function Router() {
   return (
     <>
       <ScrollToTop />
-      <Switch>
-        <Route path="/" component={() => <PrivateRoute component={HomePage} />} />
-        <Route path="/chat/:id" component={() => <PrivateRoute component={HomePage} />} />
-        <Route path="/build" component={BuildSolutionPage} />
-        <Route component={NotFound} />
-      </Switch>
+      <AnimatedRoutes />
     </>
   );
 }
@@ -79,11 +112,14 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <LanguageProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Preloader />
-          <Router />
-        </TooltipProvider>
+        <ScrollProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Preloader />
+            <CustomCursor />
+            <Router />
+          </TooltipProvider>
+        </ScrollProvider>
       </LanguageProvider>
     </QueryClientProvider>
   );

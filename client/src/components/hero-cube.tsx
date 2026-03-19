@@ -13,6 +13,9 @@ function hasWebGL(): boolean {
 
 const ORBIT_LABELS = ["CRM", "AI", "API", "E-COMM", "DATA", "OPS", "ERP", "WEB"];
 
+const LABEL_CLASSES =
+  "absolute px-3 py-1.5 rounded-full border border-primary/20 bg-primary/5 backdrop-blur-sm text-primary font-mono text-xs font-semibold tracking-wider whitespace-nowrap pointer-events-none select-none";
+
 /** CSS-only fallback for mobile / no-WebGL: orbiting labels around a glowing core */
 function CSSFallback() {
   return (
@@ -68,43 +71,43 @@ function CSSFallback() {
   );
 }
 
-/** Three.js planet sphere with wireframe grid, glow, and orbiting text labels */
+/** Three.js planet sphere with wireframe grid, glow, and HTML orbiting text labels */
 function PlanetSphere() {
   const mountRef = useRef<HTMLDivElement>(null);
+  const labelsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const container = mountRef.current;
-    if (!container) return;
+    const labelsContainer = labelsRef.current;
+    if (!container || !labelsContainer) return;
 
     let disposed = false;
     let animId: number;
 
+    // Pre-create HTML label spans
+    const labelSpans: HTMLSpanElement[] = ORBIT_LABELS.map((text) => {
+      const span = document.createElement("span");
+      span.className = LABEL_CLASSES;
+      span.textContent = text;
+      labelsContainer.appendChild(span);
+      return span;
+    });
+
     import("three").then((THREE) => {
       if (disposed || !container) return;
 
-      // Oversized canvas so orbiting labels can extend beyond the container
-      const OVERFLOW_SCALE = 1.6;
       const containerW = container.clientWidth;
       const containerH = container.clientHeight;
-      const canvasW = Math.round(containerW * OVERFLOW_SCALE);
-      const canvasH = Math.round(containerH * OVERFLOW_SCALE);
 
       // Scene
       const scene = new THREE.Scene();
-      const camera = new THREE.PerspectiveCamera(50, canvasW / canvasH, 0.1, 100);
+      const camera = new THREE.PerspectiveCamera(50, containerW / containerH, 0.1, 100);
       camera.position.z = 4.5;
 
       const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
-      renderer.setSize(canvasW, canvasH);
+      renderer.setSize(containerW, containerH);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-
-      // Position canvas centered but overflowing the container
-      const el = renderer.domElement;
-      el.style.position = "absolute";
-      el.style.left = "50%";
-      el.style.top = "50%";
-      el.style.transform = "translate(-50%, -50%)";
-      container.appendChild(el);
+      container.appendChild(renderer.domElement);
 
       const primaryColor = new THREE.Color("hsl(199, 89%, 48%)");
 
@@ -241,71 +244,18 @@ function PlanetSphere() {
       const dots = new THREE.Points(dotGeo, dotMat);
       autoGroup.add(dots);
 
-      // ── Orbiting text labels as sprites ──
-      const labelSprites: InstanceType<typeof THREE.Sprite>[] = [];
-      const labelOrbits = ORBIT_LABELS.map((label, i) => {
-        const canvas = document.createElement("canvas");
-        canvas.width = 256;
-        canvas.height = 64;
-        const ctx = canvas.getContext("2d")!;
-
-        // Measure text with correct font
-        ctx.font = "bold 28px monospace";
-        const textW = ctx.measureText(label).width;
-        const pillPadX = 24;
-        const pillH = 40;
-        const x = 128 - (textW + pillPadX * 2) / 2;
-        const y = 12;
-        const w = textW + pillPadX * 2;
-        const r = pillH / 2;
-
-        // Draw pill
-        ctx.beginPath();
-        ctx.moveTo(x + r, y);
-        ctx.lineTo(x + w - r, y);
-        ctx.arcTo(x + w, y, x + w, y + r, r);
-        ctx.lineTo(x + w, y + pillH - r);
-        ctx.arcTo(x + w, y + pillH, x + w - r, y + pillH, r);
-        ctx.lineTo(x + r, y + pillH);
-        ctx.arcTo(x, y + pillH, x, y + pillH - r, r);
-        ctx.lineTo(x, y + r);
-        ctx.arcTo(x, y, x + r, y, r);
-        ctx.closePath();
-
-        ctx.fillStyle = "rgba(14, 165, 233, 0.12)";
-        ctx.fill();
-        ctx.strokeStyle = "rgba(14, 165, 233, 0.35)";
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-
-        // Text
-        ctx.fillStyle = "rgba(14, 165, 233, 0.9)";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText(label, 128, y + pillH / 2);
-
-        const texture = new THREE.CanvasTexture(canvas);
-        texture.minFilter = THREE.LinearFilter;
-        const spriteMat = new THREE.SpriteMaterial({
-          map: texture,
-          transparent: true,
-          depthWrite: false,
-          blending: THREE.NormalBlending,
-        });
-        const sprite = new THREE.Sprite(spriteMat);
-        sprite.scale.set(1.6, 0.4, 1);
-        sceneGroup.add(sprite);
-        labelSprites.push(sprite);
-
-        // Orbit params
+      // ── Orbit params for HTML labels (no Three.js sprites) ──
+      const labelOrbits = ORBIT_LABELS.map((_label, i) => {
         const orbitRadius = 2.4 + (i % 3) * 0.35;
         const speed = 0.15 + (i % 4) * 0.06;
         const phaseOffset = (i / ORBIT_LABELS.length) * Math.PI * 2;
         const tiltX = (i % 2 === 0 ? 1 : -1) * (0.3 + (i % 3) * 0.25);
-        const tiltZ = (i % 3 === 0 ? 1 : -1) * 0.2;
 
-        return { orbitRadius, speed, phaseOffset, tiltX, tiltZ };
+        return { orbitRadius, speed, phaseOffset, tiltX };
       });
+
+      // Reusable vector for projection
+      const tempVec = new THREE.Vector3();
 
       // ── Mouse parallax ──
       let mouseX = 0;
@@ -321,6 +271,10 @@ function PlanetSphere() {
       let currentParallaxY = 0;
 
       const clock = new THREE.Clock();
+
+      // Track current canvas size for projection
+      let canvasW = containerW;
+      let canvasH = containerH;
 
       const animate = () => {
         if (disposed) return;
@@ -340,21 +294,34 @@ function PlanetSphere() {
         sceneGroup.rotation.x = currentParallaxX;
         sceneGroup.rotation.y = currentParallaxY;
 
-        // Animate orbiting labels
+        // Animate orbiting labels — project 3D to 2D for HTML positioning
         labelOrbits.forEach((orbit, i) => {
           const angle = elapsed * orbit.speed + orbit.phaseOffset;
           const lx = Math.cos(angle) * orbit.orbitRadius;
           const lz = Math.sin(angle) * orbit.orbitRadius;
           const ly = Math.sin(angle + orbit.tiltX) * orbit.orbitRadius * 0.35;
-          labelSprites[i].position.set(lx, ly, lz);
 
-          // Depth-based opacity fade
+          // Apply sceneGroup rotation (parallax) to the label world position
+          tempVec.set(lx, ly, lz);
+          tempVec.applyEuler(sceneGroup.rotation);
+
+          // Project to NDC
+          tempVec.project(camera);
+
+          // NDC to pixel coordinates
+          const screenX = (tempVec.x * 0.5 + 0.5) * canvasW;
+          const screenY = (-tempVec.y * 0.5 + 0.5) * canvasH;
+
+          // Depth-based opacity (use original lz before rotation for consistent fade)
           const depthFade = THREE.MathUtils.clamp(
             (lz + orbit.orbitRadius) / (orbit.orbitRadius * 2),
             0.3,
             1,
           );
-          labelSprites[i].material.opacity = depthFade;
+
+          const span = labelSpans[i];
+          span.style.transform = `translate(-50%, -50%) translate(${screenX}px, ${screenY}px)`;
+          span.style.opacity = String(depthFade);
         });
 
         // Subtle atmosphere pulse
@@ -364,14 +331,14 @@ function PlanetSphere() {
       };
       animate();
 
-      // Resize handler — keep canvas oversized
+      // Resize handler
       const onResize = () => {
         if (!container || disposed) return;
-        const w = Math.round(container.clientWidth * OVERFLOW_SCALE);
-        const h = Math.round(container.clientHeight * OVERFLOW_SCALE);
-        camera.aspect = w / h;
+        canvasW = container.clientWidth;
+        canvasH = container.clientHeight;
+        camera.aspect = canvasW / canvasH;
         camera.updateProjectionMatrix();
-        renderer.setSize(w, h);
+        renderer.setSize(canvasW, canvasH);
       };
       window.addEventListener("resize", onResize);
 
@@ -392,10 +359,6 @@ function PlanetSphere() {
         dotGeo.dispose();
         dotMat.dispose();
         dotTexture.dispose();
-        labelSprites.forEach((s) => {
-          s.material.map?.dispose();
-          s.material.dispose();
-        });
         if (renderer.domElement.parentNode) {
           renderer.domElement.parentNode.removeChild(renderer.domElement);
         }
@@ -404,6 +367,8 @@ function PlanetSphere() {
 
     return () => {
       disposed = true;
+      // Remove HTML label spans
+      labelSpans.forEach((s) => s.remove());
       if ((container as any).__cleanup) {
         (container as any).__cleanup();
       }
@@ -413,9 +378,16 @@ function PlanetSphere() {
   return (
     <div
       ref={mountRef}
-      className="relative w-full h-[350px] sm:h-[420px] lg:h-[620px] overflow-visible"
+      className="relative w-full h-[350px] sm:h-[420px] lg:h-[520px] overflow-visible"
       aria-hidden
-    />
+    >
+      {/* HTML labels layer — sits on top of canvas, overflow-visible lets them bleed out */}
+      <div
+        ref={labelsRef}
+        className="absolute inset-0 overflow-visible pointer-events-none"
+        style={{ top: 0, left: 0 }}
+      />
+    </div>
   );
 }
 
@@ -424,7 +396,10 @@ function HeroCubeInner() {
   const prefersReducedMotion = useReducedMotion();
   const [webGL] = useState(() => hasWebGL());
 
-  if (isMobile || !webGL || prefersReducedMotion) {
+  // Hide entirely on mobile — the CSS fallback isn't visually compelling
+  if (isMobile) return null;
+
+  if (!webGL || prefersReducedMotion) {
     return <CSSFallback />;
   }
 
