@@ -135,6 +135,7 @@ function ModuleCard({
 }) {
   const Icon = module.icon;
   const tiltRef = useRef<HTMLDivElement>(null);
+  const isFirstMove = useRef(true);
   const color = CATEGORY_COLORS[module.categoryId] || "215 25% 27%";
   const [isHovered, setIsHovered] = useState(false);
   const [ripple, setRipple] = useState<{ x: number; y: number; key: number } | null>(null);
@@ -143,13 +144,14 @@ function ModuleCard({
 
   // Row-based stagger: 3 cols on xl, 2 on smaller screens
   const cols = typeof window !== 'undefined' && window.matchMedia('(min-width: 1280px)').matches ? 3 : 2;
-  const staggerDelay = Math.floor(index / cols) * 0.08 + (index % cols) * 0.03;
+  const staggerDelay = Math.floor(index / cols) * 0.1 + (index % cols) * 0.05;
 
   useEffect(() => {
     controls.start({
       opacity: 1,
       y: 0,
-      transition: { duration: 0.5, delay: staggerDelay }
+      scale: 1,
+      transition: { duration: 0.6, delay: staggerDelay, ease: [0.22, 1, 0.36, 1] }
     });
   }, []);
 
@@ -165,20 +167,31 @@ function ModuleCard({
     wrapper.style.setProperty('--mouse-y', `${y}%`);
 
     if (!prefersReducedMotion) {
-      const rotateY = ((x - 50) / 50) * 6;
-      const rotateX = ((y - 50) / 50) * -6;
-      wrapper.style.transition = 'none';
-      wrapper.style.transform = `perspective(800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-3px)`;
-      wrapper.style.willChange = 'transform';
+      const rotateY = ((x - 50) / 50) * 5;
+      const rotateX = ((y - 50) / 50) * -5;
+      const shadowX = ((x - 50) / 50) * -8;
+      const shadowY = ((y - 50) / 50) * -8;
+      // Smooth ease-in for the initial lift, then instant for tilt tracking
+      if (isFirstMove.current) {
+        wrapper.style.transition = 'transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1)';
+        isFirstMove.current = false;
+      } else {
+        wrapper.style.transition = 'none';
+      }
+      wrapper.style.transform = `perspective(600px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px) scale3d(1.02, 1.02, 1.02)`;
+      wrapper.style.boxShadow = `${shadowX}px ${shadowY + 20}px 50px -8px hsl(${color} / 0.25), 0 8px 24px -4px hsl(0 0% 0% / 0.12)`;
+      wrapper.style.willChange = 'transform, box-shadow';
     }
   };
 
   const handleMouseLeave = () => {
     setIsHovered(false);
+    isFirstMove.current = true;
     const wrapper = tiltRef.current;
     if (wrapper) {
-      wrapper.style.transition = 'transform 0.5s cubic-bezier(0.22, 1, 0.36, 1)';
+      wrapper.style.transition = 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1)';
       wrapper.style.transform = '';
+      wrapper.style.boxShadow = '';
       wrapper.style.willChange = 'auto';
     }
   };
@@ -192,16 +205,16 @@ function ModuleCard({
       setRipple({ x: rx, y: ry, key: Date.now() });
 
       if (!isSelected) {
-        // Select pulse: 1.0 → 0.95 → 1.02 → 1.0
+        // Select pulse: press down → overshoot → settle
         await controls.start({
-          scale: [1, 0.95, 1.02, 1],
-          transition: { duration: 0.2, times: [0, 0.3, 0.7, 1], ease: "easeOut" }
+          scale: [1, 0.96, 1.03, 1],
+          transition: { duration: 0.45, times: [0, 0.2, 0.6, 1], ease: [0.22, 1, 0.36, 1] }
         });
       } else {
-        // Deselect pulse: 1.0 → 1.02 → 0.98 → 1.0
+        // Deselect pulse: lift → undershoot → settle
         await controls.start({
-          scale: [1, 1.02, 0.98, 1],
-          transition: { duration: 0.15, times: [0, 0.3, 0.7, 1], ease: "easeOut" }
+          scale: [1, 1.03, 0.97, 1],
+          transition: { duration: 0.35, times: [0, 0.2, 0.6, 1], ease: [0.22, 1, 0.36, 1] }
         });
       }
     }
@@ -215,12 +228,13 @@ function ModuleCard({
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={handleMouseLeave}
+      className="rounded-2xl overflow-hidden"
+      style={{ transformStyle: 'preserve-3d' }}
     >
       <motion.button
         onClick={handleClick}
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 28, scale: 0.97 }}
         animate={controls}
-        whileTap={{ scale: 0.97 }}
         className={`module-glass-card relative w-full h-full text-left p-4 md:p-6 rounded-2xl group overflow-hidden
           ${isSelected
             ? "border-transparent"
@@ -229,22 +243,29 @@ function ModuleCard({
           backdrop-blur-xl border`}
         style={{
           background: isSelected
-            ? `linear-gradient(135deg, hsl(${color} / 0.15), hsl(${color} / 0.05), transparent)`
+            ? `linear-gradient(135deg, hsl(${color} / 0.18), hsl(${color} / 0.06), transparent)`
             : `linear-gradient(135deg, hsl(${color} / 0.03), hsl(var(--card) / 0.8), hsl(var(--card) / 0.5))`,
-          borderColor: isSelected ? `hsl(${color} / 0.5)` : undefined,
+          borderColor: isSelected ? `hsl(${color} / 0.55)` : undefined,
           boxShadow: isSelected
-            ? `0 0 40px -10px hsl(${color} / 0.3)`
-            : isHovered
-              ? `0 12px 40px -12px hsl(${color} / 0.2)`
-              : undefined,
+            ? `0 0 50px -8px hsl(${color} / 0.35), inset 0 1px 0 0 hsl(${color} / 0.1)`
+            : undefined,
         }}
         data-testid={`module-card-${module.id}`}
       >
         {/* Mouse-tracking glow */}
         <div
-          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+          className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
           style={{
-            background: `radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), hsl(${color} / 0.15), transparent 50%)`
+            background: `radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), hsl(${color} / 0.25), transparent 50%)`
+          }}
+        />
+
+        {/* Cursor-tracking shine overlay */}
+        <div
+          className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+          style={{
+            background: `radial-gradient(ellipse 80px 80px at var(--mouse-x, 50%) var(--mouse-y, 50%), hsl(0 0% 100% / 0.12), transparent)`,
+            mixBlendMode: 'overlay'
           }}
         />
 
@@ -259,36 +280,50 @@ function ModuleCard({
         {ripple && (
           <motion.div
             key={ripple.key}
-            initial={{ scale: 0, opacity: 0.35 }}
-            animate={{ scale: 2.5, opacity: 0 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
+            initial={{ scale: 0, opacity: 0.6 }}
+            animate={{ scale: 3, opacity: 0 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             onAnimationComplete={() => setRipple(null)}
             className="absolute rounded-full pointer-events-none z-10"
             style={{
               left: `${ripple.x}%`,
               top: `${ripple.y}%`,
-              width: 120,
-              height: 120,
-              marginLeft: -60,
-              marginTop: -60,
-              background: `radial-gradient(circle, hsl(${color} / 0.3), transparent 70%)`
+              width: 160,
+              height: 160,
+              marginLeft: -80,
+              marginTop: -80,
+              background: `radial-gradient(circle, hsl(${color} / 0.5) 0%, hsl(${color} / 0.15) 50%, transparent 70%)`
             }}
           />
         )}
 
-        {/* Checkmark with scale overshoot + exit */}
+        {/* Selection border glow + checkmark */}
         <AnimatePresence>
           {isSelected && (
-            <motion.div
-              initial={{ scale: 0, opacity: 0 }}
-              animate={{ scale: [0, 1.2, 1], opacity: 1 }}
-              exit={{ scale: 0, opacity: 0, transition: { duration: 0.15 } }}
-              transition={{ type: "spring", stiffness: 400, damping: 15 }}
-              className="absolute top-4 right-4 w-7 h-7 rounded-full flex items-center justify-center shadow-lg z-20"
-              style={{ backgroundColor: `hsl(${color})`, boxShadow: `0 0 15px hsl(${color} / 0.4)` }}
-            >
-              <Check className="w-4 h-4 text-white" />
-            </motion.div>
+            <>
+              {/* Border glow ring */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0, transition: { duration: 0.2 } }}
+                transition={{ duration: 0.4 }}
+                className="absolute inset-0 rounded-2xl pointer-events-none z-10"
+                style={{
+                  boxShadow: `inset 0 0 0 1.5px hsl(${color} / 0.4), 0 0 20px -4px hsl(${color} / 0.2)`
+                }}
+              />
+              {/* Checkmark with scale overshoot */}
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: [0, 1.25, 1], opacity: 1 }}
+                exit={{ scale: 0, opacity: 0, transition: { duration: 0.15 } }}
+                transition={{ type: "spring", stiffness: 300, damping: 12, delay: 0.05 }}
+                className="absolute top-4 right-4 w-7 h-7 rounded-full flex items-center justify-center shadow-lg z-20"
+                style={{ backgroundColor: `hsl(${color})`, boxShadow: `0 0 20px hsl(${color} / 0.5), 0 4px 12px hsl(${color} / 0.3)` }}
+              >
+                <Check className="w-4 h-4 text-white" />
+              </motion.div>
+            </>
           )}
         </AnimatePresence>
 
@@ -297,7 +332,7 @@ function ModuleCard({
           <div
             className="absolute inset-0 transition-all duration-500"
             style={{
-              backgroundColor: isSelected ? `hsl(${color})` : `hsl(${color} / ${isHovered ? 0.15 : 0.08})`,
+              backgroundColor: isSelected ? `hsl(${color})` : `hsl(${color} / ${isHovered ? 0.22 : 0.1})`,
             }}
           />
           <div
@@ -317,9 +352,9 @@ function ModuleCard({
         <span
           className="inline-flex items-center text-xs font-semibold px-3 py-1.5 rounded-full transition-all duration-300 border"
           style={{
-            backgroundColor: isSelected ? `hsl(${color} / 0.2)` : `hsl(${color} / ${isHovered ? 0.1 : 0.05})`,
+            backgroundColor: isSelected ? `hsl(${color} / 0.25)` : `hsl(${color} / ${isHovered ? 0.14 : 0.05})`,
             color: `hsl(${color})`,
-            borderColor: `hsl(${color} / ${isHovered ? 0.35 : 0.2})`
+            borderColor: `hsl(${color} / ${isHovered ? 0.45 : 0.2})`
           }}
         >
           {module.category}
@@ -597,6 +632,25 @@ export default function BuildSolutionPage() {
 
   const { t } = useLanguage();
   const modules = getModules(t);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const gridSectionRef = useRef<HTMLDivElement>(null);
+
+  // Compute category counts
+  const categoryCounts: Record<string, number> = {};
+  modules.forEach(m => {
+    categoryCounts[m.categoryId] = (categoryCounts[m.categoryId] || 0) + 1;
+  });
+
+  const filteredModules = activeCategory
+    ? modules.filter(m => m.categoryId === activeCategory)
+    : modules;
+
+  const handleCategoryClick = (categoryId: string | null) => {
+    setActiveCategory(categoryId);
+    if (gridSectionRef.current) {
+      gridSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   const toggleModule = (id: string) => {
     setSelectedModules(prev => {
@@ -668,19 +722,64 @@ export default function BuildSolutionPage() {
           <HeroSection />
           <HeroDivider />
 
-          <div className="max-w-7xl mx-auto px-6 mt-10">
+          <div ref={gridSectionRef} className="max-w-7xl mx-auto px-6 mt-10 scroll-mt-24">
             <div className="flex flex-col lg:flex-row gap-8">
               <div className="flex-1">
-                <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-5">
-                  {modules.map((module, index) => (
-                    <ModuleCard
-                      key={module.id}
-                      module={module}
-                      isSelected={selectedModules.has(module.id)}
-                      onToggle={() => toggleModule(module.id)}
-                      index={index}
-                    />
+                {/* Section number */}
+                <span className="section-number mb-4">02 /</span>
+
+                {/* Category filter bar */}
+                <div className="flex gap-2 overflow-x-auto scrollbar-none pb-3 mb-6 md:flex-wrap md:overflow-visible snap-x snap-mandatory md:snap-none">
+                  <button
+                    onClick={() => handleCategoryClick(null)}
+                    className={`flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-full text-sm font-mono border transition-all duration-300 snap-start
+                      ${activeCategory === null
+                        ? 'bg-primary/20 text-primary border-primary/50'
+                        : 'bg-card/50 text-muted-foreground border-border/50 hover:bg-card/80 hover:border-border/70'
+                      }`}
+                  >
+                    {t('build.filter.all')} <span className="text-xs opacity-60 ml-1">({modules.length})</span>
+                  </button>
+                  {CATEGORY_IDS.filter(id => (categoryCounts[id] || 0) > 0).map(categoryId => (
+                    <button
+                      key={categoryId}
+                      onClick={() => handleCategoryClick(categoryId)}
+                      className={`flex-shrink-0 whitespace-nowrap px-4 py-2 rounded-full text-sm font-mono border transition-all duration-300 snap-start
+                        ${activeCategory === categoryId
+                          ? 'bg-primary/20 text-primary border-primary/50'
+                          : 'bg-card/50 text-muted-foreground border-border/50 hover:bg-card/80 hover:border-border/70'
+                        }`}
+                    >
+                      {t(`category.${categoryId}`)} <span className="text-xs opacity-60 ml-1">({categoryCounts[categoryId]})</span>
+                    </button>
                   ))}
+                </div>
+
+                {/* Module grid */}
+                <div className="grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-5">
+                  <AnimatePresence mode="popLayout">
+                    {filteredModules.map((module, index) => (
+                      <motion.div
+                        key={module.id}
+                        layout
+                        exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+                      >
+                        <ModuleCard
+                          module={module}
+                          isSelected={selectedModules.has(module.id)}
+                          onToggle={() => toggleModule(module.id)}
+                          index={index}
+                        />
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
+                  {filteredModules.length === 0 && (
+                    <div className="col-span-full flex items-center justify-center py-20">
+                      <p className="text-muted-foreground font-mono text-sm">
+                        {t("build.filter.noModules")}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <MoreFeaturesSection onScheduleClick={openScheduling} />

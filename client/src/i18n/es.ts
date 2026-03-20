@@ -311,6 +311,8 @@ export const es: Record<string, string> = {
     "build.hero.stat1": "30+ Módulos Disponibles",
     "build.hero.stat2": "Funciones Personalizadas Ilimitadas",
     "build.hero.stat3": "Una Plataforma Unificada",
+    "build.filter.all": "Todos",
+    "build.filter.noModules": "No hay módulos en esta categoría",
 
     // ─── Build Solution Modules ───
     "module.whatsapp.title": "Integración con WhatsApp",
