@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useLanguage } from "@/context/language-context";
-import { motion, AnimatePresence, useScroll, useAnimationControls, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useAnimationControls, useReducedMotion, useSpring } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -369,6 +369,40 @@ function ScrollProgress() {
   return <motion.div className="scroll-progress" style={{ scaleX: scrollYProgress }} />;
 }
 
+function MagneticButton({ children }: { children: React.ReactNode }) {
+  const prefersReducedMotion = useReducedMotion();
+  const springConfig = { stiffness: 200, damping: 20, mass: 0.5 };
+  const x = useSpring(0, springConfig);
+  const y = useSpring(0, springConfig);
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (prefersReducedMotion) return;
+      const rect = e.currentTarget.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      x.set((e.clientX - centerX) * 0.15);
+      y.set((e.clientY - centerY) * 0.15);
+    },
+    [prefersReducedMotion, x, y],
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    x.set(0);
+    y.set(0);
+  }, [x, y]);
+
+  return (
+    <motion.div
+      style={{ x, y }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 const PARTICLES = Array.from({ length: 8 }, (_, i) => ({
   id: i,
   left: `${8 + i * 12}%`,
@@ -568,17 +602,22 @@ function HeroDivider() {
 
 function MoreFeaturesSection({ onScheduleClick }: { onScheduleClick: () => void }) {
   const { t } = useLanguage();
+  const tags = [t("build.more.tag1"), t("build.more.tag2"), t("build.more.tag3"), t("build.more.tag4"), t("build.more.tag5")];
+
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.8 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       className="mt-16 text-center"
     >
       <div className="relative block w-full max-w-2xl mx-auto">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20 rounded-3xl blur-xl" />
         <div className="relative bg-gradient-to-br from-card/90 via-card/80 to-card/70 backdrop-blur-xl border border-border/50 rounded-3xl p-6 md:p-10 max-w-2xl mx-auto">
+          {/* Section number */}
+          <span className="section-number mb-4">03 /</span>
+
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mx-auto mb-6 border border-primary/20">
             <Plus className="w-8 h-8 text-primary" />
           </div>
@@ -592,26 +631,36 @@ function MoreFeaturesSection({ onScheduleClick }: { onScheduleClick: () => void 
           </p>
 
           <div className="flex flex-wrap justify-center gap-3 mb-8">
-            {[t("build.more.tag1"), t("build.more.tag2"), t("build.more.tag3"), t("build.more.tag4"), t("build.more.tag5")].map((tag) => (
-              <span
+            {tags.map((tag, i) => (
+              <motion.span
                 key={tag}
-                className="px-4 py-2 rounded-full text-sm bg-muted/60 text-muted-foreground border border-border/50"
+                initial={{ scale: 0.9, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{
+                  scale: 1.05,
+                  boxShadow: '0 0 15px hsl(var(--primary) / 0.15)',
+                }}
+                className="px-4 py-2 rounded-full text-sm bg-muted/60 text-muted-foreground border border-border/50 cursor-default transition-colors"
               >
                 {tag}
-              </span>
+              </motion.span>
             ))}
           </div>
 
-          <Button
-            size="lg"
-            onClick={onScheduleClick}
-            className="gap-2 px-8 font-semibold"
-            data-testid="button-more-features"
-          >
-            <Layers className="w-5 h-5" />
-            {t("build.more.cta")}
-            <ArrowRight className="w-4 h-4" />
-          </Button>
+          <MagneticButton>
+            <Button
+              size="lg"
+              onClick={onScheduleClick}
+              className="gap-2 px-8 font-semibold shimmer-btn"
+              data-testid="button-more-features"
+            >
+              <Layers className="w-5 h-5" />
+              {t("build.more.cta")}
+              <ArrowRight className="w-4 h-4" />
+            </Button>
+          </MagneticButton>
         </div>
       </div>
     </motion.div>
@@ -634,6 +683,19 @@ export default function BuildSolutionPage() {
   const modules = getModules(t);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const gridSectionRef = useRef<HTMLDivElement>(null);
+  const [glowPulse, setGlowPulse] = useState(false);
+  const prevCountRef = useRef(0);
+
+  // Glow pulse when a module is added
+  useEffect(() => {
+    if (selectedModules.size > prevCountRef.current) {
+      setGlowPulse(true);
+      const timer = setTimeout(() => setGlowPulse(false), 300);
+      prevCountRef.current = selectedModules.size;
+      return () => clearTimeout(timer);
+    }
+    prevCountRef.current = selectedModules.size;
+  }, [selectedModules.size]);
 
   // Compute category counts
   const categoryCounts: Record<string, number> = {};
@@ -789,8 +851,16 @@ export default function BuildSolutionPage() {
                 <div className="sticky top-24">
                   <div className="relative">
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5 rounded-2xl blur-xl" />
-                    <div className="relative bg-gradient-to-br from-card/95 via-card/90 to-card/85 backdrop-blur-xl border border-border/50 rounded-2xl p-6 shadow-xl">
-                      <div className="flex items-center justify-between mb-5">
+                    <div
+                      className="relative bg-gradient-to-br from-card/95 via-card/90 to-card/85 backdrop-blur-xl border rounded-2xl p-6 shadow-xl"
+                      style={{
+                        borderColor: glowPulse
+                          ? 'hsl(var(--primary) / 0.5)'
+                          : 'hsl(var(--border) / 0.5)',
+                        transition: 'border-color 0.3s ease',
+                      }}
+                    >
+                      <div className="flex items-center justify-between mb-1">
                         <h2 className="font-bold text-foreground text-lg">{t("build.sidebar.title")}</h2>
                         {selectedModules.size > 0 && (
                           <button
@@ -801,6 +871,24 @@ export default function BuildSolutionPage() {
                             {t("build.sidebar.clearAll")}
                           </button>
                         )}
+                      </div>
+
+                      {/* Animated module counter */}
+                      <div className="mb-5 h-5 overflow-hidden">
+                        <AnimatePresence mode="wait">
+                          {selectedModules.size > 0 && (
+                            <motion.p
+                              key={selectedModules.size}
+                              initial={{ y: 12, opacity: 0 }}
+                              animate={{ y: 0, opacity: 1 }}
+                              exit={{ y: -12, opacity: 0 }}
+                              transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                              className="font-mono text-sm text-muted-foreground"
+                            >
+                              {selectedModules.size} {selectedModules.size === 1 ? 'module' : 'modules'}
+                            </motion.p>
+                          )}
+                        </AnimatePresence>
                       </div>
 
                       <div className="min-h-[180px] max-h-[280px] overflow-y-auto mb-6 scrollbar-thin" data-lenis-prevent>
@@ -823,9 +911,18 @@ export default function BuildSolutionPage() {
                               {getSelectedModuleNames().map((name) => (
                                 <motion.li
                                   key={name}
-                                  initial={{ opacity: 0, x: -10 }}
-                                  animate={{ opacity: 1, x: 0 }}
-                                  exit={{ opacity: 0, x: 10 }}
+                                  layout
+                                  initial={{ scale: 0, opacity: 0 }}
+                                  animate={{
+                                    scale: [0, 1.08, 1],
+                                    opacity: 1,
+                                    transition: { type: "spring", stiffness: 400, damping: 15 }
+                                  }}
+                                  exit={{
+                                    scale: [1, 0.8, 0],
+                                    opacity: 0,
+                                    transition: { duration: 0.2, ease: "easeIn" }
+                                  }}
                                   className="flex items-center gap-2 text-sm text-foreground p-2 rounded-lg bg-primary/5 border border-primary/10"
                                 >
                                   <Check className="w-4 h-4 text-primary flex-shrink-0" />
@@ -839,7 +936,20 @@ export default function BuildSolutionPage() {
 
                       <div className="border-t border-border/50 pt-4 mb-5">
                         <p className="text-sm text-muted-foreground mb-1">{t("build.sidebar.selectedModules")}</p>
-                        <p className="text-3xl font-bold text-foreground">{selectedModules.size}</p>
+                        <div className="h-10 overflow-hidden">
+                          <AnimatePresence mode="wait">
+                            <motion.p
+                              key={selectedModules.size}
+                              initial={{ y: 20, opacity: 0 }}
+                              animate={{ y: 0, opacity: 1 }}
+                              exit={{ y: -20, opacity: 0 }}
+                              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                              className="text-3xl font-bold text-foreground"
+                            >
+                              {selectedModules.size}
+                            </motion.p>
+                          </AnimatePresence>
+                        </div>
                       </div>
 
                       <div className="space-y-3">
@@ -847,7 +957,7 @@ export default function BuildSolutionPage() {
                           placeholder={t("build.sidebar.inputName")}
                           value={formData.name}
                           onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                          className="bg-background/50 border-border/50"
+                          className="bg-card/50 backdrop-blur-sm border-border/30 transition-colors focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/10"
                           data-testid="input-name"
                         />
                         <Input
@@ -855,42 +965,44 @@ export default function BuildSolutionPage() {
                           type="email"
                           value={formData.email}
                           onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                          className="bg-background/50 border-border/50"
+                          className="bg-card/50 backdrop-blur-sm border-border/30 transition-colors focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/10"
                           data-testid="input-email"
                         />
                         <Input
                           placeholder={t("build.sidebar.inputCompany")}
                           value={formData.companyName}
                           onChange={(e) => setFormData(prev => ({ ...prev, companyName: e.target.value }))}
-                          className="bg-background/50 border-border/50"
+                          className="bg-card/50 backdrop-blur-sm border-border/30 transition-colors focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/10"
                           data-testid="input-company"
                         />
                         <Textarea
                           placeholder={t("build.sidebar.inputDescription")}
                           value={formData.description}
                           onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                          className="min-h-[80px] resize-none bg-background/50 border-border/50"
+                          className="min-h-[80px] resize-none bg-card/50 backdrop-blur-sm border-border/30 transition-colors focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/10"
                           data-testid="input-description"
                         />
                         <Textarea
                           placeholder={t("build.sidebar.inputCustom")}
                           value={formData.customRequest}
                           onChange={(e) => setFormData(prev => ({ ...prev, customRequest: e.target.value }))}
-                          className="min-h-[60px] resize-none bg-background/50 border-border/50"
+                          className="min-h-[60px] resize-none bg-card/50 backdrop-blur-sm border-border/30 transition-colors focus-visible:border-primary/50 focus-visible:ring-1 focus-visible:ring-primary/10"
                           data-testid="input-custom-request"
                         />
                       </div>
 
-                      <Button
-                        onClick={handleRequestQuote}
-                        disabled={!formData.name || !formData.email}
-                        className="w-full mt-5 gap-2 font-semibold h-auto whitespace-normal text-center py-4"
-                        size="lg"
-                        data-testid="button-request-quote"
-                      >
-                        {t("build.sidebar.requestQuote")}
-                        <ArrowRight className="w-4 h-4" />
-                      </Button>
+                      <MagneticButton>
+                        <Button
+                          onClick={handleRequestQuote}
+                          disabled={!formData.name || !formData.email || selectedModules.size === 0}
+                          className="w-full mt-5 gap-2 font-semibold h-auto whitespace-normal text-center py-4 shimmer-btn disabled:opacity-50 disabled:pointer-events-none"
+                          size="lg"
+                          data-testid="button-request-quote"
+                        >
+                          {t("build.sidebar.requestQuote")}
+                          <ArrowRight className="w-4 h-4" />
+                        </Button>
+                      </MagneticButton>
                     </div>
                   </div>
                 </div>
@@ -898,35 +1010,69 @@ export default function BuildSolutionPage() {
             </div>
           </div>
 
-          <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-xl border-t border-border/50 p-4 z-40 shadow-2xl shadow-background/50">
-            <div className="max-w-lg mx-auto">
-              <div className="flex items-center justify-between mb-3">
-                <div>
-                  <p className="text-sm text-muted-foreground">{t("build.mobile.selectedModules")}</p>
-                  <p className="text-xl font-bold text-foreground">{selectedModules.size} {t("build.mobile.selected")}</p>
-                </div>
-                {selectedModules.size > 0 && (
-                  <button
-                    onClick={clearAll}
-                    className="text-sm text-muted-foreground hover:text-foreground"
-                    data-testid="button-clear-all-mobile"
-                  >
-                    {t("build.sidebar.clearAll")}
-                  </button>
-                )}
-              </div>
-
-              <Button
-                onClick={handleRequestQuote}
-                className="w-full gap-2 font-semibold"
-                size="lg"
-                data-testid="button-request-quote-mobile"
+          <AnimatePresence>
+            {selectedModules.size > 0 && (
+              <motion.div
+                initial={{ y: '100%' }}
+                animate={{ y: 0 }}
+                exit={{ y: '100%' }}
+                transition={{
+                  type: 'spring',
+                  stiffness: 400,
+                  damping: 30,
+                  mass: 0.8,
+                }}
+                className="lg:hidden fixed bottom-0 left-0 right-0 bg-card/80 backdrop-blur-2xl border-t border-border/30 p-4 z-40"
+                style={{
+                  boxShadow: '0 -10px 40px -10px hsl(var(--background) / 0.8)',
+                }}
               >
-                {t("build.mobile.continue")}
-                <ArrowRight className="w-4 h-4" />
-              </Button>
-            </div>
-          </div>
+                <div className="max-w-lg mx-auto">
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <p className="text-sm text-muted-foreground">{t("build.mobile.selectedModules")}</p>
+                      <div className="flex items-baseline gap-1">
+                        <motion.span
+                          key={selectedModules.size}
+                          initial={{ scale: 1 }}
+                          animate={{ scale: [1, 1.3, 1] }}
+                          transition={{ duration: 0.2, ease: 'easeOut' }}
+                          className="text-xl font-bold text-foreground inline-block"
+                        >
+                          {selectedModules.size}
+                        </motion.span>
+                        <span className="text-xl font-bold text-foreground">{t("build.mobile.selected")}</span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={clearAll}
+                      className="text-sm text-muted-foreground hover:text-foreground"
+                      data-testid="button-clear-all-mobile"
+                    >
+                      {t("build.sidebar.clearAll")}
+                    </button>
+                  </div>
+
+                  <Button
+                    onClick={handleRequestQuote}
+                    className="w-full gap-2 font-semibold shimmer-btn"
+                    size="lg"
+                    data-testid="button-request-quote-mobile"
+                  >
+                    <motion.span
+                      initial={{ x: -10, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ delay: 0.15, duration: 0.3 }}
+                      className="flex items-center gap-2"
+                    >
+                      {t("build.mobile.continue")}
+                      <ArrowRight className="w-4 h-4" />
+                    </motion.span>
+                  </Button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </main>
 
         <SharedFooter />
