@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LanguageProvider } from "@/context/language-context";
 import { NotificationProvider } from "@/context/notification-context";
-import { ScrollProvider } from "@/context/scroll-context";
+import { ScrollProvider, useScrollContext } from "@/context/scroll-context";
 import { useAuth } from "@/hooks/use-auth";
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
@@ -46,21 +46,51 @@ function PrivateRoute({ component: Component, ...rest }: any) {
 
 function ScrollToTop() {
   const [location] = useLocation();
+  const { scrollTo } = useScrollContext();
 
   useEffect(() => {
     const hash = window.location.hash;
-    if (hash) {
-      const timeout = setTimeout(() => {
-        const el = document.querySelector(hash);
-        if (el) {
-          el.scrollIntoView({ behavior: "smooth" });
-        }
-      }, 100);
+
+    if (!hash) {
+      // No hash — scroll to top after exit animation (400ms) completes
+      const timeout = setTimeout(() => scrollTo(0, { duration: 0 }), 450);
       return () => clearTimeout(timeout);
-    } else {
-      window.scrollTo(0, 0);
     }
-  }, [location]);
+
+    // Hash navigation — poll until the target element exists in the DOM.
+    // AnimatePresence mode="wait" unmounts the old page (400ms exit)
+    // before mounting the new one, so elements don't exist yet.
+    // Use duration: 0 (instant) because the page is still fading in
+    // from opacity 0 — smooth scrolling during the enter animation
+    // would fight the translateY transform and land at wrong positions.
+    let cancelled = false;
+    let attempts = 0;
+
+    const poll = () => {
+      if (cancelled) return;
+      attempts++;
+      const el = document.querySelector(hash);
+      if (el) {
+        // Element found — wait two frames for layout to settle, then jump
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            if (!cancelled) scrollTo(hash, { offset: -80, duration: 0 });
+          });
+        });
+      } else if (attempts < 40) {
+        // Not in DOM yet, retry (max ~2 seconds)
+        setTimeout(poll, 50);
+      }
+    };
+
+    // Start polling after exit animation is mostly done
+    const start = setTimeout(poll, 350);
+
+    return () => {
+      cancelled = true;
+      clearTimeout(start);
+    };
+  }, [location, scrollTo]);
 
   return null;
 }

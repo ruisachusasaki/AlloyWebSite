@@ -21,6 +21,7 @@ import {
 import alloyLogo from "@assets/Alloy_Logo_1770503010900.png";
 
 import { SchedulingContext } from "@/context/scheduling-context";
+import { useScrollContext } from "@/context/scroll-context";
 export { SchedulingContext };
 
 export function SharedNavbar() {
@@ -30,6 +31,7 @@ export function SharedNavbar() {
   const { openScheduling } = useContext(SchedulingContext);
   const [location] = useLocation();
   const { t } = useLanguage();
+  const { scrollTo } = useScrollContext();
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
@@ -65,7 +67,7 @@ export function SharedNavbar() {
         }`}
     >
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
-        <Link href="/" className="flex items-center gap-2" data-testid="link-logo" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+        <Link href="/" className="flex items-center gap-2" data-testid="link-logo" onClick={() => scrollTo(0)}>
           <img
             src={alloyLogo}
             alt="ALLOY"
@@ -79,7 +81,7 @@ export function SharedNavbar() {
 
         <div className="hidden md:flex items-center gap-6">
           {isLandingPage ? (
-            <a href="#solution" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-solutions">
+            <a href="#solution" onClick={(e) => { e.preventDefault(); scrollTo("#solution", { offset: -80 }); }} className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-solutions">
               {t("nav.solutions")}
             </a>
           ) : (
@@ -89,7 +91,7 @@ export function SharedNavbar() {
           )}
 
           {isLandingPage ? (
-            <a href="#cases" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-cases">
+            <a href="#cases" onClick={(e) => { e.preventDefault(); scrollTo("#cases", { offset: -80 }); }} className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-cases">
               {t("nav.portfolio")}
             </a>
           ) : (
@@ -106,7 +108,7 @@ export function SharedNavbar() {
             {t("nav.buildYourSolution")}
           </Link>
           {isLandingPage ? (
-            <a href="#clients" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-clients">
+            <a href="#clients" onClick={(e) => { e.preventDefault(); scrollTo("#clients", { offset: -80 }); }} className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-clients">
               {t("nav.clients")}
             </a>
           ) : (
@@ -115,7 +117,7 @@ export function SharedNavbar() {
             </Link>
           )}
           {isLandingPage ? (
-            <a href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-pricing">
+            <a href="#pricing" onClick={(e) => { e.preventDefault(); scrollTo("#pricing", { offset: -80 }); }} className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-pricing">
               {t("nav.pricing")}
             </a>
           ) : (
@@ -124,7 +126,7 @@ export function SharedNavbar() {
             </Link>
           )}
           {isLandingPage ? (
-            <a href="#contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-contact">
+            <a href="#contact" onClick={(e) => { e.preventDefault(); scrollTo("#contact", { offset: -80 }); }} className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-contact">
               {t("nav.contact")}
             </a>
           ) : (
@@ -176,7 +178,7 @@ export function SharedNavbar() {
         >
           {/* Top bar with logo + close */}
           <div className="flex items-center justify-between px-6 py-4">
-            <Link href="/" className="flex items-center gap-2" onClick={() => { setMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
+            <Link href="/" className="flex items-center gap-2" onClick={() => { setMobileMenuOpen(false); scrollTo(0); }}>
               <img src={alloyLogo} alt="ALLOY" className="h-8 w-auto dark:brightness-110 brightness-90 dark:drop-shadow-[0_0_4px_rgba(200,160,120,0.3)]" />
               <span className="text-lg font-bold tracking-tight">
                 <span className="text-primary">ALL</span>
@@ -208,7 +210,7 @@ export function SharedNavbar() {
                   <a
                     href={item.href}
                     className={`text-2xl font-display font-semibold transition-colors duration-200 ${item.isActive ? "text-primary" : "text-foreground hover:text-primary"}`}
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); scrollTo(item.href, { offset: -80 }); }}
                   >
                     {item.label}
                   </a>
@@ -257,6 +259,9 @@ export function SharedNavbar() {
 export function SharedFooter() {
   const { openScheduling } = useContext(SchedulingContext);
   const { t, language, setLanguage } = useLanguage();
+  const { scrollTo } = useScrollContext();
+  const [location] = useLocation();
+  const isLandingPage = location === "/";
 
   /* ── Strikethrough animation on "chaos" ── */
   const strikeRef = useRef<HTMLSpanElement>(null);
@@ -353,7 +358,7 @@ export function SharedFooter() {
               transition={{ duration: 0.6 }}
             >
               <button
-                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                onClick={() => scrollTo(0)}
                 className="flex items-center gap-2 mb-5 cursor-pointer"
               >
                 <img
@@ -385,15 +390,33 @@ export function SharedFooter() {
                 {t("footer.col.links")}
               </h3>
               <nav className="flex flex-col gap-3">
-                <a href="#" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
-                  {t("footer.nav.home")}
-                </a>
-                <a href="#cases" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
-                  {t("footer.nav.portfolio")}
-                </a>
-                <a href="#pricing" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
-                  {t("footer.nav.pricing")}
-                </a>
+                {isLandingPage ? (
+                  <a href="#" onClick={(e) => { e.preventDefault(); scrollTo(0); }} className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
+                    {t("footer.nav.home")}
+                  </a>
+                ) : (
+                  <Link href="/" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
+                    {t("footer.nav.home")}
+                  </Link>
+                )}
+                {isLandingPage ? (
+                  <a href="#cases" onClick={(e) => { e.preventDefault(); scrollTo("#cases", { offset: -80 }); }} className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
+                    {t("footer.nav.portfolio")}
+                  </a>
+                ) : (
+                  <Link href="/#cases" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
+                    {t("footer.nav.portfolio")}
+                  </Link>
+                )}
+                {isLandingPage ? (
+                  <a href="#pricing" onClick={(e) => { e.preventDefault(); scrollTo("#pricing", { offset: -80 }); }} className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
+                    {t("footer.nav.pricing")}
+                  </a>
+                ) : (
+                  <Link href="/#pricing" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
+                    {t("footer.nav.pricing")}
+                  </Link>
+                )}
                 <Link href="/build" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
                   {t("footer.nav.build")}
                 </Link>
@@ -471,7 +494,7 @@ export function SharedFooter() {
                 <span className="text-muted-foreground/50 ml-1">34.6°S 58.4°W</span>
               </span>
               <button
-                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                onClick={() => scrollTo(0)}
                 className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition-colors duration-200 text-xs font-mono cursor-pointer"
                 data-testid="button-back-to-top"
               >

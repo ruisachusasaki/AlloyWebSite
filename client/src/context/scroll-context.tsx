@@ -26,13 +26,15 @@ export function ScrollProvider({ children }: { children: React.ReactNode }) {
 
     lenisRef.current = lenis;
 
+    let rafId: number;
     function raf(time: number) {
       lenis.raf(time);
-      requestAnimationFrame(raf);
+      rafId = requestAnimationFrame(raf);
     }
-    requestAnimationFrame(raf);
+    rafId = requestAnimationFrame(raf);
 
     return () => {
+      cancelAnimationFrame(rafId);
       lenis.destroy();
       lenisRef.current = null;
     };
@@ -40,10 +42,36 @@ export function ScrollProvider({ children }: { children: React.ReactNode }) {
 
   const scrollTo = useCallback(
     (target: string | number | HTMLElement, options?: { offset?: number; duration?: number }) => {
-      lenisRef.current?.scrollTo(target, {
-        offset: options?.offset ?? 0,
-        duration: options?.duration ?? 1.2,
-      });
+      if (!lenisRef.current) return;
+
+      // For element targets, calculate position via offsetTop chain.
+      // This is immune to CSS transforms (e.g. motion.div translateY during
+      // page transitions) and Lenis animatedScroll drift after route changes.
+      let el: HTMLElement | null = null;
+      if (typeof target === "string") {
+        el = document.querySelector(target) as HTMLElement | null;
+        if (!el) return;
+      } else if (target instanceof HTMLElement) {
+        el = target;
+      }
+
+      if (el) {
+        let top = 0;
+        let node: HTMLElement | null = el;
+        while (node) {
+          top += node.offsetTop;
+          node = node.offsetParent as HTMLElement | null;
+        }
+        lenisRef.current.scrollTo(Math.max(0, top + (options?.offset ?? 0)), {
+          duration: options?.duration ?? 1.2,
+        });
+      } else {
+        // Numeric target — pass through directly
+        lenisRef.current.scrollTo(target as number, {
+          offset: options?.offset ?? 0,
+          duration: options?.duration ?? 1.2,
+        });
+      }
     },
     []
   );
