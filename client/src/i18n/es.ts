@@ -38,7 +38,8 @@ export const es: Record<string, string> = {
     "footer.col.connect": "Conectar",
     "footer.nav.home": "Inicio",
     "footer.bookCall": "Agendá una Llamada",
-    "footer.email": "hello@alloyready.io",
+    "footer.email.rui": "rui@alloyready.com",
+    "footer.email.felipe": "felipe@alloyready.com",
     // ─── Footer Bottom ───
     "footer.location": "Buenos Aires, Argentina",
     "footer.backToTop": "Volver arriba",

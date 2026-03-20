@@ -438,11 +438,18 @@ export function SharedFooter() {
               </h3>
               <div className="flex flex-col gap-3">
                 <a
-                  href="mailto:hello@alloyready.io"
+                  href="mailto:rui@alloyready.com"
                   className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors duration-200 text-sm"
                 >
                   <Mail className="w-4 h-4" />
-                  {t("footer.email")}
+                  rui@alloyready.com
+                </a>
+                <a
+                  href="mailto:felipe@alloyready.com"
+                  className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors duration-200 text-sm"
+                >
+                  <Mail className="w-4 h-4" />
+                  felipe@alloyready.com
                 </a>
                 <button
                   onClick={() => openScheduling()}
