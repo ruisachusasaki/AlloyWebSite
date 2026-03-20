@@ -57,39 +57,17 @@ function ScrollToTop() {
       return () => clearTimeout(timeout);
     }
 
-    // Hash navigation — poll until the target element exists in the DOM.
-    // AnimatePresence mode="wait" unmounts the old page (400ms exit)
-    // before mounting the new one, so elements don't exist yet.
-    // Use duration: 0 (instant) because the page is still fading in
-    // from opacity 0 — smooth scrolling during the enter animation
-    // would fight the translateY transform and land at wrong positions.
-    let cancelled = false;
-    let attempts = 0;
-
-    const poll = () => {
-      if (cancelled) return;
-      attempts++;
+    // Wait for full page transition (400ms exit + 400ms enter = 800ms)
+    // so all CSS transforms are gone and Lenis dimensions are accurate.
+    // Using duration: 0 for instant jump since the page just finished fading in.
+    const timeout = setTimeout(() => {
       const el = document.querySelector(hash);
       if (el) {
-        // Element found — wait two frames for layout to settle, then jump
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            if (!cancelled) scrollTo(hash, { offset: -80, duration: 0 });
-          });
-        });
-      } else if (attempts < 40) {
-        // Not in DOM yet, retry (max ~2 seconds)
-        setTimeout(poll, 50);
+        scrollTo(hash, { offset: -80, duration: 0 });
       }
-    };
+    }, 850);
 
-    // Start polling after exit animation is mostly done
-    const start = setTimeout(poll, 350);
-
-    return () => {
-      cancelled = true;
-      clearTimeout(start);
-    };
+    return () => clearTimeout(timeout);
   }, [location, scrollTo]);
 
   return null;

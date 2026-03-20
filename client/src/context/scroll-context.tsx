@@ -44,34 +44,17 @@ export function ScrollProvider({ children }: { children: React.ReactNode }) {
     (target: string | number | HTMLElement, options?: { offset?: number; duration?: number }) => {
       if (!lenisRef.current) return;
 
-      // For element targets, calculate position via offsetTop chain.
-      // This is immune to CSS transforms (e.g. motion.div translateY during
-      // page transitions) and Lenis animatedScroll drift after route changes.
-      let el: HTMLElement | null = null;
-      if (typeof target === "string") {
-        el = document.querySelector(target) as HTMLElement | null;
-        if (!el) return;
-      } else if (target instanceof HTMLElement) {
-        el = target;
+      // Force Lenis to recalculate content dimensions before element-based
+      // scrolling. Critical after page transitions where content height changes
+      // dramatically (e.g. /build → landing page with 400vh CasesSection).
+      if (typeof target === "string" || target instanceof HTMLElement) {
+        lenisRef.current.resize();
       }
 
-      if (el) {
-        let top = 0;
-        let node: HTMLElement | null = el;
-        while (node) {
-          top += node.offsetTop;
-          node = node.offsetParent as HTMLElement | null;
-        }
-        lenisRef.current.scrollTo(Math.max(0, top + (options?.offset ?? 0)), {
-          duration: options?.duration ?? 1.2,
-        });
-      } else {
-        // Numeric target — pass through directly
-        lenisRef.current.scrollTo(target as number, {
-          offset: options?.offset ?? 0,
-          duration: options?.duration ?? 1.2,
-        });
-      }
+      lenisRef.current.scrollTo(target, {
+        offset: options?.offset ?? 0,
+        duration: options?.duration ?? 1.2,
+      });
     },
     []
   );
