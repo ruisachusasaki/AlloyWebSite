@@ -145,7 +145,7 @@ export const es: Record<string, string> = {
 
     // ─── Comparison Toggle Section ───
     "comparison.title": "Mirá la diferencia",
-    "comparison.subtitle": "",
+    "comparison.subtitle": "Herramientas genéricas vs. una plataforma hecha para vos.",
     "comparison.standardSaas": "SaaS Estándar",
     "comparison.yourPlatform": "Tu Plataforma",
     "comparison.standard.slowUpdates": "Actualizaciones Lentas",
