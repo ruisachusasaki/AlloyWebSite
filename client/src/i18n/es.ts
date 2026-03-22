@@ -6,7 +6,7 @@ export const es: Record<string, string> = {
     "nav.buildYourSolution": "Armá tu Solución",
     "nav.clients": "Clientes",
     "nav.contact": "Contacto",
-    "nav.scheduleCall": "Agendá una Llamada",
+    "nav.scheduleCall": "Agendá una llamada",
 
     // ─── Navbar Portfolio Items ───
     "nav.portfolio.wealthfit": "Wealthfit",
@@ -37,7 +37,7 @@ export const es: Record<string, string> = {
     "footer.col.links": "Enlaces",
     "footer.col.connect": "Conectar",
     "footer.nav.home": "Inicio",
-    "footer.bookCall": "Agendá una Llamada",
+    "footer.bookCall": "Agendá una llamada",
     "footer.email.rui": "rui@alloyready.com",
     "footer.email.felipe": "felipe@alloyready.com",
     // ─── Footer Bottom ───
@@ -53,12 +53,12 @@ export const es: Record<string, string> = {
     "hero.rotating.2": "tareas manuales.",
     "hero.rotating.3": "datos dispersos.",
     "hero.rotating.4": "sitios web genéricos.",
-    "hero.rotating.5": "tiendas obsoletas.",
+    "hero.rotating.5": "tiendas genéricas.",
     "hero.badge.ecommerce": "Desarrollo eCommerce",
     "hero.badge.website": "Desarrollo de Sitios Web",
     "hero.badge.platform": "Desarrollo de Plataformas",
     "hero.badge.crm": "Desarrollo de CRM a Medida",
-    "hero.subtitle": "Construimos la única plataforma que hace todo, exactamente como vos trabajás. Reemplazá tu stack tecnológico desordenado por un sistema digital hecho a medida.",
+    "hero.subtitle": "Construimos una única plataforma que hace todo, exactamente como vos trabajás. Reemplazá tu stack tecnológico desordenado por un sistema digital hecho a medida.",
     "hero.cta": "Agendá una llamada de 30 min",
     "hero.ctaSecondary": "Armalo Vos Mismo",
     "hero.noCommitment": "Sin compromiso",
@@ -89,7 +89,7 @@ export const es: Record<string, string> = {
     "bento.title.line1": " ",
     "bento.title.highlight": "Plataforma Personalizada",
     "bento.title.line2": "",
-    "bento.subtitle": "Una tarifa fija. Evolución ilimitada. Cero deuda técnica.",
+    "bento.subtitle": "Una tarifa fija. Evolución ilimitada*.",
     "bento.evolution.title": "Una herramienta que crece con vos.",
     "bento.evolution.description": "¿Necesitás algo? Lo ",
     "bento.evolution.descriptionHighlight": "construimos hoy mismo",
@@ -98,7 +98,7 @@ export const es: Record<string, string> = {
     "bento.evolution.requestExample": "\"Necesito un portal de clientes con actualizaciones en vivo\"",
     "bento.evolution.liveLabel": "Función en Vivo",
     "bento.evolution.liveExample": "Portal de Clientes desplegado y activo",
-    "bento.evolution.tagline": "Solicitud → Realidad. Sin costos extra, sin tickets, solo progreso.",
+    "bento.evolution.tagline": "Solicitud → Realidad. Sin costos extra, solo progreso.",
     "bento.ai.title": "IA con Contexto Propio",
     "bento.ai.description": "La IA genérica sirve para escribir emails. Tu IA integrada sirve para",
     "bento.ai.descriptionHighlight": "gestionar una empresa",
@@ -112,7 +112,7 @@ export const es: Record<string, string> = {
     "bento.integration.descriptionHighlight": "reemplazalas por completo",
     "bento.integration.descriptionEnd": ". Tu plataforma, tus reglas.",
     "bento.maintenance.title": "Cero Mantenimiento",
-    "bento.maintenance.description": "Dejá de pagar expertos en Zapier. Somos tu partner de sistemas dedicado.",
+    "bento.maintenance.description": "Dejá de pagar expertos de cada plataforma. Somos tu partner de sistemas dedicado.",
     "bento.pricing.title": "Precio Fijo",
     "bento.pricing.description": "Sin cobro por hora. Sin sorpresas.",
     "bento.pricing.amount": "$1.000/mes",
@@ -145,7 +145,7 @@ export const es: Record<string, string> = {
 
     // ─── Comparison Toggle Section ───
     "comparison.title": "Mirá la diferencia",
-    "comparison.subtitle": "Alterná entre enfoques para ver lo que te estás perdiendo.",
+    "comparison.subtitle": "",
     "comparison.standardSaas": "SaaS Estándar",
     "comparison.yourPlatform": "Tu Plataforma",
     "comparison.standard.slowUpdates": "Actualizaciones Lentas",
@@ -164,7 +164,7 @@ export const es: Record<string, string> = {
 
     // ─── Pricing Section ───
     "pricing.title": "Elegí tu plan",
-    "pricing.subtitle": "Elegí tu nivel de alianza. Convertí el caos en alto rendimiento.",
+    "pricing.subtitle": "Convertí el caos en alto rendimiento.",
 
     "pricing.ecommerce.title": "Alloy eCommerce/Website",
     "pricing.ecommerce.subtitle": "Diseña Tu Tienda",
