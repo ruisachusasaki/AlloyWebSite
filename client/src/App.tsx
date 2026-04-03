@@ -17,6 +17,7 @@ import { CustomCursor } from "@/components/custom-cursor";
 import LandingPage from "@/pages/landing";
 import HomePage from "@/pages/home";
 import BuildSolutionPage from "@/pages/build-solution";
+import OurStoryPage from "@/pages/our-story";
 import NotFound from "@/pages/not-found";
 
 function PrivateRoute({ component: Component, ...rest }: any) {
@@ -102,6 +103,7 @@ function AnimatedRoutes() {
           <Route path="/" component={() => <PrivateRoute component={HomePage} />} />
           <Route path="/chat/:id" component={() => <PrivateRoute component={HomePage} />} />
           <Route path="/build" component={BuildSolutionPage} />
+          <Route path="/our-story" component={OurStoryPage} />
           <Route component={NotFound} />
         </Switch>
       </motion.div>

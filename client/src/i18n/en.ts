@@ -493,6 +493,51 @@ export const en: Record<string, string> = {
     "home.disclaimer": "AI can make mistakes. Check important info.",
     "home.chat": "Chat",
 
+    // ─── Our Story Page ───
+    "nav.ourStory": "Our Story",
+    "footer.nav.ourStory": "Our Story",
+
+    "seo.story.title": "Our Story | ALLOY - Why We Build Custom Software",
+    "seo.story.description": "The story behind Alloy Ready — from discovering the problem with third-party platforms to building custom software that works for your business.",
+    "seo.story.ogTitle": "Our Story | ALLOY",
+    "seo.story.ogDescription": "Why we created Alloy Ready — technology should work for your business, not the other way around.",
+
+    "story.hero.title": "Why I Created Alloy Ready",
+    "story.hero.subtitle": "From building technology inside the companies that need it, to building it for everyone.",
+
+    "story.ch1.number": "01",
+    "story.ch1.title": "The Spark",
+    "story.ch1.p1": "My name is Rui. I'm Japanese, 27 years old, and I live in Buenos Aires. If you're wondering how I ended up here, the answer starts with my father.",
+    "story.ch1.p2": "My father is Japanese, but he was born in Argentina. He lived in Buenos Aires until he was 18, then moved to Japan. When I was twelve, he suggested something that changed my life: moving to Argentina. His idea was to show me that the world is much bigger than Japan — that there's an entirely different reality outside the bubble I grew up in. Japan was the only country I'd ever lived in. I needed to get out.",
+    "story.ch1.p3": "My father is also a programmer. When I was 15, he sat me down in front of a computer and we started building a digital board game together — something similar to chess, but coded from scratch. It wasn't polished or professional, but it worked. You shared a link and you played. That's when my real interest in software development began.",
+    "story.ch1.p4": "But it wasn't a straight path. I was still in school, and formal education didn't touch programming. Just the basics — Excel, Word, PowerPoint. So on the side, I started playing around with HTML and PHP, learned a bit about databases, and experimented on my own. After finishing school, I had to choose a career path. I chose Computer Engineering.",
+    "story.ch1.quote": "His idea was to show me that the world is much bigger than Japan",
+
+    "story.ch2.number": "02",
+    "story.ch2.title": "The Problem",
+    "story.ch2.p1": "After spending several years working in tech, I joined a marketing agency as a full stack developer. And it was there, after a few years, where we discovered the problem that changed everything.",
+    "story.ch2.p2": "The agency relied on third-party tools to manage its operations. At one point, we had something unusual: a direct relationship with the platform's owner. If we needed a new feature, we asked for it. If there was a bug, we reported it and it got fixed quickly. It was a huge advantage. Until the owner sold the platform.",
+    "story.ch2.p3": "Overnight, we lost that connection. The new owner had different priorities. The features we needed stopped coming. Problems piled up. The tool that once adapted to us now demanded that we adapt to it.",
+    "story.ch2.quote": "The tool that once adapted to us now demanded that we adapt to it",
+
+    "story.ch3.number": "03",
+    "story.ch3.title": "The Turning Point",
+    "story.ch3.p1": "So I proposed something: what if we build it ourselves? Not as a side experiment. A real tool, built exactly the way we needed it, designed for our clients, fully under our control. No more depending on a third party that could change ownership, raise prices, or stop working the way we needed it to.",
+    "story.ch3.p2": "My boss, the agency's CTO, along with the other executives, approved it immediately. That's how it all started. What happened next is what truly opened my eyes. That first tool worked so well that we started building more. The CTO and I identified every opportunity — when a client asked for something custom, when we spotted a problem that no existing platform solved, when we hit a limitation that made no sense — and the answer was always the same: we build it ourselves.",
+    "story.ch3.p3": "The agency, which until that point had only offered marketing services, opened a new line of business. We started developing our own applications, offering them to our clients, and generating revenue from something that used to be an operational cost. We went from renting technology to owning it. And that's when it hit me: if we had this problem, how many other companies are dealing with the exact same thing?",
+    "story.ch3.quote": "We went from renting technology to owning it",
+
+    "story.ch4.number": "04",
+    "story.ch4.title": "Alloy Ready",
+    "story.ch4.p1": "That's why I created Alloy Ready. Alloy is a development studio that builds 100% custom platforms. We don't sell templates or generic solutions. Every project is designed from scratch, based on how each client actually operates.",
+    "story.ch4.p2": "We offer two core services. The first is fully custom websites — whether it's an ecommerce store, a landing page, or a web platform — where the client decides the design, the user experience, and all the functionality, without the limitations of conventional platforms. The second is custom software development: CRMs, internal tools, management platforms, reporting systems — whatever a business needs to run better.",
+    "story.ch4.p3": "We already have projects in production. Business intelligence platforms with real-time dashboards used by multiple companies every day. Event management systems integrated with Apple Wallet. CRMs connected to Twilio, Slack, Google Calendar, and artificial intelligence. These aren't prototypes — they're tools that real businesses depend on to operate.",
+    "story.ch4.p4": "And if there's one thing I learned working with agencies, it's this: when your tools don't adapt to you, you always lose. Time, money, opportunities. Technology should work for your business, not the other way around. My goal is simple: that every company working with us stops adapting to their technology and instead has technology that adapts to them. That's what we're building at Alloy.",
+    "story.ch4.quote": "Technology should work for your business, not the other way around",
+
+    "story.cta.title": "Ready to build something together?",
+    "story.cta.button": "Schedule a Call",
+
     // ─── Language Toggle ───
     "lang.switchTo": "Switch language",
 };

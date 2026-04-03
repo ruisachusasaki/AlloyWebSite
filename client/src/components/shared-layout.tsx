@@ -101,6 +101,13 @@ export function SharedNavbar() {
           )}
 
           <Link
+            href="/our-story"
+            className={`text-sm transition-colors duration-200 ${location === '/our-story' ? 'text-primary font-medium' : 'text-muted-foreground hover:text-foreground'}`}
+            data-testid="link-our-story"
+          >
+            {t("nav.ourStory")}
+          </Link>
+          <Link
             href="/build"
             className={`text-sm transition-colors duration-200 ${location === '/build' ? 'text-primary font-medium' : 'text-muted-foreground hover:text-foreground'}`}
             data-testid="link-build"
@@ -195,6 +202,7 @@ export function SharedNavbar() {
             {[
               { href: isLandingPage ? "#solution" : "/#solution", label: t("nav.solutions"), isAnchor: isLandingPage, isActive: false },
               { href: isLandingPage ? "#cases" : "/#cases", label: t("nav.portfolio"), isAnchor: isLandingPage, isActive: false },
+              { href: "/our-story", label: t("nav.ourStory"), isAnchor: false, isActive: location === "/our-story" },
               { href: "/build", label: t("nav.buildYourSolution"), isAnchor: false, isActive: location === "/build" },
               { href: isLandingPage ? "#clients" : "/#clients", label: t("nav.clients"), isAnchor: isLandingPage, isActive: false },
               { href: isLandingPage ? "#pricing" : "/#pricing", label: t("nav.pricing"), isAnchor: isLandingPage, isActive: false },
@@ -417,6 +425,9 @@ export function SharedFooter() {
                     {t("footer.nav.pricing")}
                   </Link>
                 )}
+                <Link href="/our-story" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
+                  {t("footer.nav.ourStory")}
+                </Link>
                 <Link href="/build" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
                   {t("footer.nav.build")}
                 </Link>
