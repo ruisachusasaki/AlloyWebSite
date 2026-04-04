@@ -103,7 +103,7 @@ function AnimatedRoutes() {
           <Route path="/" component={() => <PrivateRoute component={HomePage} />} />
           <Route path="/chat/:id" component={() => <PrivateRoute component={HomePage} />} />
           <Route path="/build" component={BuildSolutionPage} />
-          <Route path="/our-story" component={OurStoryPage} />
+          <Route path="/about" component={OurStoryPage} />
           <Route component={NotFound} />
         </Switch>
       </motion.div>
