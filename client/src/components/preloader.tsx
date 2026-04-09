@@ -7,7 +7,7 @@ const HOLD_MS = 250;
 const SPLIT_MS = 700;
 
 const SESSION_KEY = "alloy-preloader-shown";
-const WORDMARK = "ALLOY";
+const WORDMARK = "AlloyReady";
 const TAGLINE = "Replace Chaos With Clarity";
 
 /* Noise texture – same SVG as .noise-bg in index.css */
@@ -71,16 +71,16 @@ function PreloaderContent({
       {/* ── Center stack ── */}
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 md:gap-5">
         {/* Wordmark */}
-        <div className="flex items-center tracking-[0.35em]">
+        <div className="flex items-center tracking-[0.15em]">
           {WORDMARK.split("").map((letter, i) => (
             <motion.span
               key={i}
-              className="inline-block font-display text-sm md:text-base font-medium text-muted-foreground uppercase"
+              className={`inline-block font-logo text-base md:text-lg ${i < 3 ? "text-primary" : "text-muted-foreground"} ${i >= 5 ? "font-light opacity-70" : ""}`}
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
                 duration: 0.6,
-                delay: 0.15 + i * 0.065,
+                delay: 0.15 + i * 0.05,
                 ease: [0.22, 1, 0.36, 1],
               }}
             >

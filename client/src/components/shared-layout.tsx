@@ -18,8 +18,6 @@ import {
   X
 } from "lucide-react";
 
-import alloyLogo from "@assets/Alloy_Logo_1770503010900.png";
-
 import { SchedulingContext } from "@/context/scheduling-context";
 import { useScrollContext } from "@/context/scroll-context";
 export { SchedulingContext };
@@ -67,15 +65,10 @@ export function SharedNavbar() {
         }`}
     >
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
-        <Link href="/" className="flex items-center gap-2" data-testid="link-logo" onClick={() => scrollTo(0)}>
-          <img
-            src={alloyLogo}
-            alt="ALLOY"
-            className="h-8 w-auto dark:brightness-110 brightness-90 dark:drop-shadow-[0_0_4px_rgba(200,160,120,0.3)]"
-          />
-          <span className="text-lg font-bold tracking-tight hidden sm:block">
-            <span className="text-primary">ALL</span>
-            <span className="text-foreground">OY</span>
+        <Link href="/" className="flex items-baseline" data-testid="link-logo" onClick={() => scrollTo(0)}>
+          <span className="font-logo text-4xl text-primary leading-none">A</span>
+          <span className="font-logo text-2xl tracking-tight hidden sm:block -ml-0.5">
+            <span className="text-primary">ll</span><span className="text-foreground">oy</span><span className="text-foreground font-light opacity-80">Ready</span>
           </span>
         </Link>
 
@@ -185,11 +178,10 @@ export function SharedNavbar() {
         >
           {/* Top bar with logo + close */}
           <div className="flex items-center justify-between px-6 py-4">
-            <Link href="/" className="flex items-center gap-2" onClick={() => { setMobileMenuOpen(false); scrollTo(0); }}>
-              <img src={alloyLogo} alt="ALLOY" className="h-8 w-auto dark:brightness-110 brightness-90 dark:drop-shadow-[0_0_4px_rgba(200,160,120,0.3)]" />
-              <span className="text-lg font-bold tracking-tight">
-                <span className="text-primary">ALL</span>
-                <span className="text-foreground">OY</span>
+            <Link href="/" className="flex items-center gap-1" onClick={() => { setMobileMenuOpen(false); scrollTo(0); }}>
+              <span className="font-logo text-2xl text-primary leading-none">A</span>
+              <span className="font-logo text-lg tracking-tight">
+                <span className="text-primary">ll</span><span className="text-foreground">oy</span><span className="text-foreground font-light opacity-80">Ready</span>
               </span>
             </Link>
             <Button size="icon" variant="ghost" onClick={() => setMobileMenuOpen(false)} data-testid="button-mobile-close">
@@ -339,12 +331,12 @@ export function SharedFooter() {
           className="wordmark-container absolute inset-0 flex items-center justify-center pointer-events-none select-none"
           aria-hidden="true"
         >
-          {"ALLOY".split("").map((letter, i) => (
+          {"ALLOYREADY".split("").map((letter, i) => (
             <span
               key={i}
-              className="wordmark-letter font-display font-black text-foreground pointer-events-auto"
+              className="wordmark-letter font-logo text-foreground pointer-events-auto"
               style={{
-                fontSize: "clamp(8rem, 25vw, 20rem)",
+                fontSize: "clamp(6rem, 18vw, 16rem)",
                 opacity: 0.04,
                 lineHeight: 1,
                 letterSpacing: "-0.04em",
@@ -367,16 +359,11 @@ export function SharedFooter() {
             >
               <button
                 onClick={() => scrollTo(0)}
-                className="flex items-center gap-2 mb-5 cursor-pointer"
+                className="flex items-center gap-1 mb-5 cursor-pointer"
               >
-                <img
-                  src={alloyLogo}
-                  alt="ALLOY"
-                  className="h-10 w-auto dark:brightness-110 brightness-90 dark:drop-shadow-[0_0_4px_rgba(200,160,120,0.3)]"
-                />
-                <span className="text-2xl font-bold tracking-tight">
-                  <span className="text-primary">ALL</span>
-                  <span className="text-foreground">OY</span>
+                <span className="font-logo text-3xl text-primary leading-none">A</span>
+                <span className="font-logo text-2xl tracking-tight">
+                  <span className="text-primary">ll</span><span className="text-foreground">oy</span><span className="text-foreground font-light opacity-80">Ready</span>
                 </span>
               </button>
               <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
@@ -484,7 +471,7 @@ export function SharedFooter() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             {/* Left: Copyright */}
             <p className="text-muted-foreground text-xs font-mono order-2 sm:order-1">
-              &copy; {new Date().getFullYear()} ALLOY
+              &copy; {new Date().getFullYear()} AlloyReady
             </p>
 
             {/* Center: Language toggle */}

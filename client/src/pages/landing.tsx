@@ -51,7 +51,6 @@ const HeroCube = React.lazy(() => import("@/components/hero-cube"));
 import darwinLogo from "@assets/darwin-ai-logo_1769368824707.png";
 import meliLogo from "@assets/image_1769370076739.png";
 import tokkoLogo from "@assets/tokko_broker_logo_(1)_1_1769369724733.png";
-import alloyLogo from "@assets/Alloy_Logo_1770503010900.png";
 import caseWealthfit from "@assets/cases/wealthfit.png";
 import caseEventgrowth from "@assets/cases/eventgrowth.png";
 import caseAgencyboost from "@assets/cases/AgencyBoost.png";
@@ -750,7 +749,7 @@ function SpaghettiChaosSection() {
 
             <div className="relative" data-testid="icon-unified-platform">
               <div className="w-32 h-32 md:w-44 md:h-44 rounded-3xl bg-gradient-to-br from-primary via-primary/80 to-primary/60 flex items-center justify-center shadow-2xl border border-primary/30">
-                <img src={alloyLogo} alt="Alloy" className="w-20 h-20 md:w-28 md:h-28 object-contain brightness-0 invert drop-shadow-md" />
+                <span className="font-logo text-7xl md:text-8xl text-white drop-shadow-md leading-none">A</span>
               </div>
             </div>
           </motion.div>

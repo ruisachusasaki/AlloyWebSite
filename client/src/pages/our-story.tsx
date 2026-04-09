@@ -391,7 +391,7 @@ export default function OurStoryPage() {
                 aria-hidden="true"
               >
                 <span
-                  className="font-display font-black text-foreground whitespace-nowrap"
+                  className="font-logo text-foreground whitespace-nowrap"
                   style={{
                     fontSize: "clamp(4rem, 12vw, 10rem)",
                     opacity: 0.05,
@@ -399,7 +399,7 @@ export default function OurStoryPage() {
                     letterSpacing: "-0.04em",
                   }}
                 >
-                  ALLOY
+                  AlloyReady
                 </span>
               </div>
 
