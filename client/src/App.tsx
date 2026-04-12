@@ -18,6 +18,7 @@ import LandingPage from "@/pages/landing";
 import HomePage from "@/pages/home";
 import BuildSolutionPage from "@/pages/build-solution";
 import OurStoryPage from "@/pages/our-story";
+import FAQPage from "@/pages/faq";
 import NotFound from "@/pages/not-found";
 
 function PrivateRoute({ component: Component, ...rest }: any) {
@@ -104,6 +105,7 @@ function AnimatedRoutes() {
           <Route path="/chat/:id" component={() => <PrivateRoute component={HomePage} />} />
           <Route path="/build" component={BuildSolutionPage} />
           <Route path="/about" component={OurStoryPage} />
+          <Route path="/faq" component={FAQPage} />
           <Route component={NotFound} />
         </Switch>
       </motion.div>

@@ -6,6 +6,7 @@ export const en: Record<string, string> = {
     "nav.buildYourSolution": "Build Your Solution",
     "nav.clients": "Clients",
     "nav.contact": "Contact",
+    "nav.faq": "FAQ",
     "nav.scheduleCall": "Schedule a Call",
 
     // ─── Navbar Portfolio Items ───
@@ -262,43 +263,45 @@ export const en: Record<string, string> = {
     "faq.title.line1": "Questions?",
     "faq.title.highlight": "Answered.",
     "faq.subtitle": "Everything you need to know about productized software development.",
+    "faq.seeAll": "See all questions",
+    "faq.page.title": "Frequently Asked Questions | ALLOY",
+    "faq.page.description": "Answers to the most common questions about Alloy Ready's custom software development services.",
 
-    "faq.q1": "What is a productized software service?",
-    "faq.a1": "A productized software service delivers custom-built software through a fixed monthly subscription instead of per-project billing. You get a dedicated development team that continuously builds, maintains, and evolves your platform — like having an in-house tech team without the overhead.",
+    "faq.q1": "What types of companies do you work with?",
+    "faq.a1": "We work with companies that are in their early stages or have already grown past them and need custom technology to keep scaling: marketing agencies, e-commerce businesses, service companies with complex operations, and startups that need a robust product from day one. Some of the projects we've built include AgencyBoost (a unified SaaS for agencies), EventGrowth (a multi-tenant platform for live events), DataLite (a BI platform for data analytics), and WealthFit (an online finance course platform). If your operation depends on software and you feel your current tools are holding you back, we're a fit.",
 
-    "faq.q2": "How much does custom software development cost?",
-    "faq.a2": "Traditional custom software projects range from $50,000 to $500,000+ upfront. ALLOY's productized model starts at $200/month for eCommerce sites and $599/month for full custom platforms, with no large upfront investment. You pay a flat monthly fee for continuous development and evolution.",
+    "faq.q2": "How do I know if my company needs its own platform?",
+    "faq.a2": "There are clear signs. If you're paying for four or more SaaS subscriptions that don't talk to each other (e.g., Notion + Slack + Zapier + Shopify + WordPress plugins), if your team wastes hours on manual tasks that should be automated, if Shopify or Tienda Nube templates don't let you express your brand identity with the design you want or block key features, or if you already have unique processes that no standard software covers — you probably need your own platform. If you're still validating your business model or your operation is very small, standard SaaS will do for now.",
 
-    "faq.q3": "What's the difference between SaaS and a custom platform?",
-    "faq.a3": "SaaS tools are generic products built for millions of users — you adapt your workflow to fit the tool. A custom platform is built around your exact workflow, integrating all your processes into one system. You own the code, control the roadmap, and never pay for features you don't use.",
+    "faq.q3": "How is Alloy different from other solutions or standard platforms?",
+    "faq.a3": "Shopify, Tienda Nube, and WordPress are great for getting started, but they limit you when you want to scale: limited design templates, transaction fees, impossible-to-customize features. Freelancers are cheap but disappear when you need them most. Traditional agencies are slow and expensive. Alloy combines custom development with continuous support: we build exactly what your business needs and stay to make sure the platform evolves with you.",
 
-    "faq.q4": "Can I replace HubSpot, Airtable, or Zapier with a custom tool?",
-    "faq.a4": "Yes. Most businesses use 5-15 SaaS tools that don't talk to each other, costing $2,000-5,000/month in subscriptions alone. A custom platform unifies CRM, automation, data management, and integrations into one system — often for less than the combined SaaS spend.",
+    "faq.q4": "How much does it cost to work with Alloy?",
+    "faq.a4": "We work with a two-part model: an initial fee for platform development and a monthly retainer for continuous evolution, support, and improvements. The exact amount depends on the project scope, but we give you a fixed proposal before starting — no surprises. We don't charge by the hour or per ticket: we charge for results and continuity. We offer two support plans, which differ in the number of monthly meetings available to add new features or modify existing ones based on what your business needs.",
 
-    "faq.q5": "What is included in an unlimited software subscription?",
-    "faq.a5": "ALLOY subscriptions include continuous development, bug fixes, feature additions, security updates, hosting, and strategy sessions. There are no per-feature charges. Request a new feature today, and it can be live within days — not months.",
+    "faq.q5": "How long does it take to launch a platform with Alloy?",
+    "faq.a5": "Much less than with a traditional agency. We work with a modern stack that lets us iterate much faster than traditional development: a functional MVP can be ready in a few weeks and a full platform in a few months. We give you a concrete timeline with clear milestones before we start.",
 
-    "faq.q6": "How long does it take to build a custom internal tool?",
-    "faq.a6": "An initial MVP is typically delivered within 2-4 weeks. From there, the platform evolves continuously based on your feedback. Unlike traditional development where you wait months for a 'finished' product, you start using and refining your tool almost immediately.",
+    "faq.q6": "Who owns the code once the project is finished?",
+    "faq.a6": "You do. The code, the database, the designs, and all the documentation are your company's property from day one. There are no hidden licenses or proprietary dependencies tying you to us. This is one of the fundamental differences from any SaaS platform: with Alloy, you own your technology.",
 
-    "faq.q7": "Do I own the code that ALLOY builds for me?",
-    "faq.a7": "Yes, you own 100% of the code and intellectual property. Your platform runs on your infrastructure, and you retain full access to the codebase. If you ever decide to leave, you take everything with you.",
+    "faq.q7": "What happens if we stop working together?",
+    "faq.a7": "You'd already have the complete code, the technical documentation, and access to the entire infrastructure. Any other development team can continue the work without friction. We don't believe in retaining clients through technical dependency: if you stay with us, it's because the service is worth it.",
 
-    "faq.q8": "Is ALLOY only for businesses in Argentina?",
-    "faq.a8": "No. ALLOY is based in Buenos Aires but serves clients globally. Our productized model works for any business that needs custom software, regardless of location. We work asynchronously across time zones with regular strategy sessions.",
+    "faq.q8": "What is Alloy's work process like?",
+    "faq.a8": "We start with a discovery session to deeply understand your operation and goals. From there, we define the scope, timeline, and deliverables. During development, we maintain constant communication with periodic demos so you validate progress in real time. Once the platform launches, we move to continuous evolution mode: improvements, new features, and support under the monthly retainer.",
 
-    // ─── Learn More Section ───
-    "learnMore.title": "Learn More",
-    "learnMore.toggle": "Read more about productized software development",
-    "learnMore.h2.problem": "The Problem: SaaS Fragmentation",
-    "learnMore.p1": "Growing businesses face a silent crisis: SaaS fragmentation. As teams scale from 5 to 50 people, the average company accumulates 15-25 different software subscriptions. Each tool solves one narrow problem — a CRM here, a project manager there, a separate analytics dashboard, yet another tool for invoicing. The result is a Frankenstein tech stack held together by Zapier automations and manual data entry.",
-    "learnMore.p2": "This fragmentation costs more than subscription fees. It costs clarity. When your client data lives in HubSpot, your project status in Asana, your finances in QuickBooks, and your communications in Slack, no single person has a complete picture of the business. Decisions are made on partial information. Teams waste hours copying data between systems. Critical updates fall through the cracks.",
-    "learnMore.h2.solution": "How Productized Software Development Works",
-    "learnMore.p3": "Productized software development replaces the traditional agency model — where you pay tens of thousands upfront for a 'finished' product that's outdated by launch — with a continuous development partnership. For a fixed monthly fee, you get a dedicated team that builds, maintains, and evolves your custom platform indefinitely.",
-    "learnMore.p4": "The process starts with your most painful workflow. Within 2-4 weeks, you have a working MVP that addresses your core bottleneck. From there, the platform grows organically. Need a client portal? It's built and deployed within days. Want AI-powered reporting? Added next sprint. Your platform becomes a living system that adapts as fast as your business does.",
-    "learnMore.h2.alloy": "Why ALLOY's Model Is Different",
-    "learnMore.p5": "ALLOY combines the predictability of SaaS pricing with the power of custom development. Starting at $200/month for eCommerce sites and $599/month for full custom platforms, you get unlimited feature requests, priority bug fixes, strategy sessions, and a platform that never stops evolving. There are no hourly rates, no scope negotiations, and no surprise invoices.",
-    "learnMore.p6": "Based in Buenos Aires with a global client base, ALLOY operates as your external tech department. We handle architecture decisions, security updates, performance optimization, and infrastructure management — so you can focus on running your business. Every line of code we write belongs to you, and you can take it with you if you ever leave.",
+    "faq.q9": "Can I integrate the platform with tools I already use?",
+    "faq.a9": "Yes. We integrate with MercadoPago, AFIP, Google Analytics, Meta Ads, CRMs, ERPs, email marketing tools, WhatsApp Business API, and practically any service with a public API. If a tool critical to your operation doesn't have an API, we look for technical alternatives before ruling it out.",
+
+    "faq.q10": "If I want to improve something on the site or system after launch, how do I do it?",
+    "faq.a10": "You write to us and we handle it. The monthly retainer includes continuous improvements, adjustments, new features, and technical support. For large developments that exceed the retainer scope, we send you a specific proposal before executing. There's no bureaucratic ticketing system: there's a team that knows your platform and responds.",
+
+    "faq.q11": "What kind of ongoing support do you offer?",
+    "faq.a11": "Periodic check-ins with your team to review metrics, identify improvement opportunities, and plan the platform's evolution. We proactively monitor performance, security, and usage — many times we detect and resolve issues before you even see them.",
+
+    "faq.q12": "How do you handle security and my company's data?",
+    "faq.a12": "We apply industry-standard best practices: encryption in transit and at rest, automatic backups, role-based access control, and compliance with local regulations when applicable (AFIP, personal data protection). The infrastructure is under your name, not ours: your data is yours, always.",
 
     // ─── Build Solution Page ───
     "build.seo.title": "Build Your Solution | ALLOY",
@@ -496,6 +499,7 @@ export const en: Record<string, string> = {
     // ─── Our Story Page ───
     "nav.ourStory": "About Us",
     "footer.nav.ourStory": "About Us",
+    "footer.nav.faq": "FAQ",
 
     "seo.story.title": "Our Story | ALLOY - Why We Build Custom Software",
     "seo.story.description": "The story behind Alloy Ready — from discovering the problem with third-party platforms to building custom software that works for your business.",

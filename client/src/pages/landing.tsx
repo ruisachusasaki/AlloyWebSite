@@ -8,7 +8,7 @@ import { Link } from "wouter";
 import { SeoHead } from "@/components/seo/seo-head";
 import { OrganizationSchema, LocalBusinessSchema, ServiceSchema, FAQSchema, BreadcrumbSchema } from "@/components/seo/structured-data";
 import { FAQSection } from "@/components/faq-section";
-import { LearnMoreSection } from "@/components/learn-more-section";
+
 import { SchedulingModal } from "@/components/scheduling-modal";
 import { SharedNavbar, SharedFooter } from "@/components/shared-layout";
 import { SchedulingContext } from "@/context/scheduling-context";
@@ -2478,7 +2478,6 @@ export default function LandingPage() {
           <PricingSection />
           <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
           <FAQSection />
-          <LearnMoreSection />
         </main>
         <SharedFooter />
         <SchedulingModal

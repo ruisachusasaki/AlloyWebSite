@@ -82,33 +82,6 @@ export function SharedNavbar() {
               {t("nav.solutions")}
             </Link>
           )}
-
-          {isLandingPage ? (
-            <a href="#cases" onClick={(e) => { e.preventDefault(); scrollTo("#cases", { offset: -80 }); }} className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-cases">
-              {t("nav.portfolio")}
-            </a>
-          ) : (
-            <Link href="/#cases" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-cases">
-              {t("nav.portfolio")}
-            </Link>
-          )}
-
-          <Link
-            href="/build"
-            className={`text-sm transition-colors duration-200 ${location === '/build' ? 'text-primary font-medium' : 'text-muted-foreground hover:text-foreground'}`}
-            data-testid="link-build"
-          >
-            {t("nav.buildYourSolution")}
-          </Link>
-          {isLandingPage ? (
-            <a href="#clients" onClick={(e) => { e.preventDefault(); scrollTo("#clients", { offset: -80 }); }} className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-clients">
-              {t("nav.clients")}
-            </a>
-          ) : (
-            <Link href="/#clients" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-clients">
-              {t("nav.clients")}
-            </Link>
-          )}
           {isLandingPage ? (
             <a href="#pricing" onClick={(e) => { e.preventDefault(); scrollTo("#pricing", { offset: -80 }); }} className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-pricing">
               {t("nav.pricing")}
@@ -119,12 +92,12 @@ export function SharedNavbar() {
             </Link>
           )}
           {isLandingPage ? (
-            <a href="#contact" onClick={(e) => { e.preventDefault(); scrollTo("#contact", { offset: -80 }); }} className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-contact">
-              {t("nav.contact")}
+            <a href="#cases" onClick={(e) => { e.preventDefault(); scrollTo("#cases", { offset: -80 }); }} className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-cases">
+              {t("nav.portfolio")}
             </a>
           ) : (
-            <Link href="/#contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-contact">
-              {t("nav.contact")}
+            <Link href="/#cases" className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200" data-testid="link-cases">
+              {t("nav.portfolio")}
             </Link>
           )}
           <Link
@@ -133,6 +106,13 @@ export function SharedNavbar() {
             data-testid="link-about"
           >
             {t("nav.ourStory")}
+          </Link>
+          <Link
+            href="/faq"
+            className={`text-sm transition-colors duration-200 ${location === '/faq' ? 'text-primary font-medium' : 'text-muted-foreground hover:text-foreground'}`}
+            data-testid="link-faq"
+          >
+            {t("nav.faq")}
           </Link>
         </div>
 
@@ -193,12 +173,10 @@ export function SharedNavbar() {
           <nav className="flex-1 flex flex-col justify-center px-10 gap-6">
             {[
               { href: isLandingPage ? "#solution" : "/#solution", label: t("nav.solutions"), isAnchor: isLandingPage, isActive: false },
-              { href: isLandingPage ? "#cases" : "/#cases", label: t("nav.portfolio"), isAnchor: isLandingPage, isActive: false },
-              { href: "/build", label: t("nav.buildYourSolution"), isAnchor: false, isActive: location === "/build" },
-              { href: isLandingPage ? "#clients" : "/#clients", label: t("nav.clients"), isAnchor: isLandingPage, isActive: false },
               { href: isLandingPage ? "#pricing" : "/#pricing", label: t("nav.pricing"), isAnchor: isLandingPage, isActive: false },
-              { href: isLandingPage ? "#contact" : "/#contact", label: t("nav.contact"), isAnchor: isLandingPage, isActive: false },
+              { href: isLandingPage ? "#cases" : "/#cases", label: t("nav.portfolio"), isAnchor: isLandingPage, isActive: false },
               { href: "/about", label: t("nav.ourStory"), isAnchor: false, isActive: location === "/about" },
+              { href: "/faq", label: t("nav.faq"), isAnchor: false, isActive: location === "/faq" },
             ].map((item, i) => (
               <motion.div
                 key={item.href}
@@ -414,6 +392,9 @@ export function SharedFooter() {
                 )}
                 <Link href="/about" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
                   {t("footer.nav.ourStory")}
+                </Link>
+                <Link href="/faq" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
+                  {t("footer.nav.faq")}
                 </Link>
                 <Link href="/build" className="text-muted-foreground hover:text-foreground hover:translate-x-1 transition-all duration-200 text-sm">
                   {t("footer.nav.build")}
