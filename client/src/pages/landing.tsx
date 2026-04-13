@@ -168,6 +168,7 @@ function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
     t("hero.rotating.3"),
     t("hero.rotating.4"),
     t("hero.rotating.5"),
+    t("hero.rotating.6"),
   ];
   const [highlightIndex, setHighlightIndex] = useState(0);
 
