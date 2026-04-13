@@ -12,6 +12,8 @@ import {
   DollarSign,
   TrendingUp,
   Briefcase,
+  Globe,
+  Layers,
   Mail,
   MapPin,
   Menu,
@@ -25,6 +27,7 @@ export { SchedulingContext };
 export function SharedNavbar() {
   const [scrolled, setScrolled] = useState(false);
   const [portfolioOpen, setPortfolioOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { openScheduling } = useContext(SchedulingContext);
   const [location] = useLocation();
@@ -100,6 +103,65 @@ export function SharedNavbar() {
               {t("nav.portfolio")}
             </Link>
           )}
+
+          {/* Services dropdown */}
+          <div
+            className="relative"
+            onMouseEnter={() => setServicesOpen(true)}
+            onMouseLeave={() => setServicesOpen(false)}
+          >
+            <button
+              className={`text-sm transition-colors duration-200 flex items-center gap-1 ${
+                location === "/custom-websites" || location === "/custom-software"
+                  ? "text-primary font-medium"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+              onClick={() => setServicesOpen(!servicesOpen)}
+            >
+              {t("nav.services")}
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${servicesOpen ? "rotate-180" : ""}`} />
+            </button>
+
+            <AnimatePresence>
+              {servicesOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 8 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 rounded-xl border border-border bg-card shadow-lg overflow-hidden"
+                >
+                  <Link
+                    href="/custom-websites"
+                    className={`flex items-start gap-3 px-4 py-3 transition-colors duration-150 ${
+                      location === "/custom-websites" ? "bg-primary/10" : "hover:bg-muted/50"
+                    }`}
+                    onClick={() => setServicesOpen(false)}
+                  >
+                    <Globe className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <span className="text-sm font-medium block">{t("nav.services.websites")}</span>
+                      <span className="text-xs text-muted-foreground">{t("nav.services.websites.desc")}</span>
+                    </div>
+                  </Link>
+                  <Link
+                    href="/custom-software"
+                    className={`flex items-start gap-3 px-4 py-3 transition-colors duration-150 ${
+                      location === "/custom-software" ? "bg-primary/10" : "hover:bg-muted/50"
+                    }`}
+                    onClick={() => setServicesOpen(false)}
+                  >
+                    <Layers className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <div>
+                      <span className="text-sm font-medium block">{t("nav.services.software")}</span>
+                      <span className="text-xs text-muted-foreground">{t("nav.services.software.desc")}</span>
+                    </div>
+                  </Link>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
           <Link
             href="/about"
             className={`text-sm transition-colors duration-200 ${location === '/about' ? 'text-primary font-medium' : 'text-muted-foreground hover:text-foreground'}`}
@@ -175,6 +237,8 @@ export function SharedNavbar() {
               { href: isLandingPage ? "#solution" : "/#solution", label: t("nav.solutions"), isAnchor: isLandingPage, isActive: false },
               { href: isLandingPage ? "#pricing" : "/#pricing", label: t("nav.pricing"), isAnchor: isLandingPage, isActive: false },
               { href: isLandingPage ? "#cases" : "/#cases", label: t("nav.portfolio"), isAnchor: isLandingPage, isActive: false },
+              { href: "/custom-websites", label: t("nav.services.websites"), isAnchor: false, isActive: location === "/custom-websites" },
+              { href: "/custom-software", label: t("nav.services.software"), isAnchor: false, isActive: location === "/custom-software" },
               { href: "/about", label: t("nav.ourStory"), isAnchor: false, isActive: location === "/about" },
               { href: "/faq", label: t("nav.faq"), isAnchor: false, isActive: location === "/faq" },
             ].map((item, i) => (

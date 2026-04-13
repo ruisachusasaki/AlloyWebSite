@@ -19,6 +19,8 @@ import HomePage from "@/pages/home";
 import BuildSolutionPage from "@/pages/build-solution";
 import OurStoryPage from "@/pages/our-story";
 import FAQPage from "@/pages/faq";
+import CustomWebsitesPage from "@/pages/custom-websites";
+import CustomSoftwarePage from "@/pages/custom-software";
 import NotFound from "@/pages/not-found";
 
 function PrivateRoute({ component: Component, ...rest }: any) {
@@ -106,6 +108,8 @@ function AnimatedRoutes() {
           <Route path="/build" component={BuildSolutionPage} />
           <Route path="/about" component={OurStoryPage} />
           <Route path="/faq" component={FAQPage} />
+          <Route path="/custom-websites" component={CustomWebsitesPage} />
+          <Route path="/custom-software" component={CustomSoftwarePage} />
           <Route component={NotFound} />
         </Switch>
       </motion.div>
