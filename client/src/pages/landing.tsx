@@ -791,6 +791,251 @@ function SpaghettiChaosSection() {
   );
 }
 
+/* ─── Browser Mockup (websites card) ─── */
+function BrowserMockup() {
+  return (
+    <div className="browser-mockup w-full">
+      <div className="browser-mockup-bar">
+        <div className="browser-mockup-dot bg-red-400" />
+        <div className="browser-mockup-dot bg-yellow-400" />
+        <div className="browser-mockup-dot bg-green-400" />
+        <div className="flex-1 mx-3 h-5 rounded-full bg-muted/60 max-w-[140px]" />
+      </div>
+      <div className="p-3 space-y-2.5">
+        {/* Nav */}
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 rounded bg-primary/20" />
+          <div className="flex gap-2 ml-auto">
+            <div className="w-10 h-2 rounded bg-muted/40" />
+            <div className="w-10 h-2 rounded bg-muted/40" />
+            <div className="w-10 h-2 rounded bg-muted/40" />
+          </div>
+        </div>
+        {/* Hero area */}
+        <div className="h-16 rounded-lg bg-gradient-to-r from-primary/20 to-[hsl(var(--accent-warm)/0.2)] flex items-center justify-center">
+          <div className="w-24 h-3 rounded bg-foreground/10" />
+        </div>
+        {/* Product grid */}
+        <div className="grid grid-cols-3 gap-1.5">
+          <div className="h-10 rounded bg-muted/20" />
+          <div className="h-10 rounded bg-muted/20" />
+          <div className="h-10 rounded bg-muted/20" />
+        </div>
+        {/* Buy button */}
+        <div className="flex justify-center pt-1">
+          <div className="w-20 h-5 rounded-md bg-primary/60" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Dashboard Mockup (software card) ─── */
+function DashboardMockup() {
+  return (
+    <div className="dashboard-mockup w-full">
+      <div className="flex">
+        {/* Sidebar */}
+        <div className="w-12 bg-muted/30 p-2 space-y-2 border-r border-border">
+          <div className="w-full h-5 rounded bg-primary/20" />
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="w-full h-3 rounded bg-muted/40" />
+          ))}
+        </div>
+        {/* Main area */}
+        <div className="flex-1 p-3 space-y-2.5">
+          {/* Header */}
+          <div className="flex items-center gap-2">
+            <div className="w-5 h-5 rounded-full bg-primary/30" />
+            <div className="flex-1 h-3 rounded bg-muted/30 max-w-[80px]" />
+            <div className="w-16 h-5 rounded bg-muted/20" />
+          </div>
+          {/* Chart area */}
+          <div className="h-16 rounded-lg bg-muted/10 flex items-end px-2 pb-1 gap-1">
+            {[40, 65, 45, 80, 55, 70, 90].map((h, i) => (
+              <div
+                key={i}
+                className="flex-1 rounded-t bg-primary/30"
+                style={{ height: `${h}%` }}
+              />
+            ))}
+          </div>
+          {/* Stat cards */}
+          <div className="grid grid-cols-3 gap-1.5">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="h-8 rounded bg-muted/15 flex items-center justify-center">
+                <div className="w-8 h-2 rounded bg-foreground/10" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Two Paths Section ─── */
+function TwoPathsSection() {
+  const { t } = useLanguage();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
+
+  // Title + horizontal line phase
+  const titleOpacity = useTransform(scrollYProgress, [0, 0.08, 0.7, 0.85], [0, 1, 1, 0]);
+  const lineScaleX = useTransform(scrollYProgress, [0.04, 0.18], [0, 1]);
+  const lineRotate = useTransform(scrollYProgress, [0.18, 0.25], [0, 90]);
+  // Cards slide in
+  const leftX = useTransform(scrollYProgress, [0.25, 0.5], [-100, 0]);
+  const rightX = useTransform(scrollYProgress, [0.25, 0.5], [100, 0]);
+  const cardsOpacity = useTransform(scrollYProgress, [0.25, 0.4, 0.7, 0.85], [0, 1, 1, 0]);
+  // CTAs fade in
+  const ctaOpacity = useTransform(scrollYProgress, [0.5, 0.6, 0.7, 0.85], [0, 1, 1, 0]);
+  const ctaY = useTransform(scrollYProgress, [0.5, 0.6], [20, 0]);
+
+  const springConfig = { stiffness: 80, damping: 20 };
+  const leftXSpring = useSpring(leftX, springConfig);
+  const rightXSpring = useSpring(rightX, springConfig);
+
+  const pathData = [
+    {
+      side: "websites" as const,
+      titleKey: "twoPaths.websites.title",
+      subtitleKey: "twoPaths.websites.subtitle",
+      bullets: ["twoPaths.websites.bullet1", "twoPaths.websites.bullet2", "twoPaths.websites.bullet3"],
+      replacesKey: "twoPaths.websites.replaces",
+      ctaKey: "twoPaths.websites.cta",
+      href: "/custom-websites",
+      mockup: <BrowserMockup />,
+    },
+    {
+      side: "software" as const,
+      titleKey: "twoPaths.software.title",
+      subtitleKey: "twoPaths.software.subtitle",
+      bullets: ["twoPaths.software.bullet1", "twoPaths.software.bullet2", "twoPaths.software.bullet3"],
+      replacesKey: "twoPaths.software.replaces",
+      ctaKey: "twoPaths.software.cta",
+      href: "/custom-software",
+      mockup: <DashboardMockup />,
+    },
+  ];
+
+  /* ── Mobile layout (< lg) ── */
+  const mobileCards = (
+    <div className="lg:hidden px-6 py-24 max-w-lg mx-auto space-y-8">
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6 }}
+        className="text-center mb-4"
+      >
+        <h2 className="text-3xl sm:text-4xl font-black section-title heading-glow">
+          {t("twoPaths.title")}
+        </h2>
+      </motion.div>
+      {pathData.map((path, i) => (
+        <motion.div
+          key={path.side}
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6, delay: i * 0.15 }}
+          className="bento-card p-6 space-y-4"
+        >
+          {path.mockup}
+          <h3 className="text-xl font-bold">{t(path.titleKey)}</h3>
+          <p className="text-sm font-mono text-muted-foreground">{t(path.subtitleKey)}</p>
+          <ul className="space-y-2">
+            {path.bullets.map((b) => (
+              <li key={b} className="flex items-start gap-2 text-sm text-muted-foreground">
+                <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                <span>{t(b)}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="text-xs text-destructive/50 line-through">{t(path.replacesKey)}</p>
+          <Link href={path.href}>
+            <Button className="w-full shimmer-btn glow-border gap-2">
+              {t(path.ctaKey)} <ArrowRight className="w-4 h-4" />
+            </Button>
+          </Link>
+        </motion.div>
+      ))}
+    </div>
+  );
+
+  /* ── Desktop layout (lg+) — scroll-driven ── */
+  const desktopSection = (
+    <div ref={containerRef} className="hidden lg:block relative h-[250vh]">
+      <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden">
+        {/* Title */}
+        <motion.h2
+          className="text-5xl xl:text-6xl font-black section-title heading-glow mb-8 text-center"
+          style={{ opacity: titleOpacity }}
+        >
+          {t("twoPaths.title")}
+        </motion.h2>
+
+        {/* Animated split line */}
+        <motion.div
+          className="split-line w-48 h-0.5 rounded-full mb-12"
+          style={{
+            scaleX: prefersReducedMotion ? 1 : lineScaleX,
+            rotate: prefersReducedMotion ? 0 : lineRotate,
+            opacity: titleOpacity,
+          }}
+        />
+
+        {/* Two cards side by side */}
+        <div className="flex gap-8 xl:gap-12 max-w-6xl mx-auto px-8">
+          {pathData.map((path, i) => (
+            <motion.div
+              key={path.side}
+              className="flex-1 bento-card p-6 xl:p-8 space-y-4"
+              style={{
+                x: prefersReducedMotion ? 0 : (i === 0 ? leftXSpring : rightXSpring),
+                opacity: cardsOpacity,
+              }}
+            >
+              {path.mockup}
+              <h3 className="text-2xl font-bold mt-4">{t(path.titleKey)}</h3>
+              <p className="text-sm font-mono text-muted-foreground">{t(path.subtitleKey)}</p>
+              <ul className="space-y-2">
+                {path.bullets.map((b) => (
+                  <li key={b} className="flex items-start gap-2 text-sm text-muted-foreground">
+                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                    <span>{t(b)}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="text-xs text-destructive/50 line-through">{t(path.replacesKey)}</p>
+              <motion.div style={{ opacity: ctaOpacity, y: ctaY }}>
+                <Link href={path.href}>
+                  <Button className="w-full shimmer-btn glow-border gap-2 mt-2">
+                    {t(path.ctaKey)} <ArrowRight className="w-4 h-4" />
+                  </Button>
+                </Link>
+              </motion.div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <section id="two-paths" aria-label="Two Paths">
+      {mobileCards}
+      {desktopSection}
+    </section>
+  );
+}
+
 function BentoGridSection() {
   const { t } = useLanguage();
   const cardRef = useRef<HTMLDivElement>(null);
@@ -816,7 +1061,7 @@ function BentoGridSection() {
           transition={{ duration: 0.7 }}
           className="text-center mb-16"
         >
-          <SectionNumber number="02" />
+          <SectionNumber number="03" />
           <h2 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-6 px-4 section-title heading-glow">
             {t("bento.title.line1")} <span className="text-primary">{t("bento.title.highlight")}</span>
           </h2>
@@ -2468,6 +2713,7 @@ export default function LandingPage() {
           <HeroSection onScheduleClick={openScheduling} />
           <HeroMarquee />
           <SpaghettiChaosSection />
+          <TwoPathsSection />
           <BentoGridSection />
           <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
           <AIPartnerSection />
