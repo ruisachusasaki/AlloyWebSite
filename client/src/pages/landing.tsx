@@ -792,85 +792,25 @@ function SpaghettiChaosSection() {
 }
 
 /* ─── Browser Mockup (websites card) ─── */
-function BrowserMockup() {
-  return (
-    <div className="browser-mockup w-full">
-      <div className="browser-mockup-bar">
-        <div className="browser-mockup-dot bg-red-400" />
-        <div className="browser-mockup-dot bg-yellow-400" />
-        <div className="browser-mockup-dot bg-green-400" />
-        <div className="flex-1 mx-3 h-5 rounded-full bg-muted/60 max-w-[140px]" />
-      </div>
-      <div className="p-3 space-y-2.5">
-        {/* Nav */}
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded bg-primary/20" />
-          <div className="flex gap-2 ml-auto">
-            <div className="w-10 h-2 rounded bg-muted/40" />
-            <div className="w-10 h-2 rounded bg-muted/40" />
-            <div className="w-10 h-2 rounded bg-muted/40" />
-          </div>
-        </div>
-        {/* Hero area */}
-        <div className="h-16 rounded-lg bg-gradient-to-r from-primary/20 to-[hsl(var(--accent-warm)/0.2)] flex items-center justify-center">
-          <div className="w-24 h-3 rounded bg-foreground/10" />
-        </div>
-        {/* Product grid */}
-        <div className="grid grid-cols-3 gap-1.5">
-          <div className="h-10 rounded bg-muted/20" />
-          <div className="h-10 rounded bg-muted/20" />
-          <div className="h-10 rounded bg-muted/20" />
-        </div>
-        {/* Buy button */}
-        <div className="flex justify-center pt-1">
-          <div className="w-20 h-5 rounded-md bg-primary/60" />
-        </div>
-      </div>
-    </div>
-  );
-}
+/* ─── Path Image with fallback ─── */
+function PathImage({ src, alt }: { src: string; alt: string }) {
+  const [failed, setFailed] = useState(false);
 
-/* ─── Dashboard Mockup (software card) ─── */
-function DashboardMockup() {
-  return (
-    <div className="dashboard-mockup w-full">
-      <div className="flex">
-        {/* Sidebar */}
-        <div className="w-12 bg-muted/30 p-2 space-y-2 border-r border-border">
-          <div className="w-full h-5 rounded bg-primary/20" />
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="w-full h-3 rounded bg-muted/40" />
-          ))}
-        </div>
-        {/* Main area */}
-        <div className="flex-1 p-3 space-y-2.5">
-          {/* Header */}
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded-full bg-primary/30" />
-            <div className="flex-1 h-3 rounded bg-muted/30 max-w-[80px]" />
-            <div className="w-16 h-5 rounded bg-muted/20" />
-          </div>
-          {/* Chart area */}
-          <div className="h-16 rounded-lg bg-muted/10 flex items-end px-2 pb-1 gap-1">
-            {[40, 65, 45, 80, 55, 70, 90].map((h, i) => (
-              <div
-                key={i}
-                className="flex-1 rounded-t bg-primary/30"
-                style={{ height: `${h}%` }}
-              />
-            ))}
-          </div>
-          {/* Stat cards */}
-          <div className="grid grid-cols-3 gap-1.5">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="h-8 rounded bg-muted/15 flex items-center justify-center">
-                <div className="w-8 h-2 rounded bg-foreground/10" />
-              </div>
-            ))}
-          </div>
-        </div>
+  if (failed) {
+    return (
+      <div className="w-full aspect-video rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 flex items-center justify-center border border-border/50">
+        <span className="text-sm text-muted-foreground">Screenshot Coming Soon</span>
       </div>
-    </div>
+    );
+  }
+
+  return (
+    <img
+      src={src}
+      alt={alt}
+      className="w-full rounded-xl shadow-2xl border border-border/50"
+      onError={() => setFailed(true)}
+    />
   );
 }
 
@@ -878,28 +818,10 @@ function DashboardMockup() {
 function TwoPathsSection() {
   const { t } = useLanguage();
   const containerRef = useRef<HTMLDivElement>(null);
-  const prefersReducedMotion = useReducedMotion();
-
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"],
-  });
-
-  // Title + horizontal line phase
-  const titleOpacity = useTransform(scrollYProgress, [0, 0.08, 0.7, 0.85], [0, 1, 1, 0]);
-  const lineScaleX = useTransform(scrollYProgress, [0.04, 0.18], [0, 1]);
-  const lineRotate = useTransform(scrollYProgress, [0.18, 0.25], [0, 90]);
-  // Cards slide in
-  const leftX = useTransform(scrollYProgress, [0.25, 0.5], [-100, 0]);
-  const rightX = useTransform(scrollYProgress, [0.25, 0.5], [100, 0]);
-  const cardsOpacity = useTransform(scrollYProgress, [0.25, 0.4, 0.7, 0.85], [0, 1, 1, 0]);
-  // CTAs fade in
-  const ctaOpacity = useTransform(scrollYProgress, [0.5, 0.6, 0.7, 0.85], [0, 1, 1, 0]);
-  const ctaY = useTransform(scrollYProgress, [0.5, 0.6], [20, 0]);
-
-  const springConfig = { stiffness: 80, damping: 20 };
-  const leftXSpring = useSpring(leftX, springConfig);
-  const rightXSpring = useSpring(rightX, springConfig);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const leftCardRef = useRef<HTMLDivElement>(null);
+  const rightCardRef = useRef<HTMLDivElement>(null);
+  const mobileRef = useRef<HTMLDivElement>(null);
 
   const pathData = [
     {
@@ -910,7 +832,8 @@ function TwoPathsSection() {
       replacesKey: "twoPaths.websites.replaces",
       ctaKey: "twoPaths.websites.cta",
       href: "/custom-websites",
-      mockup: <BrowserMockup />,
+      imgSrc: "/placeholder-website.png",
+      imgAlt: "Custom website example",
     },
     {
       side: "software" as const,
@@ -920,34 +843,252 @@ function TwoPathsSection() {
       replacesKey: "twoPaths.software.replaces",
       ctaKey: "twoPaths.software.cta",
       href: "/custom-software",
-      mockup: <DashboardMockup />,
+      imgSrc: "/placeholder-software.png",
+      imgAlt: "Custom software example",
     },
   ];
 
+  /* ── Desktop: vanilla JS scroll-driven parallax ── */
+  useEffect(() => {
+    const container = containerRef.current;
+    const title = titleRef.current;
+    const leftCard = leftCardRef.current;
+    const rightCard = rightCardRef.current;
+    if (!container || !title || !leftCard || !rightCard) return;
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // GPU acceleration hints
+    if (!reducedMotion) {
+      [title, leftCard, rightCard].forEach((el) => {
+        el.style.willChange = "transform, opacity";
+        el.style.transition = "none";
+      });
+    }
+
+    const leftChildren = leftCard.querySelectorAll("[data-stagger]");
+    const rightChildren = rightCard.querySelectorAll("[data-stagger]");
+
+    // Easing helpers
+    const easeOutCubic = (x: number) => 1 - Math.pow(1 - x, 3);
+    const easeInCubic = (x: number) => x * x * x;
+    const lerp = (a: number, b: number, x: number) => a + (b - a) * x;
+    const phase = (p: number, start: number, end: number) =>
+      Math.max(0, Math.min(1, (p - start) / (end - start)));
+
+    let currentPhase = -1;
+
+    const animate = () => {
+      const rect = container.getBoundingClientRect();
+      const totalScrollable = container.offsetHeight - window.innerHeight;
+      const p = Math.max(0, Math.min(1, -rect.top / totalScrollable));
+
+      /* Reduced motion: show/hide without animation */
+      if (reducedMotion) {
+        const visible = p > 0.05 && p < 0.92;
+        title.style.opacity = visible ? "1" : "0";
+        title.style.transform = "none";
+        leftCard.style.opacity = visible ? "1" : "0";
+        rightCard.style.opacity = visible ? "1" : "0";
+        leftCard.style.transform = "none";
+        rightCard.style.transform = "none";
+        leftChildren.forEach((c) => {
+          (c as HTMLElement).style.opacity = "1";
+          (c as HTMLElement).style.transform = "none";
+        });
+        rightChildren.forEach((c) => {
+          (c as HTMLElement).style.opacity = "1";
+          (c as HTMLElement).style.transform = "none";
+        });
+        return;
+      }
+
+      /* ── Phase 1: Title entrance (0 → 0.15) ── */
+      const t1 = easeOutCubic(phase(p, 0, 0.15));
+      const titleScale = lerp(1.3, 1.0, t1);
+      const titleY = lerp(30, 0, t1);
+      const titleEntranceOp = lerp(0.3, 1.0, t1);
+
+      // Title fade during hold (0.55 → 0.80) and exit (0.80 → 1.0)
+      let titleOp = titleEntranceOp;
+      if (p > 0.55) titleOp = lerp(1.0, 0.3, easeInCubic(phase(p, 0.55, 0.80)));
+      if (p > 0.80) titleOp = lerp(0.3, 0, easeInCubic(phase(p, 0.80, 1.0)));
+
+      title.style.transform = `translate3d(0, ${titleY}px, 0) scale(${titleScale})`;
+      title.style.opacity = String(titleOp);
+
+      /* ── Phase 2: Cards split reveal (0.15 → 0.45) ── */
+      // Left card arrives 5% earlier than right (parallax stagger)
+      const tL = easeOutCubic(phase(p, 0.15, 0.38));
+      const tR = easeOutCubic(phase(p, 0.20, 0.43));
+
+      const leftTransX = lerp(-100, 0, tL);
+      const leftScale = lerp(0.9, 1.0, tL);
+      const leftRotY = lerp(5, 0, tL);
+      const leftOp = lerp(0, 1, easeOutCubic(phase(p, 0.15, 0.28)));
+
+      const rightTransX = lerp(100, 0, tR);
+      const rightScale = lerp(0.9, 1.0, tR);
+      const rightRotY = lerp(-5, 0, tR);
+      const rightOp = lerp(0, 1, easeOutCubic(phase(p, 0.20, 0.33)));
+
+      /* ── Phase 3: Hold / reading zone (0.45 → 0.80) ── */
+      const holdT = phase(p, 0.45, 0.80);
+      const imgParallaxY = holdT * -8;
+
+      /* ── Phase 4: Exit (0.80 → 1.0) ── */
+      const t4 = easeInCubic(phase(p, 0.80, 1.0));
+      const exitLeftX = lerp(0, -60, t4);
+      const exitRightX = lerp(0, 60, t4);
+      const exitOp = lerp(1, 0, t4);
+      const exitScale = lerp(1.0, 0.95, t4);
+
+      /* ── Compose final card transforms ── */
+      // Track phase transitions for class toggling
+      const newPhase = p < 0.45 ? 2 : p < 0.80 ? 3 : 4;
+      if (newPhase !== currentPhase) {
+        if (newPhase === 3) {
+          leftCard.classList.add("two-paths-hold");
+          rightCard.classList.add("two-paths-hold");
+        } else {
+          leftCard.classList.remove("two-paths-hold");
+          rightCard.classList.remove("two-paths-hold");
+        }
+        currentPhase = newPhase;
+      }
+
+      if (p < 0.45) {
+        // Entrance
+        leftCard.style.transform = `translate3d(${leftTransX}%, 0, 0) scale(${leftScale}) rotateY(${leftRotY}deg)`;
+        leftCard.style.opacity = String(leftOp);
+        rightCard.style.transform = `translate3d(${rightTransX}%, 0, 0) scale(${rightScale}) rotateY(${rightRotY}deg)`;
+        rightCard.style.opacity = String(rightOp);
+      } else if (p < 0.80) {
+        // Hold — clear inline transform so CSS hover animation can work
+        leftCard.style.removeProperty("transform");
+        leftCard.style.opacity = "1";
+        rightCard.style.removeProperty("transform");
+        rightCard.style.opacity = "1";
+        // Micro-parallax on images
+        const lImg = leftCard.querySelector("[data-parallax-img]") as HTMLElement | null;
+        const rImg = rightCard.querySelector("[data-parallax-img]") as HTMLElement | null;
+        if (lImg) lImg.style.transform = `translate3d(0, ${imgParallaxY}px, 0)`;
+        if (rImg) rImg.style.transform = `translate3d(0, ${imgParallaxY}px, 0)`;
+      } else {
+        // Exit
+        leftCard.style.transform = `translate3d(${exitLeftX}%, 0, 0) scale(${exitScale})`;
+        leftCard.style.opacity = String(exitOp);
+        rightCard.style.transform = `translate3d(${exitRightX}%, 0, 0) scale(${exitScale})`;
+        rightCard.style.opacity = String(exitOp);
+        // Reset image parallax
+        const lImg = leftCard.querySelector("[data-parallax-img]") as HTMLElement | null;
+        const rImg = rightCard.querySelector("[data-parallax-img]") as HTMLElement | null;
+        if (lImg) lImg.style.transform = "translate3d(0, 0, 0)";
+        if (rImg) rImg.style.transform = "translate3d(0, 0, 0)";
+      }
+
+      /* ── Stagger card children ── */
+      const stagger = (children: NodeListOf<Element>, staggerStart: number) => {
+        children.forEach((child, idx) => {
+          const el = child as HTMLElement;
+          if (p >= 0.45) {
+            // Hold or exit — children fully resolved, card opacity handles exit fade
+            el.style.opacity = "1";
+            el.style.transform = "translate3d(0, 0, 0)";
+          } else {
+            const cStart = staggerStart + idx * 0.02;
+            const cT = easeOutCubic(phase(p, cStart, cStart + 0.06));
+            el.style.opacity = String(cT);
+            el.style.transform = `translate3d(0, ${lerp(12, 0, cT)}px, 0)`;
+          }
+        });
+      };
+      stagger(leftChildren, 0.26);
+      stagger(rightChildren, 0.31);
+    };
+
+    let rafId: number;
+    const onScroll = () => {
+      rafId = requestAnimationFrame(animate);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    animate(); // set initial state
+
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(rafId);
+      [title, leftCard, rightCard].forEach((el) => {
+        el.style.willChange = "";
+      });
+    };
+  }, []);
+
+  /* ── Mobile: IntersectionObserver entrance ── */
+  useEffect(() => {
+    const container = mobileRef.current;
+    if (!container) return;
+    if (window.matchMedia("(min-width: 1024px)").matches) return;
+
+    const items = container.querySelectorAll("[data-animate]");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            (entry.target as HTMLElement).classList.add("two-paths-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.15 },
+    );
+    items.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
+  /* ── Render: card markup helper ── */
+  const renderCardContent = (path: typeof pathData[0]) => (
+    <>
+      <div data-parallax-img>
+        <PathImage src={path.imgSrc} alt={path.imgAlt} />
+      </div>
+      <h3 data-stagger className="text-2xl font-bold mt-4">{t(path.titleKey)}</h3>
+      <p data-stagger className="text-sm font-mono text-muted-foreground">{t(path.subtitleKey)}</p>
+      <ul data-stagger className="space-y-2">
+        {path.bullets.map((b) => (
+          <li key={b} className="flex items-start gap-2 text-sm text-muted-foreground">
+            <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+            <span>{t(b)}</span>
+          </li>
+        ))}
+      </ul>
+      <p data-stagger className="text-xs text-destructive/50 line-through">{t(path.replacesKey)}</p>
+      <div data-stagger>
+        <Link href={path.href}>
+          <Button className="w-full shimmer-btn glow-border gap-2 mt-2">
+            {t(path.ctaKey)} <ArrowRight className="w-4 h-4" />
+          </Button>
+        </Link>
+      </div>
+    </>
+  );
+
   /* ── Mobile layout (< lg) ── */
   const mobileCards = (
-    <div className="lg:hidden px-6 py-24 max-w-lg mx-auto space-y-8">
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="text-center mb-4"
-      >
-        <h2 className="text-3xl sm:text-4xl font-black section-title heading-glow">
+    <div ref={mobileRef} className="lg:hidden px-6 py-24 max-w-lg mx-auto space-y-8">
+      <div data-animate className="two-paths-enter text-center mb-4">
+        <h2 className="text-3xl sm:text-4xl font-black section-title heading-glow leading-tight">
           {t("twoPaths.title")}
         </h2>
-      </motion.div>
+      </div>
       {pathData.map((path, i) => (
-        <motion.div
+        <div
           key={path.side}
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.6, delay: i * 0.15 }}
-          className="bento-card p-6 space-y-4"
+          data-animate
+          className="two-paths-enter bento-card p-6 space-y-4"
+          style={{ transitionDelay: `${(i + 1) * 150}ms` }}
         >
-          {path.mockup}
+          <PathImage src={path.imgSrc} alt={path.imgAlt} />
           <h3 className="text-xl font-bold">{t(path.titleKey)}</h3>
           <p className="text-sm font-mono text-muted-foreground">{t(path.subtitleKey)}</p>
           <ul className="space-y-2">
@@ -964,65 +1105,43 @@ function TwoPathsSection() {
               {t(path.ctaKey)} <ArrowRight className="w-4 h-4" />
             </Button>
           </Link>
-        </motion.div>
+        </div>
       ))}
     </div>
   );
 
-  /* ── Desktop layout (lg+) — scroll-driven ── */
+  /* ── Desktop layout (lg+) — scroll-driven parallax ── */
   const desktopSection = (
-    <div ref={containerRef} className="hidden lg:block relative h-[250vh]">
-      <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden">
+    <div ref={containerRef} className="hidden lg:block relative h-[400vh]">
+      <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-x-hidden pt-8">
         {/* Title */}
-        <motion.h2
-          className="text-5xl xl:text-6xl font-black section-title heading-glow mb-8 text-center"
-          style={{ opacity: titleOpacity }}
+        <h2
+          ref={titleRef}
+          className="text-5xl xl:text-6xl font-black section-title heading-glow mb-8 text-center leading-tight"
+          style={{ opacity: 0.3, transform: "translate3d(0, 30px, 0) scale(1.3)" }}
         >
           {t("twoPaths.title")}
-        </motion.h2>
-
-        {/* Animated split line */}
-        <motion.div
-          className="split-line w-48 h-0.5 rounded-full mb-12"
-          style={{
-            scaleX: prefersReducedMotion ? 1 : lineScaleX,
-            rotate: prefersReducedMotion ? 0 : lineRotate,
-            opacity: titleOpacity,
-          }}
-        />
+        </h2>
 
         {/* Two cards side by side */}
-        <div className="flex gap-8 xl:gap-12 max-w-6xl mx-auto px-8">
-          {pathData.map((path, i) => (
-            <motion.div
-              key={path.side}
-              className="flex-1 bento-card p-6 xl:p-8 space-y-4"
-              style={{
-                x: prefersReducedMotion ? 0 : (i === 0 ? leftXSpring : rightXSpring),
-                opacity: cardsOpacity,
-              }}
-            >
-              {path.mockup}
-              <h3 className="text-2xl font-bold mt-4">{t(path.titleKey)}</h3>
-              <p className="text-sm font-mono text-muted-foreground">{t(path.subtitleKey)}</p>
-              <ul className="space-y-2">
-                {path.bullets.map((b) => (
-                  <li key={b} className="flex items-start gap-2 text-sm text-muted-foreground">
-                    <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                    <span>{t(b)}</span>
-                  </li>
-                ))}
-              </ul>
-              <p className="text-xs text-destructive/50 line-through">{t(path.replacesKey)}</p>
-              <motion.div style={{ opacity: ctaOpacity, y: ctaY }}>
-                <Link href={path.href}>
-                  <Button className="w-full shimmer-btn glow-border gap-2 mt-2">
-                    {t(path.ctaKey)} <ArrowRight className="w-4 h-4" />
-                  </Button>
-                </Link>
-              </motion.div>
-            </motion.div>
-          ))}
+        <div className="flex gap-8 xl:gap-12 max-w-6xl mx-auto px-8 w-full" style={{ perspective: "1200px" }}>
+          {/* Left card — Custom Websites */}
+          <div
+            ref={leftCardRef}
+            className="flex-1 two-paths-card bento-card p-6 xl:p-8 space-y-4"
+            style={{ opacity: 0, transform: "translate3d(-100%, 0, 0) scale(0.9) rotateY(5deg)" }}
+          >
+            {renderCardContent(pathData[0])}
+          </div>
+
+          {/* Right card — Custom Software */}
+          <div
+            ref={rightCardRef}
+            className="flex-1 two-paths-card bento-card p-6 xl:p-8 space-y-4"
+            style={{ opacity: 0, transform: "translate3d(100%, 0, 0) scale(0.9) rotateY(-5deg)" }}
+          >
+            {renderCardContent(pathData[1])}
+          </div>
         </div>
       </div>
     </div>
