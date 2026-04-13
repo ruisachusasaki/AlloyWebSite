@@ -705,6 +705,11 @@
   animation: scroll-line 2s ease-in-out infinite;
 }
 
+/* ── Short desktop viewport adjustments ── */
+@media (min-width: 1024px) and (max-height: 900px) {
+  .short-viewport-py { padding-top: 4rem; padding-bottom: 4rem; }
+}
+
 /* ── Service pages: scroll snap ── */
 .service-page {
   scroll-snap-type: y proximity;

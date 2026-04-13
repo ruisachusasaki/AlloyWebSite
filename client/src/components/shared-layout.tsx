@@ -329,7 +329,7 @@ export function SharedFooter() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-foreground heading-glow mb-10"
+            className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-foreground heading-glow mb-10"
             style={{ letterSpacing: "-0.03em", lineHeight: 1.1 }}
           >
             {t("footer.cta.ready")}{" "}

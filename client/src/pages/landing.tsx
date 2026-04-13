@@ -243,7 +243,7 @@ function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
       id="hero"
       aria-label="Hero"
       ref={sectionRef}
-      className="relative z-20 min-h-screen flex items-center overflow-x-clip overflow-y-visible grid-pattern"
+      className="relative z-20 h-screen max-h-[1080px] flex items-center overflow-x-clip overflow-y-visible grid-pattern"
       onMouseMove={handleMouseMove}
     >
       {/* Floating gradient orbs — track mouse with parallax */}
@@ -291,7 +291,7 @@ function HeroSection({ onScheduleClick }: { onScheduleClick: () => void }) {
           {/* Ghost text behind headline */}
           <div
             className="absolute pointer-events-none select-none -top-[0.2em] left-1/2 lg:left-0 -translate-x-1/2 lg:translate-x-0 whitespace-nowrap"
-            style={{ fontSize: "15vw", fontFamily: "var(--font-display)", fontWeight: 900, opacity: 0.03, lineHeight: 1 }}
+            style={{ fontSize: "clamp(10rem, 15vw, 14rem)", fontFamily: "var(--font-display)", fontWeight: 900, opacity: 0.03, lineHeight: 1 }}
             aria-hidden
           >
             ALLOY
@@ -702,10 +702,10 @@ function SpaghettiChaosSection() {
   const chaosTextOpacity = useTransform(scrollYProgress, [0, 0.3, 0.6], [1, 1, 0]);
 
   return (
-    <section id="problem" aria-label="The Problem" ref={containerRef} className="relative md:mt-24 h-[160vh] md:h-[200vh]">
+    <section id="problem" aria-label="The Problem" ref={containerRef} className="relative md:mt-24 h-[1440px] md:h-[1800px]">
       <div
         ref={stickyRef}
-        className="sticky top-0 h-screen flex flex-col items-center justify-start md:justify-center overflow-x-hidden pt-12 md:pt-0 gap-4 md:gap-8"
+        className="sticky top-0 h-[min(100vh,800px)] flex flex-col items-center justify-start md:justify-center overflow-x-hidden pt-12 md:pt-0 gap-4 md:gap-8"
       >
         <motion.div
           className="text-center mb-4 md:mb-8 px-6"
@@ -721,7 +721,7 @@ function SpaghettiChaosSection() {
           </p>
         </motion.div>
 
-        <div className="relative w-full max-w-6xl h-[420px] sm:h-[520px] md:h-[700px] flex items-center justify-center">
+        <div className="relative w-full max-w-6xl h-[420px] sm:h-[520px] md:h-[600px] xl:h-[700px] flex items-center justify-center">
           <div className="relative w-full h-full">
             {chaosApps.map((app, i) => (
               <ChaosIcon key={app.name} app={app} progress={scrollYProgress} index={i} prefersReducedMotion={prefersReducedMotion} scaleFactor={scaleFactor} isTouchDevice={isTouchDevice} />
@@ -750,7 +750,7 @@ function SpaghettiChaosSection() {
 
             <div className="relative" data-testid="icon-unified-platform">
               <div className="w-32 h-32 md:w-44 md:h-44 rounded-3xl bg-gradient-to-br from-primary via-primary/80 to-primary/60 flex items-center justify-center shadow-2xl border border-primary/30">
-                <span className="font-logo text-7xl md:text-8xl text-white drop-shadow-md leading-none">A</span>
+                <span className="font-logo text-6xl md:text-7xl xl:text-8xl text-white drop-shadow-md leading-none">A</span>
               </div>
             </div>
           </motion.div>
@@ -1112,8 +1112,8 @@ function TwoPathsSection() {
 
   /* ── Desktop layout (lg+) — scroll-driven parallax ── */
   const desktopSection = (
-    <div ref={containerRef} className="hidden lg:block relative h-[400vh]">
-      <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-x-hidden pt-8">
+    <div ref={containerRef} className="hidden lg:block relative h-[3600px]">
+      <div className="sticky top-0 h-[min(100vh,900px)] flex flex-col items-center justify-center overflow-x-hidden pt-8">
         {/* Title */}
         <h2
           ref={titleRef}
@@ -1170,7 +1170,7 @@ function BentoGridSection() {
   };
 
   return (
-    <section id="solution" aria-label="The Solution" className="py-8 md:py-32 relative overflow-hidden">
+    <section id="solution" aria-label="The Solution" className="py-8 md:py-20 lg:py-24 xl:py-32 relative overflow-hidden">
       <GhostText text="SOLUTION" />
       <div className="max-w-6xl mx-auto px-6 relative z-10">
         <motion.div
@@ -1181,7 +1181,7 @@ function BentoGridSection() {
           className="text-center mb-16"
         >
           <SectionNumber number="03" />
-          <h2 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-6 px-4 section-title heading-glow">
+          <h2 className="text-3xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-7xl font-black mb-6 px-4 section-title heading-glow">
             {t("bento.title.line1")} <span className="text-primary">{t("bento.title.highlight")}</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -1771,7 +1771,7 @@ function PricingSection() {
             <DollarSign className="w-4 h-4" />
             {t("nav.pricing")}
           </span>
-          <h2 className="text-4xl md:text-5xl lg:text-7xl font-black text-foreground mb-6 section-title heading-glow" style={{ letterSpacing: "0.05em" }}>
+          <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black text-foreground mb-6 section-title heading-glow" style={{ letterSpacing: "0.05em" }}>
             {t("pricing.title")}
           </h2>
           <p className="text-lg md:text-xl max-w-3xl mx-auto text-muted-foreground">
@@ -2381,8 +2381,8 @@ function CasesSection() {
   return (
     <section id="cases" aria-label="Success Cases" className="relative bg-card/30">
       {/* ── DESKTOP: Sticky horizontal scroll ── */}
-      <div ref={sectionRef} className="hidden md:block" style={{ height: `${totalItems * 100}vh` }}>
-        <div className="sticky top-0 h-screen overflow-hidden">
+      <div ref={sectionRef} className="hidden md:block" style={{ height: `${totalItems * 900}px` }}>
+        <div className="sticky top-0 h-[min(100vh,900px)] overflow-hidden">
           {/* Progress bar */}
           <div className="absolute top-0 left-0 right-0 z-20 h-[2px] bg-border/30">
             <motion.div
@@ -2392,11 +2392,11 @@ function CasesSection() {
           </div>
 
           {/* Header */}
-          <div className="relative z-10 pt-24 pb-8 px-8 lg:px-16">
+          <div className="relative z-10 pt-24 pb-8 px-8 lg:px-12 xl:px-16">
             <div className="flex items-end justify-between gap-8">
               <div>
                 <SectionNumber number="05" />
-                <h2 className="text-5xl lg:text-7xl font-black section-title heading-glow">
+                <h2 className="text-5xl lg:text-6xl xl:text-7xl font-black section-title heading-glow">
                   {t("proof.title")}
                 </h2>
               </div>
@@ -2432,7 +2432,7 @@ function CasesSection() {
                 return (
                   <div
                     key={item.name}
-                    className="shrink-0 w-screen px-8 lg:px-16 flex items-start"
+                    className="shrink-0 w-screen px-8 lg:px-12 xl:px-16 flex items-start"
                     data-testid={`card-portfolio-${item.name.toLowerCase().replace(".", "-")}`}
                   >
                     <div className="w-full max-w-[1400px] mx-auto flex flex-col lg:flex-row gap-8 lg:gap-12 h-full">
@@ -2459,7 +2459,7 @@ function CasesSection() {
                         <span className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground mb-4">
                           {item.category}
                         </span>
-                        <h3 className="text-3xl lg:text-5xl font-black mb-4 text-foreground" style={{ letterSpacing: "-0.02em" }}>
+                        <h3 className="text-3xl lg:text-4xl xl:text-5xl font-black mb-4 text-foreground" style={{ letterSpacing: "-0.02em" }}>
                           {item.name}
                         </h3>
                         <p className="text-muted-foreground text-base lg:text-lg leading-relaxed mb-6 max-w-md">

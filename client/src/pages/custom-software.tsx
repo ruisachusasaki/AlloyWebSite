@@ -95,7 +95,7 @@ function ServiceHero({
   return (
     <section
       ref={ref}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative h-screen max-h-[1080px] flex items-center justify-center overflow-hidden"
     >
       {/* Background layers */}
       <motion.div
@@ -124,7 +124,7 @@ function ServiceHero({
           }}
         >
           <SectionNumber number="01" />
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-6 section-title heading-glow">
+          <h1 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-7xl font-black mb-6 section-title heading-glow">
             {t("cs.hero.title.line1")}{" "}
             <span className="text-primary">
               {t("cs.hero.title.highlight")}
@@ -266,8 +266,8 @@ function HowItWorksSection() {
   const lineFills = [lineFill0, lineFill1, lineFill2];
 
   return (
-    <section ref={containerRef} className="relative h-[300vh] md:h-[400vh]">
-      <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden px-6">
+    <section ref={containerRef} className="relative h-[2700px] md:h-[3600px]">
+      <div className="sticky top-0 h-[min(100vh,900px)] flex flex-col items-center justify-center overflow-hidden px-6">
         <SectionNumber number="02" />
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-8 text-center section-title heading-glow">
           {t("cs.how.title")}
