@@ -628,7 +628,8 @@ export const en: Record<string, string> = {
     "cs.hero.title.line1": "Software That Thinks",
     "cs.hero.title.highlight": "Like Your Team",
     "cs.hero.subtitle": "Replace 10+ SaaS apps with one system built for how you actually work",
-    "cs.hero.cta": "Start Your Project",
+    "cs.hero.cta": "Configure Your Platform",
+    "cs.hero.ctaSecondary": "Or schedule a call directly",
 
     "cs.problem.1.title": "10 tools, zero sync",
     "cs.problem.1.description": "Notion, Slack, Zapier, Sheets, HubSpot \u2014 none of them talk to each other.",
@@ -659,7 +660,10 @@ export const en: Record<string, string> = {
     "cs.pricing.alsoLink": "Explore Custom Websites",
     "cs.cta.title": "Ready to replace the chaos?",
     "cs.cta.subtitle": "Let's build the one platform that does it all.",
-    "cs.cta.button": "Schedule a Call",
+    "cs.cta.button": "Configure Your Platform",
+    "cs.cta.buttonSecondary": "Or schedule a call directly",
+    "cs.pricing.startBuilding": "Start Building",
+    "cs.pricing.orSchedule": "or schedule a call",
 
     // ─── Nav Services ───
     "nav.services": "Services",

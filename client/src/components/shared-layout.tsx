@@ -367,7 +367,7 @@ export function SharedFooter() {
       {/* ═══════════════════════════════════════════
           2. MAIN FOOTER
       ═══════════════════════════════════════════ */}
-      <section className="relative py-20 md:py-24 bg-background dark:bg-[hsl(225,25%,8%)] overflow-hidden">
+      <section className="relative section-padding bg-background dark:bg-[hsl(225,25%,8%)] overflow-hidden">
         {/* Giant "ALLOY" wordmark backdrop */}
         <div
           className="wordmark-container absolute inset-0 flex items-center justify-center pointer-events-none select-none"

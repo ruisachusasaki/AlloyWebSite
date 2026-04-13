@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { SeoHead } from "@/components/seo/seo-head";
 import { ServiceSchema, BreadcrumbSchema } from "@/components/seo/structured-data";
-import { FAQSection } from "@/components/faq-section";
 import { SchedulingModal } from "@/components/scheduling-modal";
 import { SharedNavbar, SharedFooter } from "@/components/shared-layout";
 import { SchedulingContext } from "@/context/scheduling-context";
@@ -75,7 +74,7 @@ function ServiceHero({ onScheduleClick }: { onScheduleClick: () => void }) {
   return (
     <section
       ref={ref}
-      className="relative h-screen max-h-[1080px] flex items-center justify-center overflow-hidden"
+      className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden"
     >
       {/* Background layers */}
       <motion.div
@@ -148,7 +147,7 @@ function ProblemsSection() {
   ];
 
   return (
-    <section ref={ref} className="py-24 md:py-32 relative overflow-hidden">
+    <section ref={ref} className="section-padding relative overflow-hidden">
       <div className="max-w-5xl mx-auto px-6">
         <div className="grid gap-12 md:gap-16">
           {problems.map((p, i) => (
@@ -232,8 +231,8 @@ function HowItWorksSection() {
   );
 
   return (
-    <section ref={containerRef} className="relative h-[2700px] md:h-[3600px]">
-      <div className="sticky top-0 h-[min(100vh,900px)] flex flex-col items-center justify-center overflow-hidden px-6">
+    <section ref={containerRef} className="relative h-[300vh] md:h-[400vh]">
+      <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden px-6">
         <SectionNumber number="02" />
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-8 text-center section-title heading-glow">
           {t("cw.how.title")}
@@ -495,7 +494,7 @@ function WebsitePricingSection({ onScheduleClick }: { onScheduleClick: () => voi
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <section ref={ref} className="py-24 md:py-32 relative">
+    <section ref={ref} className="section-padding relative">
       <div className="max-w-3xl mx-auto px-6 text-center">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -559,7 +558,7 @@ function ServiceCTA({ onScheduleClick }: { onScheduleClick: () => void }) {
   const { t } = useLanguage();
 
   return (
-    <section className="py-24 md:py-32 relative overflow-hidden">
+    <section className="section-padding relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10" />
       <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
         <motion.div
@@ -633,7 +632,6 @@ export default function CustomWebsitesPage() {
           <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent" />
           <WebsitePricingSection onScheduleClick={() => openScheduling("Alloy eCommerce/Website")} />
           <ServiceCTA onScheduleClick={() => openScheduling()} />
-          <FAQSection />
         </main>
 
         <SharedFooter />

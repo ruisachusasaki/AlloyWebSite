@@ -430,7 +430,7 @@ function HeroSection() {
     <section className="relative pt-32 pb-24 overflow-hidden">
       {/* Floating gradient orbs — synced with landing page */}
       <div
-        className="absolute rounded-full pointer-events-none w-[400px] h-[400px] md:w-[600px] md:h-[600px]"
+        className="absolute rounded-full pointer-events-none w-[60vw] h-[60vw] md:w-[35vw] md:h-[35vw] max-w-[600px] max-h-[600px]"
         style={{
           top: "10%",
           left: "5%",
@@ -681,7 +681,10 @@ export default function BuildSolutionPage() {
 
   const { t } = useLanguage();
   const modules = getModules(t);
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState<string | null>(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("from") === "software" ? "Productivity" : null;
+  });
   const gridSectionRef = useRef<HTMLDivElement>(null);
   const [glowPulse, setGlowPulse] = useState(false);
   const prevCountRef = useRef(0);

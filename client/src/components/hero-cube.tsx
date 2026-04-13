@@ -19,7 +19,7 @@ const LABEL_CLASSES =
 /** CSS-only fallback for mobile / no-WebGL: orbiting labels around a glowing core */
 function CSSFallback() {
   return (
-    <div className="flex items-center justify-center w-full h-[350px] sm:h-[420px] relative" aria-hidden>
+    <div className="flex items-center justify-center w-full h-[40vh] sm:h-[45vh] lg:h-[50vh] min-h-[280px] relative" aria-hidden>
       {/* Central glow */}
       <div className="absolute w-20 h-20 rounded-full bg-primary/20 blur-xl" />
       <div className="absolute w-8 h-8 rounded-full bg-primary/40 blur-md" />
@@ -378,7 +378,7 @@ function PlanetSphere() {
   return (
     <div
       ref={mountRef}
-      className="relative w-full h-[350px] sm:h-[420px] lg:h-[520px] overflow-visible"
+      className="relative w-full h-[40vh] sm:h-[45vh] lg:h-[50vh] min-h-[280px] overflow-visible"
       aria-hidden
     >
       {/* HTML labels layer — sits on top of canvas, overflow-visible lets them bleed out */}

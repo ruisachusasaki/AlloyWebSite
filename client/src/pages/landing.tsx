@@ -832,8 +832,8 @@ function TwoPathsSection() {
       replacesKey: "twoPaths.websites.replaces",
       ctaKey: "twoPaths.websites.cta",
       href: "/custom-websites",
-      imgSrc: "/placeholder-website.png",
-      imgAlt: "Custom website example",
+      imgSrc: caseWealthfit,
+      imgAlt: "Wealthfit - Custom website example",
     },
     {
       side: "software" as const,
@@ -843,8 +843,8 @@ function TwoPathsSection() {
       replacesKey: "twoPaths.software.replaces",
       ctaKey: "twoPaths.software.cta",
       href: "/custom-software",
-      imgSrc: "/placeholder-software.png",
-      imgAlt: "Custom software example",
+      imgSrc: caseAgencyboost,
+      imgAlt: "AgencyBoost - Custom software example",
     },
   ];
 

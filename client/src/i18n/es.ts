@@ -628,7 +628,8 @@ export const es: Record<string, string> = {
     "cs.hero.title.line1": "Software Que Piensa",
     "cs.hero.title.highlight": "Como Tu Equipo",
     "cs.hero.subtitle": "Reemplaz\u00e1 10+ apps SaaS con un solo sistema hecho para c\u00f3mo realmente trabaj\u00e1s",
-    "cs.hero.cta": "Inici\u00e1 Tu Proyecto",
+    "cs.hero.cta": "Configurá Tu Plataforma",
+    "cs.hero.ctaSecondary": "O agendá una llamada directamente",
 
     "cs.problem.1.title": "10 herramientas, cero sincronizaci\u00f3n",
     "cs.problem.1.description": "Notion, Slack, Zapier, Sheets, HubSpot \u2014 ninguna se habla entre s\u00ed.",
@@ -659,7 +660,10 @@ export const es: Record<string, string> = {
     "cs.pricing.alsoLink": "Explorar Sitios Web a Medida",
     "cs.cta.title": "\u00bfListo para reemplazar el caos?",
     "cs.cta.subtitle": "Construyamos la plataforma que hace todo.",
-    "cs.cta.button": "Agend\u00e1 una Llamada",
+    "cs.cta.button": "Configurá Tu Plataforma",
+    "cs.cta.buttonSecondary": "O agendá una llamada directamente",
+    "cs.pricing.startBuilding": "Empezar a Construir",
+    "cs.pricing.orSchedule": "o agend\u00e1 una Llamada",
 
     // ─── Nav Services ───
     "nav.services": "Servicios",

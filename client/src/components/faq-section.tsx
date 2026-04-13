@@ -85,7 +85,7 @@ export function FAQSection({ mode = "teaser" }: { mode?: "teaser" | "full" }) {
   }));
 
   return (
-    <section id="faq" className="py-24 md:py-32 relative overflow-hidden bg-background" aria-label="Frequently Asked Questions">
+    <section id="faq" className="section-padding relative overflow-hidden bg-background" aria-label="Frequently Asked Questions">
       {/* Subtle grid overlay */}
       <div
         className="absolute inset-0 pointer-events-none"

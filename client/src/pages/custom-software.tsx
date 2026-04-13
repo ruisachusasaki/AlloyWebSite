@@ -12,7 +12,6 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { SeoHead } from "@/components/seo/seo-head";
 import { ServiceSchema, BreadcrumbSchema } from "@/components/seo/structured-data";
-import { FAQSection } from "@/components/faq-section";
 import { SchedulingModal } from "@/components/scheduling-modal";
 import { SharedNavbar, SharedFooter } from "@/components/shared-layout";
 import { SchedulingContext } from "@/context/scheduling-context";
@@ -95,7 +94,7 @@ function ServiceHero({
   return (
     <section
       ref={ref}
-      className="relative h-screen max-h-[1080px] flex items-center justify-center overflow-hidden"
+      className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden"
     >
       {/* Background layers */}
       <motion.div
@@ -142,17 +141,25 @@ function ServiceHero({
         </motion.p>
 
         <motion.div
+          className="flex flex-col items-center gap-3"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.7 }}
         >
-          <Button
-            size="lg"
-            className="shimmer-btn glow-border gap-2 text-base px-8 py-6"
+          <Link href="/build-solution?from=software">
+            <Button
+              size="lg"
+              className="shimmer-btn glow-border gap-2 text-base px-8 py-6"
+            >
+              {t("cs.hero.cta")} <ArrowRight className="w-5 h-5" />
+            </Button>
+          </Link>
+          <button
             onClick={onScheduleClick}
+            className="text-sm text-muted-foreground hover:text-primary transition-colors underline underline-offset-4"
           >
-            {t("cs.hero.cta")} <ArrowRight className="w-5 h-5" />
-          </Button>
+            {t("cs.hero.ctaSecondary")}
+          </button>
         </motion.div>
       </div>
     </section>
@@ -185,7 +192,7 @@ function ProblemsSection() {
   ];
 
   return (
-    <section ref={ref} className="py-24 md:py-32 relative overflow-hidden">
+    <section ref={ref} className="section-padding relative overflow-hidden">
       <div className="max-w-5xl mx-auto px-6">
         <div className="grid gap-12 md:gap-16">
           {problems.map((p, i) => (
@@ -266,8 +273,8 @@ function HowItWorksSection() {
   const lineFills = [lineFill0, lineFill1, lineFill2];
 
   return (
-    <section ref={containerRef} className="relative h-[2700px] md:h-[3600px]">
-      <div className="sticky top-0 h-[min(100vh,900px)] flex flex-col items-center justify-center overflow-hidden px-6">
+    <section ref={containerRef} className="relative h-[300vh] md:h-[400vh]">
+      <div className="sticky top-0 h-screen flex flex-col items-center justify-center overflow-hidden px-6">
         <SectionNumber number="02" />
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-black mb-8 text-center section-title heading-glow">
           {t("cs.how.title")}
@@ -668,7 +675,7 @@ function SoftwareCasesSection() {
   ];
 
   return (
-    <section ref={ref} className="py-24 md:py-32 relative">
+    <section ref={ref} className="section-padding relative">
       <div className="max-w-5xl mx-auto px-6">
         <motion.div
           className="text-center mb-12"
@@ -813,7 +820,7 @@ function SoftwarePricingSection({
   ];
 
   return (
-    <section ref={ref} className="py-24 md:py-32 relative">
+    <section ref={ref} className="section-padding relative">
       <div className="max-w-4xl mx-auto px-6 text-center">
         <motion.div
           initial={{ opacity: 0, y: 40 }}
@@ -860,12 +867,19 @@ function SoftwarePricingSection({
                   </li>
                 ))}
               </ul>
-              <Button
-                className="w-full shimmer-btn glow-border gap-2"
+              <Link href="/build-solution?from=software">
+                <Button
+                  className="w-full shimmer-btn glow-border gap-2"
+                >
+                  {t("cs.pricing.startBuilding")} <ArrowRight className="w-4 h-4" />
+                </Button>
+              </Link>
+              <button
                 onClick={() => onScheduleClick(plan.title)}
+                className="w-full text-xs text-muted-foreground hover:text-primary transition-colors mt-2 underline underline-offset-4"
               >
-                {t("pricing.cta")} <ArrowRight className="w-4 h-4" />
-              </Button>
+                {t("cs.pricing.orSchedule")}
+              </button>
             </motion.div>
           ))}
         </div>
@@ -902,7 +916,7 @@ function ServiceCTA({
   const { t } = useLanguage();
 
   return (
-    <section className="py-24 md:py-32 relative overflow-hidden">
+    <section className="section-padding relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-primary/10" />
       <div className="relative z-10 max-w-3xl mx-auto px-6 text-center">
         <motion.div
@@ -916,13 +930,20 @@ function ServiceCTA({
           <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">
             {t("cs.cta.subtitle")}
           </p>
-          <Button
-            size="lg"
-            className="shimmer-btn glow-border gap-2 text-base px-8 py-6"
+          <Link href="/build-solution?from=software">
+            <Button
+              size="lg"
+              className="shimmer-btn glow-border gap-2 text-base px-8 py-6"
+            >
+              {t("cs.cta.button")} <ArrowRight className="w-5 h-5" />
+            </Button>
+          </Link>
+          <button
             onClick={onScheduleClick}
+            className="block mx-auto mt-3 text-sm text-muted-foreground hover:text-primary transition-colors underline underline-offset-4"
           >
-            {t("cs.cta.button")} <ArrowRight className="w-5 h-5" />
-          </Button>
+            {t("cs.cta.buttonSecondary")}
+          </button>
         </motion.div>
       </div>
     </section>
@@ -983,7 +1004,6 @@ export default function CustomSoftwarePage() {
           <SoftwareCasesSection />
           <SoftwarePricingSection onScheduleClick={openScheduling} />
           <ServiceCTA onScheduleClick={() => openScheduling()} />
-          <FAQSection />
         </main>
 
         <SharedFooter />
