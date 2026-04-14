@@ -2265,21 +2265,6 @@ function CasesSection() {
       ],
     },
     {
-      name: "WebsiteProject",
-      category: t("proof.websitecase.category"),
-      description: t("proof.websitecase.description"),
-      icon: Globe,
-      accentHsl: "160 84% 39%",
-      evolutionTag: t("proof.websitecase.tag"),
-      link: "#",
-      image: "",
-      stats: [
-        { label: "Platform Fees", value: "0%" },
-        { label: "PageSpeed", value: "98" },
-        { label: "Load Time", value: "2.1s" },
-      ],
-    },
-    {
       name: "EventGrowth.app",
       category: t("proof.eventgrowth.category"),
       description: t("proof.eventgrowth.description"),

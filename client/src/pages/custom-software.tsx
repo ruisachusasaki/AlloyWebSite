@@ -146,7 +146,7 @@ function ServiceHero({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.7 }}
         >
-          <Link href="/build-solution?from=software">
+          <Link href="/build?from=software">
             <Button
               size="lg"
               className="shimmer-btn glow-border gap-2 text-base px-8 py-6"
@@ -867,7 +867,7 @@ function SoftwarePricingSection({
                   </li>
                 ))}
               </ul>
-              <Link href="/build-solution?from=software">
+              <Link href="/build?from=software">
                 <Button
                   className="w-full shimmer-btn glow-border gap-2"
                 >
@@ -930,7 +930,7 @@ function ServiceCTA({
           <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">
             {t("cs.cta.subtitle")}
           </p>
-          <Link href="/build-solution?from=software">
+          <Link href="/build?from=software">
             <Button
               size="lg"
               className="shimmer-btn glow-border gap-2 text-base px-8 py-6"
